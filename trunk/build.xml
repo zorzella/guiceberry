@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+
+<project name="guiceberry" default="compile">
+
+  <property environment="env"/>
+  <property file="build.properties"/>
+
+  <!-- can be overridden at the command line with -Dversion=
+       or in IDEA, in the ant properties dialog -->
+  <property name="version" value="snapshot"/>
+
+  <target name="compile" description="Compile Java source.">
+    <mkdir dir="${build.dir}/classes"/>
+    <javac srcdir="${src.dir}"
+         debug="on"
+         destdir="${build.dir}/classes">
+      <classpath>
+        <pathelement location="${build.dir}/classes"/>
+        <pathelement location="${lib.dir}/junit3.8.1.jar"/>
+      </classpath>
+    </javac>
+    <!-- copy toDir="${build.dir}/classes">
+      <fileset dir="${src.dir}" excludes="**/*.java"/>
+    </copy -->
+  </target>
+
+  <target name="test.compile"
+      depends="compile"
+      description="Compile test source.">
+    <mkdir dir="${build.dir}/test"/>
+    <javac srcdir="${test.dir}"
+         debug="on"
+         destdir="${build.dir}/test">
+      <classpath>
+        <pathelement location="${build.dir}/classes"/>
+        <pathelement location="${lib.dir}/junit3.8.1.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="test"
+      depends="test.compile"
+      description="Execute JUnit tests.">
+    <java fork="true"
+        classname="junit.textui.TestRunner"
+        failonerror="true"
+        taskname="junit">
+      <classpath>
+        <pathelement location="${build.dir}/test"/>
+        <pathelement location="${build.dir}/classes"/>
+        <pathelement location="${lib.dir}/build/junit.jar"/>
+      </classpath>
+      <arg value="${test.class}"/>
+    </java>
+  </target>
+
+  <target name="clean"
+      description="Remove generated files.">
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <target name="jar" depends="compile" description="Build jar.">
+    <mkdir dir="${build.dir}/dist"/>
+    <mkdir dir="${build.dir}/dist/guiceberry-${version}"/>
+    <jar jarfile="${build.dir}/dist/guiceberry-${version}/guiceberry-${version}.jar">
+      <fileset dir="${build.dir}/classes"/>
+    </jar>
+  </target>
+
+  <target name="jarsrc" description="Build jar of source.">
+    <jar jarfile="${build.dir}/dist/guiceberry-${version}/src-${version}.zip">
+      <fileset dir="${src.dir}"/>
+    </jar>
+  </target>
+
+  <target name="dist" depends="jar, jarsrc, javadoc"
+       description="Build entire distribution.">
+    <copy toDir="${build.dir}/dist/guiceberry-${version}" file="COPYING"/>
+    <copy toDir="${build.dir}/dist/guiceberry-${version}">
+      <fileset dir="${build.dir}" includes="javadoc/**/*"/>
+    </copy>
+
+    <zip destfile="${build.dir}/guiceberry-${version}.zip"
+      basedir="${build.dir}/dist"/>
+  </target>
+
+  <target name="javadoc"
+      description="Generate Javadocs.">
+    <delete dir="${build.dir}/javadoc"/>
+    <mkdir dir="${build.dir}/javadoc"/>
+    <javadoc packagenames="${javadoc.packagenames}"
+         destdir="${build.dir}/javadoc"
+         author="true"
+         protected="true"
+         windowtitle="GuiceBerry">
+      <sourcepath>
+        <pathelement location="${src.dir}"/>
+      </sourcepath>
+    </javadoc>
+  </target>
+</project>
