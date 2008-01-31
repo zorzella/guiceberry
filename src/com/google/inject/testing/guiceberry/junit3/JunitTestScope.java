@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  * The JUnit-specific implementation of the {@link TestScoped} annotation. 
  * 
- * @see GuiceBerryJunit
+ * @see GuiceBerryJunit3
  * @see Scope 
  *
  * @author Luiz-Otavio Zorzella
@@ -56,7 +56,7 @@ class JunitTestScope implements Scope {
     return new Provider<T>() {
       public T get() {
 
-        TestCase actualTestCase = GuiceBerryJunit.getActualTestCase();
+        TestCase actualTestCase = GuiceBerryJunit3.getActualTestCase();
         if (actualTestCase == null) {
           throw new IllegalStateException(
               "GooseBerry can't find out what is the currently-running test. " +

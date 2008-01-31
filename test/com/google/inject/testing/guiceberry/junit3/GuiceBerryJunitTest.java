@@ -35,7 +35,7 @@ import com.google.common.testing.junit3.TearDownTestCase;
 import junit.framework.TestCase;
 
 /**
- * Tests the {@link GuiceBerryJunit} class.
+ * Tests the {@link GuiceBerryJunit3} class.
  * 
  * @author Luiz-Otavio Zorzella
  * @author Danka Karwanska
@@ -64,7 +64,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TearDown tearDown = new TearDown() {
       @Override
       public void tearDown() throws Exception {    
-        GuiceBerryJunit.clear();
+        GuiceBerryJunit3.clear();
       }
     };
     addRequiredTearDown(tearDown);
@@ -88,7 +88,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
   
   public void testWithNoAnnotationThrowsException() {
     try {
-      GuiceBerryJunit.setUp(this);
+      GuiceBerryJunit3.setUp(this);
       fail();
     } catch (NullPointerException expected) {
     }
@@ -98,7 +98,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
    try {
       TestAnnotatedWithModuleThatNotExist testClass = 
         TestAnnotatedWithModuleThatNotExist.createInstance();
-      GuiceBerryJunit.setUp(testClass);
+      GuiceBerryJunit3.setUp(testClass);
       fail();
    } catch (IllegalArgumentException expected) { }
   }
@@ -107,7 +107,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     try {
       TestAnnotatedWithModuleThatHasMissingBindings testClass = 
         TestAnnotatedWithModuleThatHasMissingBindings.createInstance();
-      GuiceBerryJunit.setUp(testClass);
+      GuiceBerryJunit3.setUp(testClass);
       fail();
     } catch (RuntimeException expected) {
       //TODO: we should assert expected's cause is ConfigurationException, but 
@@ -124,7 +124,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     try {
       TestAnnotatedWithClassThatNotImplementsModule testClass = 
         TestAnnotatedWithClassThatNotImplementsModule.createInstance();
-      GuiceBerryJunit.setUp(testClass);
+      GuiceBerryJunit3.setUp(testClass);
       fail();
     } catch (IllegalArgumentException expected) { }
   }
@@ -133,7 +133,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     try {
       TestAnnotatedWithModuleThatHAsWrongConstructor testClass = 
         TestAnnotatedWithModuleThatHAsWrongConstructor.createInstance();
-      GuiceBerryJunit.setUp(testClass);
+      GuiceBerryJunit3.setUp(testClass);
       fail();
     } catch (RuntimeException expected) {
       assertTrue(expected.getCause() instanceof NoSuchMethodException);
@@ -144,7 +144,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithModuleThatIsAbstractClass testClass = 
       TestAnnotatedWithModuleThatIsAbstractClass.createInstance();
     try {
-      GuiceBerryJunit.setUp(testClass);
+      GuiceBerryJunit3.setUp(testClass);
       fail();
     } catch (RuntimeException expected) {
       assertTrue(expected.getCause() instanceof InstantiationException);
@@ -154,13 +154,13 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
   public void testAnnotaionWithAbstractModuleThatImplementsOtherInterfaces() {      
     TestAnnotatedWithStubService1 testClass =
       TestAnnotatedWithStubService1.createInstance();    
-    GuiceBerryJunit.setUp(testClass);    
+    GuiceBerryJunit3.setUp(testClass);    
   }
   
   public void testThatTestCaseGetsInjectedWithSomething() {
     TestAnnotatedWithStubService1 testClass = 
       TestAnnotatedWithStubService1.createInstance();
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
     assertNotNull(testClass.barService);
     assertNotNull(testClass.fooService);
   }
@@ -170,14 +170,14 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
 
     @Override
     public void run() {
-      theTestCase = GuiceBerryJunit.getActualTestCase();
+      theTestCase = GuiceBerryJunit3.getActualTestCase();
     }
   }
   
   public void testThatThreadLocalsInherit() throws InterruptedException {
     TestAnnotatedWithStubService1 testClass = 
       TestAnnotatedWithStubService1.createInstance();
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
 
     // Finding the current test case from a secondary thread.
     MyThread myThread = new MyThread();
@@ -193,7 +193,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
   public void testThatTestCaseGetsInjectedWithWhatsConfiguredInTheModule() {
    TestAnnotatedWithStubService1 testClass = 
      TestAnnotatedWithStubService1.createInstance();
-   GuiceBerryJunit.setUp(testClass);
+   GuiceBerryJunit3.setUp(testClass);
    assertTrue(testClass.barService instanceof BarServiceOne);
    assertTrue(testClass.fooService instanceof FooServiceOne);
   }
@@ -201,12 +201,12 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
   public void testInjectorMapIsSetAfterATest() throws ClassNotFoundException {
     TestAnnotatedWithStubService1 firstTest = 
       TestAnnotatedWithStubService1.createInstance();
-    Injector injector = GuiceBerryJunit.getInjectorFromGB(
+    Injector injector = GuiceBerryJunit3.getInjectorFromGB(
           Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
     assertNull(injector);
     
-    GuiceBerryJunit.setUp(firstTest);
-    injector = GuiceBerryJunit.getInjectorFromGB(
+    GuiceBerryJunit3.setUp(firstTest);
+    injector = GuiceBerryJunit3.getInjectorFromGB(
         Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
     
     assertNotNull(injector);
@@ -216,35 +216,35 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
       throws ClassNotFoundException {
     TestAnnotatedWithStubService1 firstTest = 
       TestAnnotatedWithStubService1.createInstance();
-    GuiceBerryJunit.setUp(firstTest);
+    GuiceBerryJunit3.setUp(firstTest);
     
     Injector firstInjector = 
-      GuiceBerryJunit.getInjectorFromGB(
+      GuiceBerryJunit3.getInjectorFromGB(
           Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
-    GuiceBerryJunit.tearDown(firstTest);
+    GuiceBerryJunit3.tearDown(firstTest);
 
     TestAnnotatedWithStubService2 secondTest = 
       TestAnnotatedWithStubService2.createInstance();
-    GuiceBerryJunit.setUp(secondTest);
+    GuiceBerryJunit3.setUp(secondTest);
     
     Injector secondInjector = 
-      GuiceBerryJunit.getInjectorFromGB(
+      GuiceBerryJunit3.getInjectorFromGB(
           Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
     
     assertSame(firstInjector, secondInjector);    
-    assertEquals(1, GuiceBerryJunit.numberOfInjectorsInUse());    
+    assertEquals(1, GuiceBerryJunit3.numberOfInjectorsInUse());    
   }
   
   public void testReUseingInjectorForTestCasesThatDeclaresSameModuleName() {
     
     TestAnnotatedWithStubService1 firstTest = 
       TestAnnotatedWithStubService1.createInstance();
-    GuiceBerryJunit.setUp(firstTest);    
-    GuiceBerryJunit.tearDown(firstTest);
+    GuiceBerryJunit3.setUp(firstTest);    
+    GuiceBerryJunit3.tearDown(firstTest);
     
     TestAnnotatedWithStubService2 secondTest = 
       TestAnnotatedWithStubService2.createInstance();
-    GuiceBerryJunit.setUp(secondTest);
+    GuiceBerryJunit3.setUp(secondTest);
     assertEquals(firstTest.number, secondTest.number);
 
   }
@@ -253,12 +253,12 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     
     TestAnnotatedWithStubService1 firstTest = 
       TestAnnotatedWithStubService1.createInstance();
-    GuiceBerryJunit.setUp(firstTest);    
-    GuiceBerryJunit.tearDown(firstTest);
+    GuiceBerryJunit3.setUp(firstTest);    
+    GuiceBerryJunit3.tearDown(firstTest);
     
     TestAnnotatedWithRealService secondTest = 
       TestAnnotatedWithRealService.createInstance();
-    GuiceBerryJunit.setUp(secondTest);
+    GuiceBerryJunit3.setUp(secondTest);
     JUnitAsserts.assertNotEqual(firstTest.number, secondTest.number);
 
   }
@@ -268,22 +268,22 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithStubService1 firstTest = 
       TestAnnotatedWithStubService1.createInstance();
     
-    GuiceBerryJunit.setUp(firstTest);
-    GuiceBerryJunit.tearDown(firstTest);
+    GuiceBerryJunit3.setUp(firstTest);
+    GuiceBerryJunit3.tearDown(firstTest);
     
     TestAnnotatedWithRealService secondTest = 
       TestAnnotatedWithRealService.createInstance();
     
-    GuiceBerryJunit.setUp(secondTest);
+    GuiceBerryJunit3.setUp(secondTest);
    
-    assertEquals(2, GuiceBerryJunit.numberOfInjectorsInUse());    
+    assertEquals(2, GuiceBerryJunit3.numberOfInjectorsInUse());    
    }
   
   public void testCreateingCascadingInjections() {
     
     TestAnnotatedWithRealService testClass = 
       TestAnnotatedWithRealService.createInstance();
-    GuiceBerryJunit.setUp(testClass);       
+    GuiceBerryJunit3.setUp(testClass);       
     assertEquals(INJECTED_INFORMATION, testClass.fooService.get());
    }
   
@@ -295,16 +295,16 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     
       @Override
       public void tearDown() throws Exception {
-        System.clearProperty(GuiceBerryJunit
+        System.clearProperty(GuiceBerryJunit3
             .buildModuleOverrideProperty(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
       }
     };
     addRequiredTearDown(tearDown);
-    System.setProperty(GuiceBerryJunit
+    System.setProperty(GuiceBerryJunit3
         .buildModuleOverrideProperty(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE), 
         GuiceBerryEnvTwo.GUICE_BERRY_ENV_TWO);
     
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
     assertTrue(testClass.barService instanceof BarServiceTwo);
     assertTrue(testClass.fooService instanceof FooServiceTwo);
   }
@@ -317,19 +317,19 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     
       @Override
       public void tearDown() throws Exception {
-        System.clearProperty(GuiceBerryJunit
+        System.clearProperty(GuiceBerryJunit3
             .buildModuleOverrideProperty(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
       }
     };
     
     addRequiredTearDown(tearDown);
     
-    System.setProperty(GuiceBerryJunit
+    System.setProperty(GuiceBerryJunit3
         .buildModuleOverrideProperty(
          GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE), GUICE_BERRY_ENV_THAT_DOES_NOT_EXIST);
     
     try {
-      GuiceBerryJunit.setUp(testClass);
+      GuiceBerryJunit3.setUp(testClass);
       fail();
     } catch (IllegalArgumentException expected) {}
   }
@@ -340,7 +340,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
       TestAnnotatedWithStubService1.createInstance();
     
     assertEquals(null, testClass.testId);
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
     assertEquals(
         new TestId(testClass.getClass().getName(), testClass.getName()),
         testClass.testId);
@@ -351,16 +351,16 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithStubService1 firstTest =  
       TestAnnotatedWithStubService1.createInstance();
     
-    GuiceBerryJunit.setUp(firstTest);
+    GuiceBerryJunit3.setUp(firstTest);
     
     assertEquals(
         new TestId(firstTest.getClass().getName(), firstTest.getName()),
         firstTest.testId);
-    GuiceBerryJunit.tearDown(firstTest);
+    GuiceBerryJunit3.tearDown(firstTest);
    
     TestAnnotatedWithStubService2 secondTest = 
       TestAnnotatedWithStubService2.createInstance();
-    GuiceBerryJunit.setUp(secondTest);
+    GuiceBerryJunit3.setUp(secondTest);
    
     assertEquals(
         new TestId(secondTest.getClass().getName(), secondTest.getName()),
@@ -374,7 +374,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     
     assertEquals(null, testClass.barService);    
     
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
     
     assertNotNull(testClass.barService.getTestId());
     assertEquals(
@@ -387,7 +387,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
       TestAnnotatedWithStubService1.createInstance();
     
     assertEquals(null, testClass.testCase);
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
     assertEquals(testClass.getName(), testClass.testCase.getName());
   } 
   
@@ -397,15 +397,15 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithStubService1 firstTest =  
       TestAnnotatedWithStubService1.createInstance();
     
-    GuiceBerryJunit.setUp(firstTest);
+    GuiceBerryJunit3.setUp(firstTest);
     
     assertEquals(firstTest.getName(), firstTest.testCase.getName());
     
-    GuiceBerryJunit.tearDown(firstTest);
+    GuiceBerryJunit3.tearDown(firstTest);
    
     TestAnnotatedWithStubService2 secondTest = 
       TestAnnotatedWithStubService2.createInstance();
-    GuiceBerryJunit.setUp(secondTest);
+    GuiceBerryJunit3.setUp(secondTest);
     
     assertEquals(secondTest.getName(), secondTest.testCase.getName());
     
@@ -416,16 +416,16 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithStubService1 testClass = 
       TestAnnotatedWithStubService1.createInstance();
     
-    GuiceBerryJunit.setUp(testClass);
-    assertEquals(testClass,  GuiceBerryJunit.getActualTestCase());
-    GuiceBerryJunit.tearDown(testClass); 
+    GuiceBerryJunit3.setUp(testClass);
+    assertEquals(testClass,  GuiceBerryJunit3.getActualTestCase());
+    GuiceBerryJunit3.tearDown(testClass); 
   //No concurrence problems as the actual TestCase is: ThreadLocal<TestCase>
-    assertNull(GuiceBerryJunit.getActualTestCase());
+    assertNull(GuiceBerryJunit3.getActualTestCase());
   }
   
   public void testMethodTearDownNoPreviousSetupOnClassWithNoAnnotation() {
     try {
-      GuiceBerryJunit.tearDown(this);
+      GuiceBerryJunit3.tearDown(this);
       fail();
     } catch (NullPointerException expected) {}
   }
@@ -436,7 +436,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithStubService1 testClass = 
       TestAnnotatedWithStubService1.createInstance();
     try {
-      GuiceBerryJunit.tearDown(testClass);
+      GuiceBerryJunit3.tearDown(testClass);
       fail();
     } catch (RuntimeException expected) {}  
   }
@@ -446,12 +446,12 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
 
     TestAnnotatedWithStubService1 testClass1 = 
       TestAnnotatedWithStubService1.createInstance();
-    GuiceBerryJunit.setUp(testClass1);
+    GuiceBerryJunit3.setUp(testClass1);
     testClass1.run();
     TestAnnotatedWithStubService1 testClass2 = 
       TestAnnotatedWithStubService1.createInstance();
     try {
-      GuiceBerryJunit.tearDown(testClass2);
+      GuiceBerryJunit3.tearDown(testClass2);
       fail();
     } catch (RuntimeException expected) {}
   }
@@ -461,11 +461,11 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
 
     TestAnnotatedWithStubService1 testClass1 = 
       TestAnnotatedWithStubService1.createInstance();
-    GuiceBerryJunit.setUp(testClass1);
+    GuiceBerryJunit3.setUp(testClass1);
     TestAnnotatedWithStubService2 testClass2 = 
       TestAnnotatedWithStubService2.createInstance();
     try {
-      GuiceBerryJunit.tearDown(testClass2);
+      GuiceBerryJunit3.tearDown(testClass2);
       fail();
     } catch (RuntimeException expected) {}
   }
@@ -475,8 +475,8 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithStubService1 testClass = 
       TestAnnotatedWithStubService1.createInstance();
     try {
-      GuiceBerryJunit.setUp(testClass);
-      GuiceBerryJunit.setUp(testClass);
+      GuiceBerryJunit3.setUp(testClass);
+      GuiceBerryJunit3.setUp(testClass);
       fail();
     } catch (RuntimeException expected) {}   
   }
@@ -485,30 +485,30 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithStubService1 testClass = 
       TestAnnotatedWithStubService1.createInstance();
    
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
     assertEquals(testClass, testClass.testCase);
     testClass.run();
   //No concurrence problems as the actual TestCase is: ThreadLocal<TestCase>
-    assertNull(GuiceBerryJunit.getActualTestCase());
+    assertNull(GuiceBerryJunit3.getActualTestCase());
   }
 
   public void testTestCaseCanBeUsedInsteadOfTearDownTestCase() {
     TestCaseAnnotatedWithStubService testClass = 
       TestCaseAnnotatedWithStubService.createInstance();
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
     testClass.run();     
   }
   
   public void testMethodTearDownForTestCaseNotCalledAutomatically() {
     TestCaseAnnotatedWithStubService testClass = 
       TestCaseAnnotatedWithStubService.createInstance();
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
     testClass.run();
 
     TestAnnotatedWithStubService1 testClass2 = 
       TestAnnotatedWithStubService1.createInstance();
     try {  
-      GuiceBerryJunit.setUp(testClass2);
+      GuiceBerryJunit3.setUp(testClass2);
       fail();
     } catch (RuntimeException expected) {}
   }
@@ -516,13 +516,13 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
   public void testMethodTearDownForTestCaseCalledManually() {
     TestCaseAnnotatedWithStubService testClass = 
       TestCaseAnnotatedWithStubService.createInstance();
-    GuiceBerryJunit.setUp(testClass);   
+    GuiceBerryJunit3.setUp(testClass);   
     testClass.run();
  
-    GuiceBerryJunit.tearDown(testClass);
+    GuiceBerryJunit3.tearDown(testClass);
     TestAnnotatedWithStubService1 testClass2 = 
       TestAnnotatedWithStubService1.createInstance();
-    GuiceBerryJunit.setUp(testClass2);
+    GuiceBerryJunit3.setUp(testClass2);
     testClass2.run();
   }   
  
@@ -530,7 +530,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithModuleThatProvidedNoTestScopeListener testClass = 
       TestAnnotatedWithModuleThatProvidedNoTestScopeListener.createInstance();
     try {
-      GuiceBerryJunit.setUp(testClass);
+      GuiceBerryJunit3.setUp(testClass);
       fail();
     } catch (RuntimeException expected) {}  
   }
@@ -540,9 +540,9 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithStubService1 testClass = 
       TestAnnotatedWithStubService1.createInstance();
 
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
     TestScopeListener scopeListener =
-      GuiceBerryJunit.getInjectorFromGB(
+      GuiceBerryJunit3.getInjectorFromGB(
       Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE))
       .getInstance(TestScopeListener.class);
     
@@ -554,9 +554,9 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithRealService testClass1 = 
       TestAnnotatedWithRealService.createInstance();
       
-      GuiceBerryJunit.setUp(testClass1);
+      GuiceBerryJunit3.setUp(testClass1);
       TestScopeListener scopeListener =
-        GuiceBerryJunit.getInjectorFromGB(
+        GuiceBerryJunit3.getInjectorFromGB(
         Class.forName(GuiceBerryEnvTwo.GUICE_BERRY_ENV_TWO))
         .getInstance(TestScopeListener.class);
       
@@ -569,7 +569,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
       TestAnnotatedWithModuleThatProvidedNoTestScopeListener.createInstance();
     
     try {
-      GuiceBerryJunit.tearDown(testClass);
+      GuiceBerryJunit3.tearDown(testClass);
       fail();
     } catch (RuntimeException expected) {}  
   }
@@ -581,7 +581,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     long baz = BazService.counter;
     
     assertNotNull(baz);
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
     assertNotNull(testClass.baz);
     long baz2 = testClass.baz.getCounter();
      
@@ -593,10 +593,10 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithRealService testClass = 
       TestAnnotatedWithRealService.createInstance();
     
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
     assertNotNull(testClass.baz);
     long baz = testClass.baz.getCounter();
-    GuiceBerryJunit.tearDown(testClass);
+    GuiceBerryJunit3.tearDown(testClass);
     long baz2 = testClass.baz.getCounter();
     assertTrue(baz < baz2);   
   }
@@ -606,11 +606,11 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithStubService1 testClass = 
       TestAnnotatedWithStubService1.createInstance();
     
-   assertNull(GuiceBerryJunit.getTestScopeFromGB(
+   assertNull(GuiceBerryJunit3.getTestScopeFromGB(
        Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)));
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
     JunitTestScope testScope = 
-      GuiceBerryJunit.getTestScopeFromGB(
+      GuiceBerryJunit3.getTestScopeFromGB(
           Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
     assertNotNull(testScope);
   }  
@@ -620,11 +620,11 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithStubService1 testClass = 
       TestAnnotatedWithStubService1.createInstance();
     assertNull(
-        GuiceBerryJunit.getTestScopeFromGB(
+        GuiceBerryJunit3.getTestScopeFromGB(
             Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)));
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
     JunitTestScope testScope = 
-      GuiceBerryJunit.getTestScopeFromGB(
+      GuiceBerryJunit3.getTestScopeFromGB(
           Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
     assertNotNull(testScope);
     
@@ -632,15 +632,15 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
    
     TestAnnotatedWithStubService2 testClass2 = 
       TestAnnotatedWithStubService2.createInstance();
-    GuiceBerryJunit.setUp(testClass2);
-    assertNotNull(GuiceBerryJunit.getTestScopeFromGB(
+    GuiceBerryJunit3.setUp(testClass2);
+    assertNotNull(GuiceBerryJunit3.getTestScopeFromGB(
         Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)));
     
     JunitTestScope testScope2 = 
-      GuiceBerryJunit.getTestScopeFromGB(
+      GuiceBerryJunit3.getTestScopeFromGB(
           Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
     assertSame(testScope, testScope2);
-    assertEquals(1, GuiceBerryJunit.numberOfInjectorsInUse());
+    assertEquals(1, GuiceBerryJunit3.numberOfInjectorsInUse());
   }  
 
   public void testUseDifferentTestScopeByTwoTestsAnnotatedWithDifferentModule() 
@@ -648,11 +648,11 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithStubService1 testClass = 
       TestAnnotatedWithStubService1.createInstance();
    
-    assertNull(GuiceBerryJunit.getTestScopeFromGB(
+    assertNull(GuiceBerryJunit3.getTestScopeFromGB(
         Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)));
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
     JunitTestScope testScope = 
-      GuiceBerryJunit.getTestScopeFromGB(
+      GuiceBerryJunit3.getTestScopeFromGB(
           Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
     assertNotNull(testScope);
   
@@ -660,11 +660,11 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     
     TestAnnotatedWithRealService testClass2 = 
       TestAnnotatedWithRealService.createInstance();
-    GuiceBerryJunit.setUp(testClass2);
-    assertNotNull(GuiceBerryJunit.getTestScopeFromGB(
+    GuiceBerryJunit3.setUp(testClass2);
+    assertNotNull(GuiceBerryJunit3.getTestScopeFromGB(
         Class.forName(GuiceBerryEnvTwo.GUICE_BERRY_ENV_TWO)));
     JunitTestScope testScope2 = 
-      GuiceBerryJunit.getTestScopeFromGB(
+      GuiceBerryJunit3.getTestScopeFromGB(
           Class.forName(GuiceBerryEnvTwo.GUICE_BERRY_ENV_TWO));
     
     assertNotSame(testScope, testScope2); 
@@ -675,7 +675,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWitthModuleInjectsTestCaseInTestScopeListener testClass = 
       TestAnnotatedWitthModuleInjectsTestCaseInTestScopeListener.createInstance();
     
-    GuiceBerryJunit.setUp(testClass);
+    GuiceBerryJunit3.setUp(testClass);
     testClass.run();
   }
   
@@ -868,7 +868,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
 
     @Override
     public void configure() {
-      install(new BasicModule());
+      install(new BasicJunit3Module());
       bind(BarService.class).to(BarServiceOne.class);
       bind(FooService.class).to(FooServiceOne.class);
       bind(Integer.class).toInstance(NUMBER++);
@@ -882,7 +882,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
 
     @Override
     public void configure() {
-      install(new BasicModule());
+      install(new BasicJunit3Module());
       bind(FooService.class).to(FooServiceTwo.class);
       bind(BarService.class).to(BarServiceTwo.class);      
       bind(BazService.class).in(Singleton.class);
@@ -899,7 +899,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
 
     @Override
     public void configure() {
-      install(new BasicModule());
+      install(new BasicJunit3Module());
       bind(TestScopeListener.class).toInstance(new NoOpTestScopeListener());
     }
   }
@@ -911,7 +911,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
 
     @Override
     public void configure() {
-      install(new BasicModule());
+      install(new BasicJunit3Module());
       bind(TestScopeListener.class)
         .toInstance(new TestScopeListenerGetsInjectedWithTestCase());     
     }
@@ -938,7 +938,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
 
     @Override
     public void configure() {
-      install(new BasicModule());
+      install(new BasicJunit3Module());
       bind(FooService.class).to(FooServiceTwo.class);
       bind(BarService.class).to(BarServiceTwo.class);      
       bind(Integer.class).toInstance(NUMBER++);

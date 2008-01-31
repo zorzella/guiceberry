@@ -20,7 +20,6 @@ import com.google.common.base.Preconditions;
 
 import junit.framework.TestCase;
 
-//TODO: is this worth keeping?
 //import net.jcip.annotations.Immutable;
 
 import javax.servlet.http.Cookie;

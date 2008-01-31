@@ -25,15 +25,23 @@ import com.google.inject.testing.guiceberry.TestScoped;
 import junit.framework.TestCase;
 
 /**
- * This Module can be installed within a {@link GuiceBerryEnv}.  
+ * This Module provides the three basic bindings required by 
+ * {@link GuiceBerryJunit3}, namely {@link TestId}, 
+ * {@link TestCase} and the {@link TestScoped} scope. Without these three
+ * bindinds, {@link GuiceBerryJunit3#setUp(TestCase)} will fail.
+
+ * <p>Thus, this module is all but required to be installed by all 
+ * {@link GuiceBerryEnv}s using JUnit3. 
+ * 
+ * <p>The only alternative would be to provide the same bindings through some
+ * other means.
  * 
  * @see GuiceBerryEnv
  * 
  * @author Luiz-Otavio Zorzella
  * @author Danka Karwanska
  */
-// TODO: rename to BasicJunit3Module
-public class BasicModule extends AbstractModule {
+public class BasicJunit3Module extends AbstractModule {
     
       @Override
       public void configure() {
@@ -42,14 +50,14 @@ public class BasicModule extends AbstractModule {
         bind(TestId.class).toProvider(new Provider<TestId>() {
           @Override
           public TestId get() {
-            TestCase testClass = GuiceBerryJunit.getActualTestCase(); 
+            TestCase testClass = GuiceBerryJunit3.getActualTestCase(); 
             return new TestId(testClass.getClass().getName(), testClass.getName());
           } 
         }).in(TestScoped.class);
         bind(TestCase.class).toProvider(new Provider<TestCase>() {
           @Override
           public TestCase get() {
-            return GuiceBerryJunit.getActualTestCase();
+            return GuiceBerryJunit3.getActualTestCase();
           }
         }).in(TestScoped.class);
       }
