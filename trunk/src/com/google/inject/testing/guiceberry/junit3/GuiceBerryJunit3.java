@@ -39,14 +39,14 @@ import java.util.Map;
 /**
  * Provides the tools to manage the JUnit tests that use {@code Guice}.  
  * <p> 
- * To use the {@link GuiceBerryJunit} it is necessary to:
+ * To use the {@link GuiceBerryJunit3} it is necessary to:
  * <ul><li>
  * Define a {@code Class<? extends Module>}  that specifies the appropriate bindings.
  * <li>
  * Annotate all the JUnit tests that use those bindings with {@link GuiceBerryEnv} 
  * annotation  and set the value of this annotation to the name of the module.
  * <li>
- * Call the {@link GuiceBerryJunit#setUp(TestCase)} within the 
+ * Call the {@link GuiceBerryJunit3#setUp(TestCase)} within the 
  * {@link TestCase#setUp()} method.
  * <li>
  * It is possible to define more than one module and different subclasses of 
@@ -60,8 +60,7 @@ import java.util.Map;
  * @author Luiz-Otavio Zorzella
  * @author Danka Karwanska
  */
-//TODO: rename to GuiceBerryJunit3?
-public class GuiceBerryJunit { 
+public class GuiceBerryJunit3 { 
   
   /**
    * Singleton so that we can keep a persistent list of modules and 
@@ -69,7 +68,7 @@ public class GuiceBerryJunit {
    * which test is currently running. It also allows to reuse an injector 
    * if there are multiple tests that need the same kind of injector. 
    */
-  private static final GuiceBerryJunit instance = new GuiceBerryJunit();
+  private static final GuiceBerryJunit3 instance = new GuiceBerryJunit3();
   
   //TODO(zorzella): think about not needing the testScope and killing this
   private static final class GooseBerryStuff {
@@ -89,7 +88,7 @@ public class GuiceBerryJunit {
   private static InheritableThreadLocal<TestCase> testCurrentlyRunningOnThisThread  = 
     new InheritableThreadLocal<TestCase>();
  
-  private GuiceBerryJunit(){}
+  private GuiceBerryJunit3(){}
   
   /**
    * Sets up the {@link TestCase} (given as the argument) to be ready to run. 
@@ -101,7 +100,7 @@ public class GuiceBerryJunit {
    * binds {@link TestScopeListener} to an instance of the class that
    * implements this interface. If there is no such a {@link TestScopeListener}
    * it is possible to bind it to an instance of {@link NoOpTestScopeListener}.
-   * It is also necessary to install the {@link BasicModule}
+   * It is also necessary to install the {@link BasicJunit3Module}
    * 
    * <p>
    * Operations performed by this method include:
@@ -110,7 +109,7 @@ public class GuiceBerryJunit {
    *         {@link com.google.common.testing.junit3.TearDownTestCase},
    *         the test case's {@code tearDown()} method is guaranteed to be executed
    *         at the end of the test. 
-   *         Otherwise  calling {@link GuiceBerryJunit#tearDown(TestCase)} is programmer's 
+   *         Otherwise  calling {@link GuiceBerryJunit3#tearDown(TestCase)} is programmer's 
    *         responsibility.
    *    <li> Gets the module from the class name provided by the 
    *         {@link GuiceBerryEnv} annotation  and injects the bindings specified by 
@@ -132,7 +131,7 @@ public class GuiceBerryJunit {
    * 
    * 
    * @param testCase The subclass of {@link TestCase} for which the 
-   *     {@link GuiceBerryJunit#setUp} is needed. 
+   *     {@link GuiceBerryJunit3#setUp} is needed. 
    * @throws IllegalArgumentException If the {@link TestCase} provided  as 
    *     an argument  has no {@link GuiceBerryEnv} annotation or the module 
    *     provided by this annotation does not exist or {@link TestCase} is not 
@@ -175,7 +174,7 @@ public class GuiceBerryJunit {
    *     argument  has no {@link GuiceBerryEnv} annotation or the module 
    *     provided by this annotation does not exist or {@link TestCase} is not 
    *     a type of {@code Class <? extends Module>}.   
-   * @throws RuntimeException If the method {@link GuiceBerryJunit#setUp(TestCase)} 
+   * @throws RuntimeException If the method {@link GuiceBerryJunit3#setUp(TestCase)} 
    *     wasn't called before calling this method.                                 
    *                            
    *                                  
@@ -247,12 +246,12 @@ public class GuiceBerryJunit {
       String msg = String.format("Error while setting up a test: %s asked to " +
       		"set up test: %s.%s, but previous test:%s.%s did not properly " +
       		"call %s.tearDown().",
-          GuiceBerryJunit.class.getCanonicalName(),
+          GuiceBerryJunit3.class.getCanonicalName(),
           testCase.getClass().getCanonicalName(),
           testCase.getName(), 
           previousTestCase.getClass().getCanonicalName(),
           previousTestCase.getName(),
-          GuiceBerryJunit.class.getCanonicalName());
+          GuiceBerryJunit3.class.getCanonicalName());
       throw new RuntimeException(msg);
     }
   }
@@ -350,11 +349,11 @@ public class GuiceBerryJunit {
   private void doTearDown(TestCase testCase) {
   
     if (testCurrentlyRunningOnThisThread.get() != testCase) {
-      String msg = String.format( GuiceBerryJunit.class.toString() 
+      String msg = String.format( GuiceBerryJunit3.class.toString() 
           + " cannot tear down "
           + testCase.toString()
           + " because that test never called "
-          + GuiceBerryJunit.class.getCanonicalName()
+          + GuiceBerryJunit3.class.getCanonicalName()
           + ".setUp()"); 
       throw new RuntimeException(msg); 
     }
@@ -368,7 +367,7 @@ public class GuiceBerryJunit {
       TearDownAccepter tdtc = (TearDownAccepter) testCase;
       tdtc.addRequiredTearDown(new TearDown() {
         public void tearDown() {
-          GuiceBerryJunit.tearDown(testCase);
+          GuiceBerryJunit3.tearDown(testCase);
         }
       });
     }

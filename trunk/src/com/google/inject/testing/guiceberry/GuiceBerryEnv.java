@@ -16,7 +16,7 @@
 
 package com.google.inject.testing.guiceberry;
 
-import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit;
+import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  * {@link com.google.inject.Injector}. 
  * 
  * 
- * @see GuiceBerryJunit 
+ * @see GuiceBerryJunit3 
  * 
  * @author Luiz-Otavio Zorzella
  * @author Danka Karwanska
