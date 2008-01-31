@@ -7,8 +7,6 @@
 
   <!-- can be overridden at the command line with -Dversion=
        or in IDEA, in the ant properties dialog -->
-  <property name="version" value="snapshot"/>
-
   <target name="compile" description="Compile Java source.">
     <mkdir dir="${build.dir}/classes"/>
     <javac srcdir="${src.dir}"
@@ -79,7 +77,7 @@
   </target>
 
   <target name="jarsrc" description="Build jar of source.">
-    <jar jarfile="${build.dir}/dist/guiceberry-${version}/src-${version}.zip">
+    <jar jarfile="${build.dir}/dist/guiceberry-${version}/guiceberry-${version}-src.jar">
       <fileset dir="${src.dir}"/>
     </jar>
   </target>
