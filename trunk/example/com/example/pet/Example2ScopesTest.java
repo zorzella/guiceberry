@@ -61,7 +61,6 @@ public class Example2ScopesTest extends GuiceBerryJunit3TestCase {
         this.number = seed;
       }
 
-      @Override
       public Integer get() {
         return number++;
       }

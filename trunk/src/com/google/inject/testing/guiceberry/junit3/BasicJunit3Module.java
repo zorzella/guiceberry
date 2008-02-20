@@ -48,14 +48,12 @@ public class BasicJunit3Module extends AbstractModule {
         final JunitTestScope testScope = new JunitTestScope();
         bindScope(TestScoped.class, testScope);
         bind(TestId.class).toProvider(new Provider<TestId>() {
-          @Override
           public TestId get() {
             TestCase testClass = GuiceBerryJunit3.getActualTestCase(); 
             return new TestId(testClass.getClass().getName(), testClass.getName());
           } 
         }).in(TestScoped.class);
         bind(TestCase.class).toProvider(new Provider<TestCase>() {
-          @Override
           public TestCase get() {
             return GuiceBerryJunit3.getActualTestCase();
           }
