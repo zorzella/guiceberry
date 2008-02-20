@@ -16,74 +16,100 @@ import com.google.inject.testing.guiceberry.TestScoped;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-@GuiceBerryEnv("com.example.pet.Example1HelloWorldGetsInjectedTest$HelloWorldGuiceBerryEnv")
+@GuiceBerryEnv("com.example.pet.Example2ScopesTest$HelloWorldGuiceBerryEnv")
 public class Example2ScopesTest extends GuiceBerryJunit3TestCase {
-	
-	@Inject
-	@UnscopedIncrementingNumber
-	private Provider<Integer> unscopedIncrementingNumber;
-	
-	@Inject
-	@TestScopedIncrementingNumber
-	private Provider<Integer> testScopedIncrementingNumber;
-	
-	@Inject
-	@SingletonScopedIncrementingNumber
-	private Provider<Integer> singletonScopedIncrementingNumber;
 
-	public void testOne() throws Exception {
-		assertEquals(100, singletonScopedIncrementingNumber.get().intValue());
-		assertEquals(200, testScopedIncrementingNumber.get().intValue());
-		assertEquals(300, unscopedIncrementingNumber.get().intValue());
-	}
+  @Inject
+  @UnscopedIncrementingNumber
+  private Provider<Integer> unscopedIncrementingNumber;
 
+  @Inject
+  @TestScopedIncrementingNumber
+  private Provider<Integer> testScopedIncrementingNumber;
 
-	static final class HelloWorldGuiceBerryEnv extends GuiceBerryJunit3Env {
-		private static final class IncrementingProvider implements Provider<Integer> {
-			private int number;
+  @Inject
+  @SingletonScopedIncrementingNumber
+  private Provider<Integer> singletonScopedIncrementingNumber;
 
-			public IncrementingProvider(int seed) {
-				this.number = seed;
-			}
+  public void testOne() throws Exception {
+    assertEquals(300, singletonScopedIncrementingNumber.get().intValue());
+    assertEquals(300, singletonScopedIncrementingNumber.get().intValue());
 
-			@Override
-			public Integer get() {
-				return number++;
-			}
-		}
+    assertEquals(200, testScopedIncrementingNumber.get().intValue());
+    assertEquals(200, testScopedIncrementingNumber.get().intValue());
 
-		@Override
-		protected Class<? extends TestScopeListener> getTestScopeListener() {
-			return NoOpTestScopeListener.class;
-		}
-		
-		@Override
-		protected void configure() {
-			super.configure();
-			IncrementingProvider unscopedIncrementingNumberProvider = new IncrementingProvider(100);
-			IncrementingProvider testScopedIncrementingNumberProvider = new IncrementingProvider(200);
-			IncrementingProvider singletonScopedIncrementingNumberProvider = new IncrementingProvider(300);
-			bind(Integer.class).annotatedWith(UnscopedIncrementingNumber.class).toProvider(unscopedIncrementingNumberProvider);
-			bind(Integer.class).annotatedWith(TestScopedIncrementingNumber.class).toProvider(testScopedIncrementingNumberProvider).in(TestScoped.class);
-			bind(Integer.class).annotatedWith(SingletonScopedIncrementingNumber.class).toProvider(singletonScopedIncrementingNumberProvider).in(Scopes.SINGLETON);
-		}
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME) 
-	@Target(ElementType.FIELD) 
-	@BindingAnnotation
-	private @interface UnscopedIncrementingNumber {
-	}
+    assertEquals(100, unscopedIncrementingNumber.get().intValue());
+    assertEquals(101, unscopedIncrementingNumber.get().intValue());
+  }
 
-	@Retention(RetentionPolicy.RUNTIME) 
-	@Target(ElementType.FIELD) 
-	@BindingAnnotation
-	private @interface TestScopedIncrementingNumber {
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME) 
-	@Target(ElementType.FIELD) 
-	@BindingAnnotation
-	private @interface SingletonScopedIncrementingNumber {
-	}
+  public void testTwo() throws Exception {
+    assertEquals(300, singletonScopedIncrementingNumber.get().intValue());
+    assertEquals(300, singletonScopedIncrementingNumber.get().intValue());
+
+    assertEquals(201, testScopedIncrementingNumber.get().intValue());
+    assertEquals(201, testScopedIncrementingNumber.get().intValue());
+
+    assertEquals(102, unscopedIncrementingNumber.get().intValue());
+    assertEquals(103, unscopedIncrementingNumber.get().intValue());
+  }
+  
+  public static final class HelloWorldGuiceBerryEnv extends GuiceBerryJunit3Env {
+    private static final class IncrementingProvider implements Provider<Integer> {
+      private int number;
+
+      public IncrementingProvider(int seed) {
+        this.number = seed;
+      }
+
+      @Override
+      public Integer get() {
+        return number++;
+      }
+    }
+
+    @Override
+    protected Class<? extends TestScopeListener> getTestScopeListener() {
+      return NoOpTestScopeListener.class;
+    }
+
+    @Override
+    protected void configure() {
+      super.configure();
+      IncrementingProvider unscopedIncrementingNumberProvider = 
+        new IncrementingProvider(100);
+      IncrementingProvider testScopedIncrementingNumberProvider = 
+        new IncrementingProvider(200);
+      IncrementingProvider singletonScopedIncrementingNumberProvider = 
+        new IncrementingProvider(300);
+      bind(Integer.class)
+        .annotatedWith(UnscopedIncrementingNumber.class)
+        .toProvider(unscopedIncrementingNumberProvider);
+      bind(Integer.class)
+        .annotatedWith(TestScopedIncrementingNumber.class)
+        .toProvider(testScopedIncrementingNumberProvider)
+        .in(TestScoped.class);
+      bind(Integer.class)
+        .annotatedWith(SingletonScopedIncrementingNumber.class)
+        .toProvider(singletonScopedIncrementingNumberProvider)
+        .in(Scopes.SINGLETON);
+    }
+  }
+
+  @Retention(RetentionPolicy.RUNTIME) 
+  @Target(ElementType.FIELD) 
+  @BindingAnnotation
+  private @interface UnscopedIncrementingNumber {
+  }
+
+  @Retention(RetentionPolicy.RUNTIME) 
+  @Target(ElementType.FIELD) 
+  @BindingAnnotation
+  private @interface TestScopedIncrementingNumber {
+  }
+
+  @Retention(RetentionPolicy.RUNTIME) 
+  @Target(ElementType.FIELD) 
+  @BindingAnnotation
+  private @interface SingletonScopedIncrementingNumber {
+  }
 }

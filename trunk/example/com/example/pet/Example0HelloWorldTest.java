@@ -9,11 +9,11 @@ import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 @GuiceBerryEnv("com.example.pet.Example0HelloWorldTest$HelloWorldGuiceBerryEnv")
 public class Example0HelloWorldTest extends GuiceBerryJunit3TestCase {
 
-	public void testHello() throws Exception {
+	public void testNothing() throws Exception {
 		assertTrue(true);
 	}
 	
-	static final class HelloWorldGuiceBerryEnv extends GuiceBerryJunit3Env {
+	public static final class HelloWorldGuiceBerryEnv extends GuiceBerryJunit3Env {
 		@Override
 		protected Class<? extends TestScopeListener> getTestScopeListener() {
 			return NoOpTestScopeListener.class;

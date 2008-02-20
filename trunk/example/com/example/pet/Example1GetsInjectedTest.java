@@ -13,18 +13,18 @@ import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-@GuiceBerryEnv("com.example.pet.Example1HelloWorldGetsInjectedTest$HelloWorldGuiceBerryEnv")
+@GuiceBerryEnv("com.example.pet.Example1GetsInjectedTest$HelloWorldGuiceBerryEnv")
 public class Example1GetsInjectedTest extends GuiceBerryJunit3TestCase {
 	
 	@Inject
-	@PortNumber
-	private int portNumber;
+	@NumberOneHundred
+	private int number;
 	
 	public void testHello() throws Exception {
-		assertEquals(100, portNumber);
+		assertEquals(100, number);
 	}
 	
-	static final class HelloWorldGuiceBerryEnv extends GuiceBerryJunit3Env {
+	public static final class HelloWorldGuiceBerryEnv extends GuiceBerryJunit3Env {
 		@Override
 		protected Class<? extends TestScopeListener> getTestScopeListener() {
 			return NoOpTestScopeListener.class;
@@ -33,13 +33,13 @@ public class Example1GetsInjectedTest extends GuiceBerryJunit3TestCase {
 		@Override
 		protected void configure() {
 			super.configure();
-			bind(Integer.class).annotatedWith(PortNumber.class).toInstance(100);
+			bind(Integer.class).annotatedWith(NumberOneHundred.class).toInstance(100);
 		}
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME) 
 	@Target(ElementType.FIELD) 
 	@BindingAnnotation
-	private @interface PortNumber {
+	private @interface NumberOneHundred {
 	}
 }
