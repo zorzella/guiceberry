@@ -34,13 +34,9 @@ package com.google.inject.testing.guiceberry;
 */
 public final class NoOpTestScopeListener implements TestScopeListener {
   
-  @Override
   public void enteringScope() {
   }
   
-  @Override
   public void exitingScope() {
   }
-
-
 }

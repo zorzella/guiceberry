@@ -62,7 +62,6 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     super.setUp();
     
     TearDown tearDown = new TearDown() {
-      @Override
       public void tearDown() throws Exception {    
         GuiceBerryJunit3.clear();
       }
@@ -293,7 +292,6 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     
     TearDown tearDown = new TearDown() {
     
-      @Override
       public void tearDown() throws Exception {
         System.clearProperty(GuiceBerryJunit3
             .buildModuleOverrideProperty(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
@@ -315,7 +313,6 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     
     TearDown tearDown = new TearDown() {
     
-      @Override
       public void tearDown() throws Exception {
         System.clearProperty(GuiceBerryJunit3
             .buildModuleOverrideProperty(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
@@ -927,7 +924,6 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
      */
     public GuiceBerryEnvWithIllegalConstructor(int a){}
     
-    @Override
     public void configure(Binder binder) {}
   }
 
