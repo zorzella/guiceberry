@@ -22,6 +22,8 @@ import junit.framework.TestCase;
 
 //import net.jcip.annotations.Immutable;
 
+import java.util.Random;
+
 import javax.servlet.http.Cookie;
 
 /**
@@ -38,16 +40,24 @@ public final class TestId implements Comparable<TestId>, CharSequence {
 
   private final String testCaseName;
   private final String testMethodName;
-  private final long random;
+  // @VisibleForTesting
+  public final long random;
   private final String asString;
   
+  // @VisibleForTesting
   public TestId(TestCase testCase) {
-    this(testCase.getClass().getName(), testCase.getName());
+    this(testCase, new Random().nextInt(1000));
+  }
+
+  // @VisibleForTesting
+  public TestId(TestCase testCase, long random) {
+    this(testCase.getClass().getName(), 
+        testCase.getName(), 
+        random);
   }
   
-  public TestId(String testCaseName, String testMethodName) {
-  //TODO: add this random part -- new Random().nextInt(1000);
-    long random = 0;
+  // @VisibleForTesting
+  TestId(String testCaseName, String testMethodName, long random) {
     this.testCaseName = testCaseName; 
     this.testMethodName = testMethodName;
     this.random = random;

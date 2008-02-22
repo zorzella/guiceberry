@@ -336,11 +336,13 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     TestAnnotatedWithStubService1 testClass =  
       TestAnnotatedWithStubService1.createInstance();
     
-    assertEquals(null, testClass.testId);
+    assertNull(testClass.testId);
     GuiceBerryJunit3.setUp(testClass);
-    assertEquals(
-        new TestId(testClass.getClass().getName(), testClass.getName()),
-        testClass.testId);
+    assertNotNull(testClass.testId);
+
+    TestId expectedTestId = new TestId(testClass, testClass.testId.random);
+
+    assertEquals(expectedTestId, testClass.testId);
   } 
   
   public void testDifferentTestsGetInjectedWithDifferentTestId() {
@@ -351,7 +353,8 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     GuiceBerryJunit3.setUp(firstTest);
     
     assertEquals(
-        new TestId(firstTest.getClass().getName(), firstTest.getName()),
+        new TestId(firstTest, 
+            firstTest.testId.random),
         firstTest.testId);
     GuiceBerryJunit3.tearDown(firstTest);
    
@@ -360,7 +363,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     GuiceBerryJunit3.setUp(secondTest);
    
     assertEquals(
-        new TestId(secondTest.getClass().getName(), secondTest.getName()),
+        new TestId(secondTest, secondTest.testId.random),
         secondTest.testId);
   }
   
@@ -375,7 +378,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     
     assertNotNull(testClass.barService.getTestId());
     assertEquals(
-        new TestId(testClass.getClass().getName(), testClass.getName()),
+        new TestId(testClass, testClass.barService.getTestId().random),
         testClass.barService.getTestId());
   }
   
@@ -699,8 +702,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     static TestAnnotatedWithStubService1 createInstance() {
       TestAnnotatedWithStubService1 result = 
         new TestAnnotatedWithStubService1();
-      result.setName(TestAnnotatedWithStubService1
-          .class.getCanonicalName());
+      result.setName("fooTest");
       return result;
     }    
   }

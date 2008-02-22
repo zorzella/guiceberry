@@ -60,7 +60,7 @@ public class InjectionControllerProviderTest extends TestCase {
   }
 
   public void testSimpleSunnyCaseSemantics() throws Exception {
-    TestId test1Id = new TestId("test1","test1");
+    TestId test1Id = new TestId("test1","test1", 1);
 
     Provider<TestId> testIdProvider = providerFor(test1Id);
 
