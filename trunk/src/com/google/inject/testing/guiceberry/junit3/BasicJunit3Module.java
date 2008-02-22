@@ -50,7 +50,7 @@ public class BasicJunit3Module extends AbstractModule {
         bind(TestId.class).toProvider(new Provider<TestId>() {
           public TestId get() {
             TestCase testClass = GuiceBerryJunit3.getActualTestCase(); 
-            return new TestId(testClass.getClass().getName(), testClass.getName());
+            return new TestId(testClass);
           } 
         }).in(TestScoped.class);
         bind(TestCase.class).toProvider(new Provider<TestCase>() {

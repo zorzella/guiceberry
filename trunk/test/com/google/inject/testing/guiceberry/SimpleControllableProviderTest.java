@@ -44,7 +44,7 @@ public class SimpleControllableProviderTest extends TearDownTestCase {
   }
 
   public void testMocking() {
-    TestId login = new TestId("test1", "test1");
+    TestId login = new TestId("test1", "test1", 1);
     InjectionControllerProvider
       .forTest(login, this)
       .set(Foo.class, new StubFoo());
@@ -54,13 +54,13 @@ public class SimpleControllableProviderTest extends TearDownTestCase {
   }
   
   public void testNotMocking() {
-    TestId testId = new TestId("test2", "test2");
+    TestId testId = new TestId("test2", "test2", 1);
     Foo foo = injector(testId).getInstance(Foo.class);
     assertEquals(RealFoo.class, foo.getClass());
   }
 
   public void testControlledProviderGetsInjected() {
-    final TestId testId = new TestId("test", "test");
+    final TestId testId = new TestId("test", "test", 1);
 
     Injector injector = Guice.createInjector(new AbstractModule() {
       @Override protected void configure() {
