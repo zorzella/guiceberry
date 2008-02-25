@@ -53,7 +53,7 @@ import java.util.Map;
  * {@link TestCase} may use the different modules (but don't have to).
  * </ul>
  * <p>
- *  GooseBerry is thread-safe so tests can be run in parallel. 
+ *  GuiceBerry is thread-safe so tests can be run in parallel. 
  * 
  * @see Guice
  * 
@@ -71,19 +71,19 @@ public class GuiceBerryJunit3 {
   private static final GuiceBerryJunit3 instance = new GuiceBerryJunit3();
   
   //TODO(zorzella): think about not needing the testScope and killing this
-  private static final class GooseBerryStuff {
+  private static final class GuiceBerryStuff {
     
     private final Injector injector;
     private final JunitTestScope testScope;
 
-    public GooseBerryStuff(Injector injector, JunitTestScope testScope) {
+    public GuiceBerryStuff(Injector injector, JunitTestScope testScope) {
       this.injector = injector;
       this.testScope = testScope;
     }
   }
  
-  private static Map<Class<? extends Module>, GooseBerryStuff> 
-      moduleClassToGooseBerryStuffMap = Maps.newHashMap();
+  private static Map<Class<? extends Module>, GuiceBerryStuff> 
+      moduleClassToGuiceBerryStuffMap = Maps.newHashMap();
 
   private static InheritableThreadLocal<TestCase> testCurrentlyRunningOnThisThread  = 
     new InheritableThreadLocal<TestCase>();
@@ -149,9 +149,9 @@ public class GuiceBerryJunit3 {
    */
   public synchronized static void setUp(final TestCase testCase) { 
      
-    GuiceBerryEnv gooseBerryModule = getGooseBerryModuleAnnotation(testCase);
-    Objects.nonNull(gooseBerryModule, "GooseBerryModule annotation is null");   
-    addGooseBerryTearDown(testCase);
+    GuiceBerryEnv guiceBerryModule = getGuiceBerryModuleAnnotation(testCase);
+    Objects.nonNull(guiceBerryModule, "GuiceBerryModule annotation is null");   
+    addGuiceBerryTearDown(testCase);
     checkPreviousTestCalledTearDown(testCase);
     //Setup after registering tearDown so that if an exception is thrown here,
     //we still do a tearDown.
@@ -232,10 +232,10 @@ public class GuiceBerryJunit3 {
   }
 
   private Injector getInjector(final Class<? extends Module> moduleClass) {
-    if (!moduleClassToGooseBerryStuffMap.containsKey(moduleClass)) {    
+    if (!moduleClassToGuiceBerryStuffMap.containsKey(moduleClass)) {    
       return foundModuleForTheFirstTime(moduleClass);  
     } else {
-      return moduleClassToGooseBerryStuffMap.get(moduleClass).injector; 
+      return moduleClassToGuiceBerryStuffMap.get(moduleClass).injector; 
     }
   }
 
@@ -259,9 +259,9 @@ public class GuiceBerryJunit3 {
   @SuppressWarnings("unchecked") 
   private static Class<? extends Module> getModuleForTest(TestCase testCase) {
   
-    String gooseBerryModuleName = getGooseBerryModuleName(testCase);
+    String guiceBerryModuleName = getGuiceBerryModuleName(testCase);
     Class<? extends Module> moduleClass = 
-      (Class<? extends Module>) getClassFromClassName(gooseBerryModuleName);
+      (Class<? extends Module>) getClassFromClassName(guiceBerryModuleName);
     if (!Module.class.isAssignableFrom(moduleClass)) {
       String msg = String.format(
           "Class '%s' must extend com.google.inject.Module", 
@@ -272,29 +272,29 @@ public class GuiceBerryJunit3 {
   }
 
   private static Class<?> getClassFromClassName(
-      String gooseBerryModuleName) {
+      String guiceBerryModuleName) {
     Class<?> className;
     try {
-      className = Class.forName(gooseBerryModuleName);   
+      className = Class.forName(guiceBerryModuleName);   
     } catch (ClassNotFoundException e) {  
       String msg = String.format("Required class '%s' not found.", 
-          gooseBerryModuleName.toString());
+          guiceBerryModuleName.toString());
       throw new IllegalArgumentException(msg, e);
     }
     return className;
   }
   
-  private static GuiceBerryEnv getGooseBerryModuleAnnotation(TestCase testCase) { 
-    GuiceBerryEnv gooseBerryModuleAnnotation =
+  private static GuiceBerryEnv getGuiceBerryModuleAnnotation(TestCase testCase) { 
+    GuiceBerryEnv guiceBerryModuleAnnotation =
       testCase.getClass().getAnnotation(GuiceBerryEnv.class);
-    return gooseBerryModuleAnnotation;
+    return guiceBerryModuleAnnotation;
   }  
   
-  private static String getGooseBerryModuleName(TestCase testCase) {
+  private static String getGuiceBerryModuleName(TestCase testCase) {
 
-    GuiceBerryEnv gooseBerryModuleAnnotation = getGooseBerryModuleAnnotation(testCase); 
-    Objects.nonNull(gooseBerryModuleAnnotation, "GooseBerryModule annotation is null");
-    String result = gooseBerryModuleAnnotation.value();
+    GuiceBerryEnv guiceBerryModuleAnnotation = getGuiceBerryModuleAnnotation(testCase); 
+    Objects.nonNull(guiceBerryModuleAnnotation, "GuiceBerryModule annotation is null");
+    String result = guiceBerryModuleAnnotation.value();
     String override = System.getProperty(buildModuleOverrideProperty(result));
     if (override != null) {
       return override;
@@ -306,11 +306,14 @@ public class GuiceBerryJunit3 {
   private Injector foundModuleForTheFirstTime(
       final Class<? extends Module> moduleClass) {
     
-    Module userGooseBerryModule = createModuleFromModuleClass(moduleClass);
-    Injector injector = Guice.createInjector(userGooseBerryModule);
+    Module userGuiceBerryModule = createModuleFromModuleClass(moduleClass);
+    Injector injector = Guice.createInjector(userGuiceBerryModule);
      
     try {
-      TestScopeListener testScopeListener = 
+    // This is not actually used, but ensures at this point that 
+    // TestScopeListener has been bound 
+    @SuppressWarnings("unused")
+	TestScopeListener testScopeListener = 
         injector.getInstance(TestScopeListener.class);
     //TODO(zorzella): catch ConfigurationException
     } catch (RuntimeException e) {
@@ -320,29 +323,29 @@ public class GuiceBerryJunit3 {
     }
     
     JunitTestScope testScope = injector.getInstance(JunitTestScope.class);
-    GooseBerryStuff gooseBerryStuff = new GooseBerryStuff(injector, testScope);
-    moduleClassToGooseBerryStuffMap.put(moduleClass, gooseBerryStuff);
+    GuiceBerryStuff guiceBerryStuff = new GuiceBerryStuff(injector, testScope);
+    moduleClassToGuiceBerryStuffMap.put(moduleClass, guiceBerryStuff);
     return injector;
   }
 
   private Module createModuleFromModuleClass(
       final Class<? extends Module> moduleClass) {
-    Module testGooseBerryModule; 
+    Module testGuiceBerryModule; 
     try {
-      testGooseBerryModule = moduleClass.getConstructor().newInstance(); 
+      testGuiceBerryModule = moduleClass.getConstructor().newInstance(); 
     } catch (Exception e) {  
       String msg = String.format("Error while creating the instance of: " +
       		"'%s': '%s'.", moduleClass.toString(), e.getMessage()); 
       throw new RuntimeException(msg, e); 
     }
-    return testGooseBerryModule;
+    return testGuiceBerryModule;
   }
 
   private static void notifyTestScopeListenerOfOutScope(
       Class <? extends Module> moduleClass,
       TestCase testCase) {
     Injector injector = 
-      moduleClassToGooseBerryStuffMap.get(moduleClass).injector;
+      moduleClassToGuiceBerryStuffMap.get(moduleClass).injector;
     injector.getInstance(TestScopeListener.class).exitingScope();
   }
 
@@ -358,11 +361,11 @@ public class GuiceBerryJunit3 {
       throw new RuntimeException(msg); 
     }
     testCurrentlyRunningOnThisThread.set(null);
-    moduleClassToGooseBerryStuffMap.get(getModuleForTest(testCase)).testScope 
+    moduleClassToGuiceBerryStuffMap.get(getModuleForTest(testCase)).testScope 
       .finishScope(testCase);    
   }  
   
-  private static void addGooseBerryTearDown(final TestCase testCase) {
+  private static void addGuiceBerryTearDown(final TestCase testCase) {
     if (testCase instanceof TearDownAccepter) {
       TearDownAccepter tdtc = (TearDownAccepter) testCase;
       tdtc.addRequiredTearDown(new TearDown() {
@@ -379,28 +382,28 @@ public class GuiceBerryJunit3 {
   
 //BELOW ARE CLASSES ARE USED ONLY FOR TESTS  
   static void clear() {
-    moduleClassToGooseBerryStuffMap = Maps.newHashMap();
+    moduleClassToGuiceBerryStuffMap = Maps.newHashMap();
     testCurrentlyRunningOnThisThread.set(null);
   }
   
   static int numberOfInjectorsInUse(){
-    return moduleClassToGooseBerryStuffMap.size();
+    return moduleClassToGuiceBerryStuffMap.size();
   }
   
   static Injector getInjectorFromGB(Class<?> key){
-    GooseBerryStuff gooseBerryStuff = moduleClassToGooseBerryStuffMap.get(key);
-    if (gooseBerryStuff == null) {
+    GuiceBerryStuff guiceBerryStuff = moduleClassToGuiceBerryStuffMap.get(key);
+    if (guiceBerryStuff == null) {
       return null;
     }
-    return gooseBerryStuff.injector;
+    return guiceBerryStuff.injector;
   }
   
   static JunitTestScope getTestScopeFromGB(Class<?> key){
-    GooseBerryStuff gooseBerryStuff = moduleClassToGooseBerryStuffMap.get(key);
-    if (gooseBerryStuff == null) {
+    GuiceBerryStuff guiceBerryStuff = moduleClassToGuiceBerryStuffMap.get(key);
+    if (guiceBerryStuff == null) {
       return null;
     }
-    return gooseBerryStuff.testScope;
+    return guiceBerryStuff.testScope;
   }
  
 }

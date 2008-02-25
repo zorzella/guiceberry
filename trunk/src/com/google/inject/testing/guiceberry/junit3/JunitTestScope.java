@@ -59,9 +59,9 @@ class JunitTestScope implements Scope {
         TestCase actualTestCase = GuiceBerryJunit3.getActualTestCase();
         if (actualTestCase == null) {
           throw new IllegalStateException(
-              "GooseBerry can't find out what is the currently-running test. " +
+              "GuiceBerry can't find out what is the currently-running test. " +
               "There are a few reasons why this can happen, but a likely one " +
-              "is that a GooseBerry Injector is being asked to instantiate a " +
+              "is that a GuiceBerry Injector is being asked to instantiate a " +
               "class in a thread not created by your test case.");
         }
         Map<Key<?>, Object> keyToInstanceProvider = testMap.get(actualTestCase);
