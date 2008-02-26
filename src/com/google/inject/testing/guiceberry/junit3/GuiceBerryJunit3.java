@@ -183,8 +183,12 @@ public class GuiceBerryJunit3 {
    */
   public synchronized static void tearDown(TestCase testCase) {
     Class<? extends Module> moduleClass = getModuleForTest(testCase);
-    instance.doTearDown(testCase);
     notifyTestScopeListenerOfOutScope(moduleClass, testCase);
+    // TODO: this line used to be before the notifyTestScopeListenerOfOutScope
+    // causing a bug -- e.d. a Provider<TestId> could not be used in the 
+    // exitingScope method of the TestScopeListener. I haven't yet found a
+    // good way to test this change.
+    instance.doTearDown(testCase);
   }
   
   /**

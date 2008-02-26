@@ -52,7 +52,7 @@ public class Example2ScopesTest extends GuiceBerryJunit3TestCase {
     assertEquals(102, unscopedIncrementingNumber.get().intValue());
     assertEquals(103, unscopedIncrementingNumber.get().intValue());
   }
-  
+
   public static final class HelloWorldGuiceBerryEnv extends GuiceBerryJunit3Env {
     private static final class IncrementingProvider implements Provider<Integer> {
       private int number;
@@ -81,16 +81,16 @@ public class Example2ScopesTest extends GuiceBerryJunit3TestCase {
       IncrementingProvider singletonScopedIncrementingNumberProvider = 
         new IncrementingProvider(300);
       bind(Integer.class)
-        .annotatedWith(UnscopedIncrementingNumber.class)
-        .toProvider(unscopedIncrementingNumberProvider);
+      .annotatedWith(UnscopedIncrementingNumber.class)
+      .toProvider(unscopedIncrementingNumberProvider);
       bind(Integer.class)
-        .annotatedWith(TestScopedIncrementingNumber.class)
-        .toProvider(testScopedIncrementingNumberProvider)
-        .in(TestScoped.class);
+      .annotatedWith(TestScopedIncrementingNumber.class)
+      .toProvider(testScopedIncrementingNumberProvider)
+      .in(TestScoped.class);
       bind(Integer.class)
-        .annotatedWith(SingletonScopedIncrementingNumber.class)
-        .toProvider(singletonScopedIncrementingNumberProvider)
-        .in(Scopes.SINGLETON);
+      .annotatedWith(SingletonScopedIncrementingNumber.class)
+      .toProvider(singletonScopedIncrementingNumberProvider)
+      .in(Scopes.SINGLETON);
     }
   }
 
