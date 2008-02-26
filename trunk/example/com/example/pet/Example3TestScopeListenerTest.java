@@ -11,28 +11,28 @@ import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 @GuiceBerryEnv("com.example.pet.Example3TestScopeListenerTest$ExampleGuiceBerryEnv")
 public class Example3TestScopeListenerTest extends GuiceBerryJunit3TestCase {
 
-	  public void testOne() throws Exception {
-		  System.out.println("Inside testOne");
-	  }
+  public void testOne() throws Exception {
+    System.out.println("Inside testOne");
+  }
 
-	  public void testTwo() throws Exception {
-		  System.out.println("Inside testTwo");
-	  }
-  
+  public void testTwo() throws Exception {
+    System.out.println("Inside testTwo");
+  }
+
   public static final class Example3TestScopeListener implements TestScopeListener {
 
-	@Inject
-	private Provider<TestId> testId;
+    @Inject
+    private Provider<TestId> testId;
 
-	public void enteringScope() {
-		System.out.println("Entering scope of: " + testId.get());
-	}
+    public void enteringScope() {
+      System.out.println("Entering scope of: " + testId.get());
+    }
 
-	public void exitingScope() {
-		System.out.println("Exiting scope of: " + testId.get());
-	}
+    public void exitingScope() {
+      System.out.println("Exiting scope of: " + testId.get());
+    }
   }
-  
+
   public static final class ExampleGuiceBerryEnv extends GuiceBerryJunit3Env {
     @Override
     protected Class<? extends TestScopeListener> getTestScopeListener() {
