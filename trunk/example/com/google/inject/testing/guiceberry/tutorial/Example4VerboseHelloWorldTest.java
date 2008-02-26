@@ -1,4 +1,4 @@
-package com.example.pet;
+package com.google.inject.testing.guiceberry.tutorial;
 
 import static com.google.inject.Scopes.SINGLETON;
 
@@ -11,7 +11,7 @@ import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.junit3.BasicJunit3Module;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3;
 
-@GuiceBerryEnv("com.example.pet.Example4VerboseHelloWorldTest$ExampleGuiceBerryEnv")
+@GuiceBerryEnv("com.google.inject.testing.guiceberry.tutorial.Example4VerboseHelloWorldTest$ExampleGuiceBerryEnv")
 public class Example4VerboseHelloWorldTest extends TearDownTestCase {
 
   @Override
