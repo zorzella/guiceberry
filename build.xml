@@ -17,6 +17,8 @@
         <pathelement location="${build.dir}/classes"/>
         <pathelement location="${lib.dir}/google-collect-snapshot-20071022.jar"/>
         <pathelement location="${lib.dir}/guice-1.0.jar"/>
+        <pathelement location="${lib.dir}/guice-commands-snapshot-20080226.jar"/>
+        <pathelement location="${lib.dir}/junit3.8.1.jar"/>
         <pathelement location="${lib.dir}/servlet-api-2.4.jar"/>
         <pathelement location="${lib.dir}/tl4j-1.0.jar"/>
       </classpath>
@@ -38,6 +40,7 @@
         <pathelement location="${build.dir}/classes"/>
         <pathelement location="${lib.dir}/junit3.8.1.jar"/>
         <pathelement location="${lib.dir}/guice-1.0.jar"/>
+        <pathelement location="${lib.dir}/guice-commands-snapshot-20080226.jar"/>
         <pathelement location="${lib.dir}/tl4j-1.0.jar"/>
         <pathelement location="${lib.dir}/servlet-api-2.4.jar"/>
         <pathelement location="${lib.dir}/google-collect-snapshot-20071022.jar"/>
@@ -57,6 +60,7 @@
         <pathelement location="${build.dir}/classes"/>
         <pathelement location="${lib.dir}/junit3.8.1.jar"/>
         <pathelement location="${lib.dir}/guice-1.0.jar"/>
+        <pathelement location="${lib.dir}/guice-commands-snapshot-20080226.jar"/>
         <pathelement location="${lib.dir}/tl4j-1.0.jar"/>
         <pathelement location="${lib.dir}/servlet-api-2.4.jar"/>
         <pathelement location="${lib.dir}/google-collect-snapshot-20071022.jar"/>
