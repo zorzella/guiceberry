@@ -84,7 +84,13 @@
     </jar>
   </target>
 
-  <target name="dist" depends="jar, jarsrc, javadoc"
+  <target name="tutorialsrc" description="Build jar of tutorial.">
+	 <jar jarfile="${build.dir}/dist/guiceberry-${version}/guiceberry-${version}-tutorial.jar">
+	   <fileset dir="${tutorial.dir}"/>
+	 </jar>
+  </target>
+	
+  <target name="dist" depends="jar, jarsrc, tutorialsrc, javadoc"
        description="Build entire distribution.">
     <copy toDir="${build.dir}/dist/guiceberry-${version}" file="COPYING"/>
     <copy toDir="${build.dir}/dist/guiceberry-${version}">
