@@ -16,7 +16,7 @@ import com.google.inject.testing.guiceberry.TestScoped;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-@GuiceBerryEnv("com.example.pet.Example2ScopesTest$HelloWorldGuiceBerryEnv")
+@GuiceBerryEnv("com.example.pet.Example2ScopesTest$ExampleGuiceBerryEnv")
 public class Example2ScopesTest extends GuiceBerryJunit3TestCase {
 
   @Inject
@@ -53,7 +53,7 @@ public class Example2ScopesTest extends GuiceBerryJunit3TestCase {
     assertEquals(103, unscopedIncrementingNumber.get().intValue());
   }
 
-  public static final class HelloWorldGuiceBerryEnv extends GuiceBerryJunit3Env {
+  public static final class ExampleGuiceBerryEnv extends GuiceBerryJunit3Env {
     private static final class IncrementingProvider implements Provider<Integer> {
       private int number;
 

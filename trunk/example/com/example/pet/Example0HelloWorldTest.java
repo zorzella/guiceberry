@@ -6,14 +6,14 @@ import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-@GuiceBerryEnv("com.example.pet.Example0HelloWorldTest$HelloWorldGuiceBerryEnv")
+@GuiceBerryEnv("com.example.pet.Example0HelloWorldTest$ExampleGuiceBerryEnv")
 public class Example0HelloWorldTest extends GuiceBerryJunit3TestCase {
 
   public void testNothing() throws Exception {
     assertTrue(true);
   }
 
-  public static final class HelloWorldGuiceBerryEnv extends GuiceBerryJunit3Env {
+  public static final class ExampleGuiceBerryEnv extends GuiceBerryJunit3Env {
     @Override
     protected Class<? extends TestScopeListener> getTestScopeListener() {
       return NoOpTestScopeListener.class;
