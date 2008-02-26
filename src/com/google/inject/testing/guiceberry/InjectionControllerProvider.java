@@ -28,35 +28,33 @@ import java.util.Map;
 
 /**
  * This Guice Provider builds {@link InjectionController}s.
- * 
- * <p>It also provides the static {@link #forTest(TestId, TearDownAccepter)} 
- * which is the point of entry for tests to find an {@link InjectionController} 
+ *
+ * <p>It also provides the static {@link #forTest(TestId, TearDownAccepter)}
+ * which is the point of entry for tests to find an {@link InjectionController}
  * to tinker with.
- * 
+ *
  * <p>E.g. say we want to be able to @Inject a double (mock/fake/stub) in place
  * of Foo. The general pattern is:
- * 
- * <ul>
- *  <li>a. Have {@code Foo}'s binding use a {@code FooProvider}
- *  <li>b. {@code FooProvider} has an {@link InjectionController} @Injected into 
- *    it. Note that {@link InjectionController} is constant for a single user 
+ *
+ * <ol>
+ *  <li>Have {@code Foo}'s binding use a {@code FooProvider}
+ *  <li>{@code FooProvider} has an {@link InjectionController} @Injected into
+ *    it. Note that {@link InjectionController} is constant for a single user
  *    (i.e. behaves like a user-scoped object}.
- *  <li>c. {@code FooProvider}'s "get" method looks at this 
- *    {@link InjectionController} to see it has whatever it wants (it is simply 
+ *  <li>{@code FooProvider}'s "get" method looks at this
+ *    {@link InjectionController} to see it has whatever it wants (it is simply
  *    a map of Class<T> to T, so anything can be put into it). E.g., it may look
- *    for an instance of Foo.class itself. If one is found (should only happen 
- *    in tests, never in production), it return *it* rather than build one, as 
+ *    for an instance of Foo.class itself. If one is found (should only happen
+ *    in tests, never in production), it return *it* rather than build one, as
  *    it would otherwise do.
- *  <li>d. The test case can (statically) get an instance of the 
+ *  <li>The test case can (statically) get an instance of the
  *    {@link InjectionController} mapped to any username. It then sets anything
  *    to it -- again, generally, it may set a "Foo.class" to a mock/stub/fake
- *    instace of Foo. 
- * </ul>
- * 
- * <p>It is, though, much easier to use the {@link SimpleControllableProvider}.
- * 
+ *    instace of Foo.
+ * </ol>
+ *
  * TODO: Add an example
- * 
+ *
  * @author Luiz-Otavio Zorzella
  */
 public class InjectionControllerProvider implements Provider<InjectionController> {
@@ -64,8 +62,7 @@ public class InjectionControllerProvider implements Provider<InjectionController
   private static final Map<TestId, InjectionController> MAP = Maps.newHashMap();
 
   private static final InjectionController BLANK = new InjectionController() {
-    @Override
-    public <T> InjectionController set(Key<T> key, T instance) {
+    @Override public <T> InjectionController substitute(Key<T> key, T instance) {
       throw new UnsupportedOperationException(
       "It seems you are trying to 'set' some controller parameter, but you\n" +
       "have the 'BLANK' InjectionController for some reason. You either have\n" +
@@ -76,7 +73,7 @@ public class InjectionControllerProvider implements Provider<InjectionController
       "forUser methods.\n");
     }
   };
-  
+
   private final Provider<TestId> testIdProvider;
 
   @Inject
@@ -84,7 +81,7 @@ public class InjectionControllerProvider implements Provider<InjectionController
       Provider<TestId> testIdProvider){
     this.testIdProvider = testIdProvider;
   }
-  
+
   public InjectionController get() {
     TestId testId = testIdProvider.get();
     // In production, TestId will always be null, and we just return a blank
@@ -104,14 +101,14 @@ public class InjectionControllerProvider implements Provider<InjectionController
 
   /**
    * <em>Never</em> call this method from production code, only from tests.
-   * 
-   * <p>Returns the {@link InjectionController} linked to {@code userLogin}. 
-   * 
-   * <p>This overload of the method registers a tearDown to clean up itself 
+   *
+   * <p>Returns the {@link InjectionController} linked to {@code userLogin}.
+   *
+   * <p>This overload of the method registers a tearDown to clean up itself
    * once the test is over.
    */
   public static InjectionController forTest(
-      final TestId testId, 
+      final TestId testId,
       TearDownAccepter tearDownAccepter) {
     Preconditions.checkNotNull(testId);
     InjectionController result;
@@ -133,7 +130,7 @@ public class InjectionControllerProvider implements Provider<InjectionController
     tearDownAccepter.addTearDown(tearDown);
     return result;
   }
-  
+
   //TODO: think about it -- this only exists for testing
   int size() {
     synchronized(MAP) {

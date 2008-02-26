@@ -32,7 +32,6 @@ public class AllTests {
     suite.addTestSuite(InjectionControllerProviderTest.class);
     suite.addTestSuite(InjectionControllerTest.class);
     suite.addTestSuite(MutableSingletonScopeTest.class);
-    suite.addTestSuite(SimpleControllableProviderTest.class);
     //$JUnit-END$
     return suite;
   }
