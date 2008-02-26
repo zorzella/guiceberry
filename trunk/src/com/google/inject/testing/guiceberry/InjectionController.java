@@ -16,63 +16,144 @@
 
 package com.google.inject.testing.guiceberry;
 
-import com.google.common.collect.Maps;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.inject.AbstractModule;
 import com.google.inject.Key;
+import com.google.inject.Module;
+import com.google.inject.Provider;
+import com.google.inject.commands.intercepting.ProvisionInterceptor;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
- * An {@link InjectionController} allows for tests to tinker with GUICE 
- * Injections.
- * 
- * @see InjectionControllerProvider
+ * Allows bound objects to be substituted at runtime. To use:
+ *
+ * <ol><li>Create a module that binds {@link ProvisionInterceptor} to the
+ * result of {@link #getProvisionInterceptor()} in the desired scope. Or use
+ * {@link #createModule()} which binds it with no scope. Alternately, use
+ * {@link InjectionControllerProvider} to bind the injection controller in
+ * test scope.</li>
+ * <li>Create an {@code InterceptingInjectorBuilder} that installs your
+ * application modules, plus the module from the previous step.</li>
+ * <li>Configure the builder to intercept each type that you would like to
+ * substitute.</li>
+ * <li>Build the injector. Whenever the injector needs an instance of a
+ * controlled type, the injection controller will disregard that binding if a
+ * value for that type as been substituted.</li></ul>
+ *
+ * <pre>
+ * InjectionController injectionController = new InjectionController();
+ *
+ * Injector injector = new InterceptingInjectorBuilder()
+ *     .install(new MyApplicationModule(), injectionController.createModule());
+ *     .intercept(PersistenceEngine.class)
+ *     .intercept(DeliveryRequestService.class)
+ *     .build();
+ *
+ * injectionController.substitute(PersistenceEngine.class, new MockPersistenceEngine());
+ * </pre>
  * 
  * @author zorzella@google.com
+ * @author jessewilson@google.com (Jesse Wilson)
+ * @author jmourits@google.com (Jerome Mourits)
  */
 public class InjectionController {
+  private final Map<Key<?>, Object> mapWritable = new HashMap<Key<?>, Object>();
+  private final Map<Key<?>, Object> map = Collections.unmodifiableMap(mapWritable);
 
-  private Map<Key<?>,Object> map = Maps.newHashMap();
+  private final ProvisionInterceptor provisionInterceptor = new ProvisionInterceptor() {
+    @SuppressWarnings({"unchecked"})
+    public <T> T intercept(Key<T> key, Provider<? extends T> delegate) {
+      T mockT = (T) map.get(key);
+      return (mockT == null)
+          // This always happens in production
+          ? delegate.get()
+          // This will happen when running tests that "control" a <T>'s injection
+          : mockT;
+    }
+  };
 
   /**
-   * Returns the instance associated with a given class. This method is to be
-   * called by any {@link com.google.inject.Provider} that provides something
-   * you want to allow your tests to control.
-   * 
-   * <p>For the general case, instead of using this directly, just use a 
-   * {@link SimpleControllableProvider}.
+   * Returns the injection interceptor for binding
    */
-  @SuppressWarnings("unchecked")
-  public <T> T get(Class<T> type) {
-    return get(Key.get(type));
+  public ProvisionInterceptor getProvisionInterceptor() {
+    return provisionInterceptor;
   }
 
-  @SuppressWarnings("unchecked")
-  public <T> T get(Key<T> key) {
+  /**
+   * Returns a module that binds the provision interceptor without a scope.
+   */
+  public final Module createModule() {
+    return new AbstractModule() {
+      protected void configure() {
+        bind(ProvisionInterceptor.class)
+            .toInstance(provisionInterceptor);
+      }
+    };
+  }
+
+  /**
+   * Substitutes the injector's existing binding for {@code key} with
+   * {@code instance}.
+   */
+  public <T> InjectionController substitute(Key<T> key, T instance) {
+    checkNotNull(key);
+    checkArgument(!map.containsKey(key), "%s was already being doubled.", key);
+
+    mapWritable.put(key, instance);
+    return this;
+  }
+
+  /**
+   * Substitutes the injector's existing binding for {@code type} with
+   * {@code instance}.
+   */
+  public <T> InjectionController substitute(Class<T> type, T instance) {
+    return substitute(Key.get(type), instance);
+  }
+
+  /**
+   * Returns the value substituted for {@code type}, or {@code null} if there
+   * is no such substitute.
+   */
+  public <T> T getSubstitute(Class<T> type) {
+    return getSubstitute(Key.get(type));
+  }
+
+  /**
+   * Returns the value substituted for {@code key}, or {@code null} if there is
+   * no such substitute.
+   */
+  @SuppressWarnings({"unchecked"})
+  public <T> T getSubstitute(Key<T> key) {
     return (T) map.get(key);
   }
 
-
   /**
-   * <em>Never</em> call this method from production code, only from tests.
-   * 
-   * <p>setting a class into the {@link InjectionController} will allow for 
-   * controllable providers (such as {@link SimpleControllableProvider}) to 
-   * alter their injection.
+   * Restores the original binding for {@code key}.
    */
-  public <T> InjectionController set(Key<T> key, T instance) {
-    if (map.put(key, instance) != null) {
-      throw new IllegalArgumentException(String.format(
-          "Key '%s' was already being doubled.", key));
-    }
+  public <T> InjectionController remove(Key<T> key) {
+    checkNotNull(key);
+    checkArgument(map.containsKey(key), "%s was not being doubled.", key);
+
+    mapWritable.remove(key);
     return this;
   }
-  
-  public <T> InjectionController set(Class<T> clazz, T instance) {
-    return set(Key.get(clazz), instance);
+
+  /**
+   * Restores the original binding for {@code type}.
+   */
+  public <T> InjectionController remove(Class<T> type) {
+    return remove(Key.get(type));
   }
 
-  //TODO: think about it -- this only exists for testing
-  int size() {
-    return map.size();
+  /**
+   * Returns an unmodifiable, mutable map with the substituted bindings.
+   */
+  public Map<Key<?>, Object> getSubstitutesMap() {
+    return map;
   }
 }

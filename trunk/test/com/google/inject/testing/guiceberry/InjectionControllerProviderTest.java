@@ -18,7 +18,6 @@ package com.google.inject.testing.guiceberry;
 
 import com.google.common.testing.TearDownStack;
 import com.google.inject.Provider;
-
 import junit.framework.TestCase;
 
 public class InjectionControllerProviderTest extends TestCase {
@@ -73,10 +72,10 @@ public class InjectionControllerProviderTest extends TestCase {
     // InjectionControllerProvider should never return a null
     assertNotNull(injectionController);
 
-    // no one has "set" anything to the InjectionController
-    assertEquals(0, injectionController.size());
+    // no one has substituted anything to the InjectionController
+    assertTrue(injectionController.getSubstitutesMap().isEmpty());
 
-    Foo foo = injectionController.get(Foo.class);
+    Foo foo = injectionController.getSubstitute(Foo.class);
     // in particular, Foo.class is not in the controller
     assertNull(foo);
     // Nothing we did changed the InjectionControllerProvider so far
@@ -95,16 +94,16 @@ public class InjectionControllerProviderTest extends TestCase {
     // InjectionControllerProvider should still never return a null
     assertNotNull(injectionController);
 
-    // no one has yet "set" anything to the InjectionController
-    assertEquals(0, injectionController.size());
+    // no one has yet substituted anything to the InjectionController
+    assertTrue(injectionController.getSubstitutesMap().isEmpty());
 
     Foo expectedFoo = new Foo(10);
-    injectionController.set(Foo.class, expectedFoo);
+    injectionController.substitute(Foo.class, expectedFoo);
 
-    // no one has yet "put" anything into InjectionController
-    assertEquals(1, injectionController.size());
+    // no one has yet substituted anything into InjectionController
+    assertEquals(1, injectionController.getSubstitutesMap().size());
 
-    foo = injectionController.get(Foo.class);
+    foo = injectionController.getSubstitute(Foo.class);
 
     // in particular, Foo.class is not in the controller
     assertEquals(expectedFoo, foo);
