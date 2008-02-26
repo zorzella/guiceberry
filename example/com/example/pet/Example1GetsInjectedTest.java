@@ -13,7 +13,7 @@ import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-@GuiceBerryEnv("com.example.pet.Example1GetsInjectedTest$HelloWorldGuiceBerryEnv")
+@GuiceBerryEnv("com.example.pet.Example1GetsInjectedTest$ExampleGuiceBerryEnv")
 public class Example1GetsInjectedTest extends GuiceBerryJunit3TestCase {
 
   @Inject
@@ -24,7 +24,7 @@ public class Example1GetsInjectedTest extends GuiceBerryJunit3TestCase {
     assertEquals(100, number);
   }
 
-  public static final class HelloWorldGuiceBerryEnv extends GuiceBerryJunit3Env {
+  public static final class ExampleGuiceBerryEnv extends GuiceBerryJunit3Env {
     @Override
     protected Class<? extends TestScopeListener> getTestScopeListener() {
       return NoOpTestScopeListener.class;
