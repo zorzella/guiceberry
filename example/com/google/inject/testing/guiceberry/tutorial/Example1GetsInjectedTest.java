@@ -1,4 +1,4 @@
-package com.example.pet;
+package com.google.inject.testing.guiceberry.tutorial;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,7 +13,7 @@ import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-@GuiceBerryEnv("com.example.pet.Example1GetsInjectedTest$ExampleGuiceBerryEnv")
+@GuiceBerryEnv("com.google.inject.testing.guiceberry.tutorial.Example1GetsInjectedTest$ExampleGuiceBerryEnv")
 public class Example1GetsInjectedTest extends GuiceBerryJunit3TestCase {
 
   @Inject

@@ -1,4 +1,4 @@
-package com.example.pet;
+package com.google.inject.testing.guiceberry.tutorial;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -8,7 +8,7 @@ import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-@GuiceBerryEnv("com.example.pet.Example3TestScopeListenerTest$ExampleGuiceBerryEnv")
+@GuiceBerryEnv("com.google.inject.testing.guiceberry.tutorial.Example3TestScopeListenerTest$ExampleGuiceBerryEnv")
 public class Example3TestScopeListenerTest extends GuiceBerryJunit3TestCase {
 
   public void testOne() throws Exception {
