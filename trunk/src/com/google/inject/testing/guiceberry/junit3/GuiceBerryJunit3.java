@@ -209,7 +209,7 @@ public class GuiceBerryJunit3 {
    *     from the parameter. 
    */
   public static String buildModuleOverrideProperty(String moduleClassName) {
-    return "override"+GuiceBerryEnv.class.toString()+"-" + moduleClassName;
+    return "GuiceBerry_Override_" + moduleClassName;
   }
 
   private void doSetUp(TestCase testCase) {   
