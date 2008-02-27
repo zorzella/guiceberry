@@ -5,7 +5,7 @@ How To release a new version of GuiceBerry
 
 $ svn cp trunk tags/release-x.y.z
 
-2) Edit this tag's build.properties, adding the line
+2) Edit this tag's build.properties, changing the 'version=snapshot' line to
 
 version=1.1.1
 
