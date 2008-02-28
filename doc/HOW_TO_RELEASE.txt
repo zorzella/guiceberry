@@ -7,7 +7,7 @@ $ svn cp trunk tags/release-x.y.z
 
 2) Edit this tag's build.properties, changing the 'version=snapshot' line to
 
-version=1.1.1
+version=x.y.z
 
 3) Build a dist
 
