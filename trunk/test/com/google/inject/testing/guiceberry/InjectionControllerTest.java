@@ -16,12 +16,12 @@
 
 package com.google.inject.testing.guiceberry;
 
-import com.google.inject.Key;
-import com.google.inject.Injector;
 import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.commands.intercepting.InterceptingInjectorBuilder;
 import com.google.inject.name.Names;
-
+import com.google.common.collect.Sets;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -35,6 +35,7 @@ public class InjectionControllerTest extends TestCase {
   private InjectionController injectionController = new InjectionController();
 
   public void testCantOverrideDouble() throws Exception {
+    injectionController.addSubstitutableKeys(Sets.<Key>immutableSet(Key.get(String.class)));
     injectionController.substitute(String.class, "foo");
     assertEquals("foo", injectionController.getSubstitute(String.class));
     try {
@@ -45,6 +46,8 @@ public class InjectionControllerTest extends TestCase {
   }
   
   public void testKeyInjection() {
+    injectionController.addSubstitutableKeys(Sets.<Key>immutableSet(
+        Key.get(String.class, Names.named("ten"))));
     Key<String> stringNamedTen = Key.get(String.class, Names.named("ten"));
     injectionController.substitute(stringNamedTen, "10");
     assertNull(injectionController.getSubstitute(String.class));
@@ -67,7 +70,7 @@ public class InjectionControllerTest extends TestCase {
     assertEquals("b", injector.getInstance(String.class));
   }
 
-  public void testOverrideRequiresWhitelist() throws Exception {
+  public void testSubstituteWithoutWhitelistFails() throws Exception {
     Injector injector = new InterceptingInjectorBuilder()
         .install(injectionController.createModule(),
             new AbstractModule() {
@@ -77,7 +80,12 @@ public class InjectionControllerTest extends TestCase {
             })
         .build();
 
-    injectionController.substitute(String.class, "b");
+    try {
+      injectionController.substitute(String.class, "b");
+      fail();
+    } catch (IllegalArgumentException expected) {
+    }
+
     assertEquals("a", injector.getInstance(String.class));
   }
 
