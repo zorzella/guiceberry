@@ -18,6 +18,7 @@ package com.google.inject.testing.guiceberry;
 
 import com.google.common.testing.TearDownStack;
 import com.google.inject.Provider;
+import com.google.inject.Injector;
 import junit.framework.TestCase;
 
 public class InjectionControllerProviderTest extends TestCase {

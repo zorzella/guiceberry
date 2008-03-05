@@ -18,15 +18,15 @@ package com.google.inject.testing.guiceberry;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import com.google.inject.AbstractModule;
-import com.google.inject.Key;
-import com.google.inject.Module;
-import com.google.inject.Provider;
+import com.google.common.collect.Sets;
+import com.google.inject.*;
 import com.google.inject.commands.intercepting.ProvisionInterceptor;
+import com.google.inject.name.Named;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Allows bound objects to be substituted at runtime. To use:
@@ -61,6 +61,7 @@ import java.util.Map;
  * @author jmourits@google.com (Jerome Mourits)
  */
 public class InjectionController {
+  private final Set<Key> interceptableKeys = Sets.newHashSet();
   private final Map<Key<?>, Object> mapWritable = new HashMap<Key<?>, Object>();
   private final Map<Key<?>, Object> map = Collections.unmodifiableMap(mapWritable);
 
@@ -74,7 +75,19 @@ public class InjectionController {
           // This will happen when running tests that "control" a <T>'s injection
           : mockT;
     }
+
+    @Inject void initialize(@Named("Interceptable") Set<Key> interceptableKeys) {
+      addSubstitutableKeys(interceptableKeys);
+    }
   };
+
+  /**
+   * Whitelists the specified keys to be used in substitutions.
+   */
+  // visible for testing
+  void addSubstitutableKeys(Set<Key> interceptableKeys) {
+    this.interceptableKeys.addAll(interceptableKeys);
+  }
 
   /**
    * Returns the injection interceptor for binding
@@ -101,6 +114,7 @@ public class InjectionController {
    */
   public <T> InjectionController substitute(Key<T> key, T instance) {
     checkNotNull(key);
+    checkArgument(interceptableKeys.contains(key), "%s is not interceptable", key);
     checkArgument(!map.containsKey(key), "%s was already being doubled.", key);
 
     mapWritable.put(key, instance);
