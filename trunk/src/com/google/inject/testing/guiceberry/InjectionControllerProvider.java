@@ -110,6 +110,7 @@ public class InjectionControllerProvider implements Provider<InjectionController
   public static InjectionController forTest(
       final TestId testId,
       TearDownAccepter tearDownAccepter) {
+    // TODO(jessewilson): This code would benefit from Map.supplyIfAbsent
     Preconditions.checkNotNull(testId);
     InjectionController result;
     synchronized (MAP) {
@@ -118,16 +119,16 @@ public class InjectionControllerProvider implements Provider<InjectionController
       if (result == null) {
         result = new InjectionController();
         MAP.put(testId, result);
+
+        tearDownAccepter.addTearDown(new TearDown() {
+          public void tearDown() throws Exception {
+            synchronized(MAP) {
+              MAP.remove(testId);
+            }
+          }
+        });
       }
     }
-    TearDown tearDown = new TearDown() {
-      public void tearDown() throws Exception {
-        synchronized(MAP) {
-          MAP.remove(testId);
-        }
-      }
-    };
-    tearDownAccepter.addTearDown(tearDown);
     return result;
   }
 
