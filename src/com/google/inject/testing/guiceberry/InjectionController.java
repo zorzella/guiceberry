@@ -114,7 +114,8 @@ public class InjectionController {
    */
   public <T> InjectionController substitute(Key<T> key, T instance) {
     checkNotNull(key);
-    checkArgument(interceptableKeys.contains(key), "%s is not interceptable", key);
+    // This check is disabled until InjectionControllerProvider.forTest() is made non-static
+    // checkArgument(interceptableKeys.contains(key), "%s is not interceptable", key);
     checkArgument(!map.containsKey(key), "%s was already being doubled.", key);
 
     mapWritable.put(key, instance);
