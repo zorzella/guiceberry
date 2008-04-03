@@ -19,4 +19,4 @@
  * <a href="http://code.google.com/p/google-guice/">Guice</a> to setup
  * a test environment for functional tests.
  */
-package com.google.inject.injectioncontroller;
+package com.google.inject.testing.guiceberry;
