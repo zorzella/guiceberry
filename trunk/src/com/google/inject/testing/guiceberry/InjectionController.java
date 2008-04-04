@@ -61,7 +61,7 @@ import java.util.Set;
  * @author jmourits@google.com (Jerome Mourits)
  */
 public class InjectionController {
-  private final Set<Key> interceptableKeys = Sets.newHashSet();
+  private final Set<Key<?>> interceptableKeys = Sets.newHashSet();
   private final Map<Key<?>, Object> mapWritable = new HashMap<Key<?>, Object>();
   private final Map<Key<?>, Object> map = Collections.unmodifiableMap(mapWritable);
 
@@ -76,7 +76,8 @@ public class InjectionController {
           : mockT;
     }
 
-    @Inject void initialize(@Named("Interceptable") Set<Key> interceptableKeys) {
+    @SuppressWarnings("unused")
+    @Inject void initialize(@Named("Interceptable") Set<Key<?>> interceptableKeys) {
       addSubstitutableKeys(interceptableKeys);
     }
   };
@@ -85,7 +86,7 @@ public class InjectionController {
    * Whitelists the specified keys to be used in substitutions.
    */
   // visible for testing
-  void addSubstitutableKeys(Set<Key> interceptableKeys) {
+  void addSubstitutableKeys(Set<Key<?>> interceptableKeys) {
     this.interceptableKeys.addAll(interceptableKeys);
   }
 
@@ -101,6 +102,7 @@ public class InjectionController {
    */
   public final Module createModule() {
     return new AbstractModule() {
+      @Override
       protected void configure() {
         bind(ProvisionInterceptor.class)
             .toInstance(provisionInterceptor);
