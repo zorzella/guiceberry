@@ -35,7 +35,7 @@ public class InjectionControllerTest extends TestCase {
   private InjectionController injectionController = new InjectionController();
 
   public void testCantOverrideDouble() throws Exception {
-    injectionController.addSubstitutableKeys(Sets.<Key>immutableSet(Key.get(String.class)));
+    injectionController.addSubstitutableKeys(Sets.<Key<?>>immutableSet(Key.get(String.class)));
     injectionController.substitute(String.class, "foo");
     assertEquals("foo", injectionController.getSubstitute(String.class));
     try {
@@ -46,7 +46,7 @@ public class InjectionControllerTest extends TestCase {
   }
   
   public void testKeyInjection() {
-    injectionController.addSubstitutableKeys(Sets.<Key>immutableSet(
+    injectionController.addSubstitutableKeys(Sets.<Key<?>>immutableSet(
         Key.get(String.class, Names.named("ten"))));
     Key<String> stringNamedTen = Key.get(String.class, Names.named("ten"));
     injectionController.substitute(stringNamedTen, "10");
@@ -58,6 +58,7 @@ public class InjectionControllerTest extends TestCase {
     Injector injector = new InterceptingInjectorBuilder()
         .install(injectionController.createModule(),
             new AbstractModule() {
+              @Override
               protected void configure() {
                 bind(String.class).toInstance("a");
               }
@@ -79,6 +80,7 @@ public class InjectionControllerTest extends TestCase {
     Injector injector = new InterceptingInjectorBuilder()
         .install(injectionController.createModule(),
             new AbstractModule() {
+              @Override
               protected void configure() {
                 bind(String.class).toInstance("a");
               }
@@ -98,6 +100,7 @@ public class InjectionControllerTest extends TestCase {
     InterceptingInjectorBuilder builder = new InterceptingInjectorBuilder()
         .install(injectionController.createModule(),
             new AbstractModule() {
+              @Override
               protected void configure() {
                 bind(ArrayList.class);
               }
