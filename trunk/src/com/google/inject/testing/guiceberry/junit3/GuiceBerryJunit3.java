@@ -32,6 +32,7 @@ import com.google.inject.testing.guiceberry.TestScoped;
  
 import junit.framework.TestCase;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 //move to JUnit package
@@ -150,7 +151,11 @@ public class GuiceBerryJunit3 {
   public synchronized static void setUp(final TestCase testCase) { 
      
     GuiceBerryEnv guiceBerryModule = getGuiceBerryModuleAnnotation(testCase);
-    Objects.nonNull(guiceBerryModule, "GuiceBerryModule annotation is null");   
+    if (guiceBerryModule == null) {
+      throw new IllegalArgumentException(String.format(
+    		  "Test class '%s' must have an @GuiceBerryModule annotation.",
+    		  testCase.getClass().getName()));   
+    }
     addGuiceBerryTearDown(testCase);
     checkPreviousTestCalledTearDown(testCase);
     //Setup after registering tearDown so that if an exception is thrown here,
@@ -268,8 +273,8 @@ public class GuiceBerryJunit3 {
       (Class<? extends Module>) getClassFromClassName(guiceBerryModuleName);
     if (!Module.class.isAssignableFrom(moduleClass)) {
       String msg = String.format(
-          "Class '%s' must extend com.google.inject.Module", 
-          moduleClass.toString()); 
+          "@GuiceBerryModule class '%s' must be a Guice Module (i.e. implement com.google.inject.Module).", 
+          moduleClass.getName()); 
       throw new IllegalArgumentException(msg);
     }
     return moduleClass;
@@ -281,7 +286,8 @@ public class GuiceBerryJunit3 {
     try {
       className = Class.forName(guiceBerryModuleName);   
     } catch (ClassNotFoundException e) {  
-      String msg = String.format("Required class '%s' not found.", 
+      String msg = String.format(
+    		  "@GuiceBerryModule class '%s' was not found.", 
           guiceBerryModuleName.toString());
       throw new IllegalArgumentException(msg, e);
     }
@@ -297,7 +303,6 @@ public class GuiceBerryJunit3 {
   private static String getGuiceBerryModuleName(TestCase testCase) {
 
     GuiceBerryEnv guiceBerryModuleAnnotation = getGuiceBerryModuleAnnotation(testCase); 
-    Objects.nonNull(guiceBerryModuleAnnotation, "GuiceBerryModule annotation is null");
     String result = guiceBerryModuleAnnotation.value();
     String override = System.getProperty(buildModuleOverrideProperty(result));
     if (override != null) {
@@ -337,11 +342,17 @@ public class GuiceBerryJunit3 {
     Module testGuiceBerryModule; 
     try {
       testGuiceBerryModule = moduleClass.getConstructor().newInstance(); 
-    } catch (Exception e) {  
-      String msg = String.format("Error while creating the instance of: " +
-      		"'%s': '%s'.", moduleClass.toString(), e.getMessage()); 
-      throw new RuntimeException(msg, e); 
-    }
+    } catch (NoSuchMethodException e) {
+      String msg = String.format(
+    		  "@GuiceBerryModule class '%s' must have a zero-arguments constructor", 
+    		  moduleClass.getName()); 
+      throw new IllegalArgumentException(msg, e); 
+	} catch (Exception e) {
+	      String msg = String.format(
+	    		  "Error creating instance of @GuiceBerryModule '%s'", 
+	    		  moduleClass.getName()); 
+	        throw new IllegalArgumentException(msg, e); 
+	}
     return testGuiceBerryModule;
   }
 

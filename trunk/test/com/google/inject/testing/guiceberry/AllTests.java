@@ -16,7 +16,7 @@
 
 package com.google.inject.testing.guiceberry;
 
-import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunitTest;
+import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test;
 import com.google.inject.testing.guiceberry.junit3.MutableSingletonScopeTest;
 
 import junit.framework.Test;
@@ -28,7 +28,7 @@ public class AllTests {
     TestSuite suite =
         new TestSuite("Test for com.google.inject.testing.guiceberry.junit3");
     //$JUnit-BEGIN$
-    suite.addTestSuite(GuiceBerryJunitTest.class);
+    suite.addTestSuite(GuiceBerryJunit3Test.class);
     suite.addTestSuite(InjectionControllerProviderTest.class);
     suite.addTestSuite(InjectionControllerTest.class);
     suite.addTestSuite(MutableSingletonScopeTest.class);

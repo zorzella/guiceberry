@@ -40,14 +40,14 @@ import junit.framework.TestCase;
  * @author Luiz-Otavio Zorzella
  * @author Danka Karwanska
  */
-public class GuiceBerryJunitTest extends TearDownTestCase {
+public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   /*
-   * There's unfortunatelly no way to statically get a class' canonical way
+   * Java, unfortunately, provides no way to statically get a class' canonical name
    * through reflection.
    */
   private static final String SELF_CANONICAL_NAME = 
-    "com.google.inject.testing.guiceberry.junit3.GuiceBerryJunitTest";
+    "com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test";
   
   private static final String GUICE_BERRY_ENV_THAT_DOES_NOT_EXIST = 
     "com.this.guice.berry.env.does.NotExist";
@@ -89,7 +89,12 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
     try {
       GuiceBerryJunit3.setUp(this);
       fail();
-    } catch (NullPointerException expected) {
+    } catch (IllegalArgumentException expected) {
+      assertEquals(
+    		  "Test class " +
+    		  "'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test' " +
+    		  "must have an @GuiceBerryModule annotation.", 
+    		  expected.getMessage());
     }
   }
   
@@ -99,7 +104,13 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
         TestAnnotatedWithModuleThatNotExist.createInstance();
       GuiceBerryJunit3.setUp(testClass);
       fail();
-   } catch (IllegalArgumentException expected) { }
+   } catch (IllegalArgumentException expected) { 
+	   assertEquals(
+			   "@GuiceBerryModule class " +
+			   "'com.this.guice.berry.env.does.NotExist' " +
+			   "was not found.", 
+			   expected.getMessage());
+   }
   }
  
   public void testAnnotationWithModuleThatHasMissingBindingsThrowsException() {   
@@ -125,7 +136,12 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
         TestAnnotatedWithClassThatNotImplementsModule.createInstance();
       GuiceBerryJunit3.setUp(testClass);
       fail();
-    } catch (IllegalArgumentException expected) { }
+    } catch (IllegalArgumentException expected) {
+    	assertEquals("@GuiceBerryModule class " +
+    			"'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$NotAGuiceBerryEnvOne' " +
+    			"must be a Guice Module (i.e. implement com.google.inject.Module).", 
+    			expected.getMessage());
+    }
   }
      
   public void testAnnotationWithClassThatHasWrongConstructorThrowsException() {
@@ -134,8 +150,11 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
         TestAnnotatedWithModuleThatHAsWrongConstructor.createInstance();
       GuiceBerryJunit3.setUp(testClass);
       fail();
-    } catch (RuntimeException expected) {
-      assertTrue(expected.getCause() instanceof NoSuchMethodException);
+    } catch (IllegalArgumentException expected) {
+      assertEquals("@GuiceBerryModule class " +
+      		"'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$GuiceBerryEnvWithIllegalConstructor' " +
+      		"must have a zero-arguments constructor", 
+    		  expected.getMessage());
     }
   }
  
@@ -863,7 +882,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
   
   public static class GuiceBerryEnvOne extends AbstractModule {
     private static final String GUICE_BERRY_ENV_ONE = 
-    GuiceBerryJunitTest.SELF_CANONICAL_NAME + "$GuiceBerryEnvOne";
+    GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvOne";
 
     @Override
     public void configure() {
@@ -877,7 +896,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
 
   public static class GuiceBerryEnvTwo extends AbstractModule {
     private static final String GUICE_BERRY_ENV_TWO = 
-    GuiceBerryJunitTest.SELF_CANONICAL_NAME + "$GuiceBerryEnvTwo";
+    GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvTwo";
 
     @Override
     public void configure() {
@@ -894,7 +913,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
   public static class GuiceBerryEnvWithoutBindingsForFooOrBar 
       extends AbstractModule  {
     private static final String GUICE_BERRY_ENV_WITHOUT_BINDINGS_FOR_FOO_OR_BAR =
-    GuiceBerryJunitTest.SELF_CANONICAL_NAME + "$GuiceBerryEnvWithoutBindingsForFooOrBar";
+    GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvWithoutBindingsForFooOrBar";
 
     @Override
     public void configure() {
@@ -906,7 +925,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
   public static class GuiceBerryEnvWithNonTrivialTestScopeListener 
       extends AbstractModule {
     private static final String MODULE_NAME_INJECTS_TEST_CASE_IN_TEST_SCOPE_LISTENER = 
-    GuiceBerryJunitTest.SELF_CANONICAL_NAME + "$GuiceBerryEnvWithNonTrivialTestScopeListener";
+    GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvWithNonTrivialTestScopeListener";
 
     @Override
     public void configure() {
@@ -919,7 +938,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
   
   public static class GuiceBerryEnvWithIllegalConstructor implements Module {    
     private static final String GUICE_BERRY_ENV_WITH_ILLEGAL_CONSTRUCTOR = 
-    GuiceBerryJunitTest.SELF_CANONICAL_NAME + "$GuiceBerryEnvWithIllegalConstructor";
+    GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvWithIllegalConstructor";
 
     /**
      * Constructors should be no-args
@@ -932,7 +951,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
   public static class GuiceBerryEnvWithNoTestScopeListener 
       extends AbstractModule {    
     private static final String GUICE_BERRY_ENV_WITH_NO_TEST_SCOPE_LISTENER = 
-      GuiceBerryJunitTest.SELF_CANONICAL_NAME + "$GuiceBerryEnvWithNoTestScopeListener";
+      GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvWithNoTestScopeListener";
 
     @Override
     public void configure() {
@@ -950,7 +969,7 @@ public class GuiceBerryJunitTest extends TearDownTestCase {
   public static class NotAGuiceBerryEnvOne {
 
     private static final String NOT_A_GUICE_BERRY_ENV_ONE = 
-    GuiceBerryJunitTest.SELF_CANONICAL_NAME + "$NotAGuiceBerryEnvOne"; }
+    GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$NotAGuiceBerryEnvOne"; }
 
 //BELOW CLASSES ARE USED TO TEST IF GUICEBERRY BINDS THINGS PROPERLY   
 // used only for testing
