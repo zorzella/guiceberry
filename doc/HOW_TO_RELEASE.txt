@@ -23,6 +23,6 @@ The URL is http://code.google.com/p/guiceberry/downloads/list > New Download. Up
 
 build/dist/guiceberry-x.y.z/guiceberry-x.y.z-src.jar
 build/dist/guiceberry-x.y.z/guiceberry-x.y.z.jar
+build/dist/guiceberry-x.y.z/guiceberry-x.y.z-tutorial.jar
 
-FIXME -- package and upload documentation/tutorial as well!
 
