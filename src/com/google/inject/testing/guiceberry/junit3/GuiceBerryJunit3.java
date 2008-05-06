@@ -16,7 +16,10 @@
 
 package com.google.inject.testing.guiceberry.junit3;
 
-import com.google.common.base.Objects;
+import java.util.Map;
+
+import junit.framework.TestCase;
+
 import com.google.common.collect.Maps;
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
@@ -29,13 +32,6 @@ import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.TestScoped;
- 
-import junit.framework.TestCase;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-
-//move to JUnit package
 
 /**
  * Provides the tools to manage the JUnit tests that use {@code Guice}.  
@@ -70,6 +66,9 @@ public class GuiceBerryJunit3 {
    * if there are multiple tests that need the same kind of injector. 
    */
   private static final GuiceBerryJunit3 instance = new GuiceBerryJunit3();
+
+  private static final GuiceBerryEnvRemapper DEFAULT_GUICE_BERRY_ENV_REMAPPER = 
+	  new DefaultGuiceBerryEnvRemapper();
   
   //TODO(zorzella): think about not needing the testScope and killing this
   private static final class GuiceBerryStuff {
@@ -304,14 +303,42 @@ public class GuiceBerryJunit3 {
 
     GuiceBerryEnv guiceBerryModuleAnnotation = getGuiceBerryModuleAnnotation(testCase); 
     String result = guiceBerryModuleAnnotation.value();
-    String override = System.getProperty(buildModuleOverrideProperty(result));
-    if (override != null) {
-      return override;
-    }
-    return result;
+    GuiceBerryEnvRemapper remapper = getRemapper();
+    return remapper.remap(testCase, result);
   }
 
   @SuppressWarnings("unchecked")
+  private static GuiceBerryEnvRemapper getRemapper() {
+    String remapperName = System.getProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
+    if (remapperName != null) {
+      Class<? extends GuiceBerryEnvRemapper> clazz;
+      try {
+        clazz = (Class<? extends GuiceBerryEnvRemapper>) Class.forName(remapperName);
+        } catch (ClassNotFoundException e) {
+          throw new IllegalArgumentException(String.format(
+            "Class '%s', which is being declared as a GuiceBerryEnvRemapper, does not exist.", remapperName), e);
+        }
+        if (!GuiceBerryEnvRemapper.class.isAssignableFrom(clazz)) {
+          throw new IllegalArgumentException(String.format(
+            "Class '%s' is being declared as a GuiceBerryEnvRemapper, but does not implement that interface", 
+            remapperName));
+        }
+        try {
+          return clazz.getConstructor().newInstance();
+        } catch (NoSuchMethodException e) {
+          throw new IllegalArgumentException(String.format(
+            "GuiceBerryEnvRemapper '%s' must have public zero-arguments constructor", 
+            remapperName), e);
+        } catch (Exception e) {
+          throw new RuntimeException(String.format(
+            "There was a problem trying to instantiate your GuiceBerryEnvRemapper '%s'", remapperName), 
+            e);
+        }
+    }
+    return DEFAULT_GUICE_BERRY_ENV_REMAPPER;
+  }
+
+@SuppressWarnings("unchecked")
   private Injector foundModuleForTheFirstTime(
       final Class<? extends Module> moduleClass) {
     
@@ -344,7 +371,7 @@ public class GuiceBerryJunit3 {
       testGuiceBerryModule = moduleClass.getConstructor().newInstance(); 
     } catch (NoSuchMethodException e) {
       String msg = String.format(
-    		  "@GuiceBerryModule class '%s' must have a zero-arguments constructor", 
+    		  "@GuiceBerryModule class '%s' must have a public zero-arguments constructor", 
     		  moduleClass.getName()); 
       throw new IllegalArgumentException(msg, e); 
 	} catch (Exception e) {
