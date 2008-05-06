@@ -16,6 +16,12 @@
 
 package com.google.inject.testing.guiceberry.junit3;
 
+import junit.framework.TestCase;
+
+import com.google.common.base.Objects;
+import com.google.common.testing.TearDown;
+import com.google.common.testing.junit3.JUnitAsserts;
+import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.Inject;
@@ -27,12 +33,6 @@ import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScopeListener;
-import com.google.common.base.Objects;
-import com.google.common.testing.TearDown;
-import com.google.common.testing.junit3.JUnitAsserts;
-import com.google.common.testing.junit3.TearDownTestCase;
-
-import junit.framework.TestCase;
 
 /**
  * Tests the {@link GuiceBerryJunit3} class.
@@ -91,10 +91,10 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       fail();
     } catch (IllegalArgumentException expected) {
       assertEquals(
-    		  "Test class " +
-    		  "'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test' " +
-    		  "must have an @GuiceBerryModule annotation.", 
-    		  expected.getMessage());
+              "Test class " +
+              "'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test' " +
+              "must have an @GuiceBerryModule annotation.", 
+              expected.getMessage());
     }
   }
   
@@ -105,11 +105,11 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       GuiceBerryJunit3.setUp(testClass);
       fail();
    } catch (IllegalArgumentException expected) { 
-	   assertEquals(
-			   "@GuiceBerryModule class " +
-			   "'com.this.guice.berry.env.does.NotExist' " +
-			   "was not found.", 
-			   expected.getMessage());
+       assertEquals(
+               "@GuiceBerryModule class " +
+               "'com.this.guice.berry.env.does.NotExist' " +
+               "was not found.", 
+               expected.getMessage());
    }
   }
  
@@ -137,10 +137,10 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       GuiceBerryJunit3.setUp(testClass);
       fail();
     } catch (IllegalArgumentException expected) {
-    	assertEquals("@GuiceBerryModule class " +
-    			"'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$NotAGuiceBerryEnvOne' " +
-    			"must be a Guice Module (i.e. implement com.google.inject.Module).", 
-    			expected.getMessage());
+        assertEquals("@GuiceBerryModule class " +
+                "'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$NotAGuiceBerryEnvOne' " +
+                "must be a Guice Module (i.e. implement com.google.inject.Module).", 
+                expected.getMessage());
     }
   }
      
@@ -152,9 +152,9 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       fail();
     } catch (IllegalArgumentException expected) {
       assertEquals("@GuiceBerryModule class " +
-      		"'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$GuiceBerryEnvWithIllegalConstructor' " +
-      		"must have a zero-arguments constructor", 
-    		  expected.getMessage());
+              "'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$GuiceBerryEnvWithIllegalConstructor' " +
+              "must have a public zero-arguments constructor", 
+              expected.getMessage());
     }
   }
  
@@ -305,7 +305,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     assertEquals(INJECTED_INFORMATION, testClass.fooService.get());
    }
   
-  public void testSystemPropertyOverridesModule() {
+  public void testSimpleOverrideSystemPropertyOverridesModule() {
     TestAnnotatedWithStubService1 testClass = 
       TestAnnotatedWithStubService1.createInstance();
     
@@ -322,10 +322,99 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
         GuiceBerryEnvTwo.GUICE_BERRY_ENV_TWO);
     
     GuiceBerryJunit3.setUp(testClass);
-    assertTrue(testClass.barService instanceof BarServiceTwo);
-    assertTrue(testClass.fooService instanceof FooServiceTwo);
+    assertEquals(BarServiceTwo.class, testClass.barService.getClass());
+    assertEquals(FooServiceTwo.class, testClass.fooService.getClass());
+  }
+
+  public void testRemapperSystemPropertyOverridesModule() {
+    TestAnnotatedWithStubService1 testClass = 
+      TestAnnotatedWithStubService1.createInstance();
+
+    TearDown tearDown = new TearDown() {
+
+      public void tearDown() throws Exception {
+        System.clearProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
+      }
+    };
+    addRequiredTearDown(tearDown);
+    System.setProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME, 
+      MyGuiceBerryEnvRemapper.class.getName());
+
+    GuiceBerryJunit3.setUp(testClass);
+    assertEquals(BarServiceTwo.class, testClass.barService.getClass());
+    assertEquals(FooServiceTwo.class, testClass.fooService.getClass());
   }
   
+  public void testRemapperSystemPropertyNeedsClassThatExists() {
+    TestAnnotatedWithStubService1 testClass = 
+      TestAnnotatedWithStubService1.createInstance();
+
+    TearDown tearDown = new TearDown() {
+
+      public void tearDown() throws Exception {
+        System.clearProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
+      }
+    };
+    addRequiredTearDown(tearDown);
+    System.setProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME, 
+      "foo");
+
+    try {
+      GuiceBerryJunit3.setUp(testClass);
+      fail();
+    } catch (IllegalArgumentException expected) {
+      assertEquals("Class 'foo', which is being declared as a GuiceBerryEnvRemapper, does not exist.", 
+        expected.getMessage());
+    }
+  }
+  
+  public void testRemapperSystemPropertyNeedsClassThatImplementsCorrectInterface() {
+    TestAnnotatedWithStubService1 testClass = 
+      TestAnnotatedWithStubService1.createInstance();
+
+    TearDown tearDown = new TearDown() {
+
+      public void tearDown() throws Exception {
+        System.clearProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
+      }
+    };
+    addRequiredTearDown(tearDown);
+    System.setProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME, 
+          MyNonGuiceBerryEnvRemapper.class.getName());
+
+    try {
+      GuiceBerryJunit3.setUp(testClass);
+    fail();
+    } catch (IllegalArgumentException expected) {
+      assertEquals("Class 'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$MyNonGuiceBerryEnvRemapper' " +
+        "is being declared as a GuiceBerryEnvRemapper, but does not implement that interface", 
+        expected.getMessage());
+    }
+  }
+
+  public void testRemapperSystemPropertyNeedsClassWithZeroArgConstructor() {
+    TestAnnotatedWithStubService1 testClass = 
+      TestAnnotatedWithStubService1.createInstance();
+
+    TearDown tearDown = new TearDown() {
+
+      public void tearDown() throws Exception {
+        System.clearProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
+      }
+    };
+    addRequiredTearDown(tearDown);
+    System.setProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME, 
+      MyInvalidGuiceBerryEnvRemapper.class.getName());
+
+    try {
+      GuiceBerryJunit3.setUp(testClass);
+      fail();
+    } catch (IllegalArgumentException expected) {
+      assertEquals("GuiceBerryEnvRemapper 'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$MyInvalidGuiceBerryEnvRemapper' " +
+        "must have public zero-arguments constructor", expected.getMessage());
+    }
+  }
+
   public void testNotExistingModuldeOverridesModuleThrowsException() {
     TestAnnotatedWithStubService1 testClass = 
       TestAnnotatedWithStubService1.createInstance();
@@ -691,14 +780,33 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   public void testInjectingTestCasesIntoTestScopeListeners() 
       throws Exception {
-    TestAnnotatedWitthModuleInjectsTestCaseInTestScopeListener testClass = 
-      TestAnnotatedWitthModuleInjectsTestCaseInTestScopeListener.createInstance();
+    TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener testClass = 
+      TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener.createInstance();
     
     GuiceBerryJunit3.setUp(testClass);
     testClass.run();
   }
   
 //THE BELOW CLASSES ARE USED ONLY FOR TESTING GuiceBerry
+  
+  public static final class MyGuiceBerryEnvRemapper implements GuiceBerryEnvRemapper {
+
+    public String remap(TestCase test, String guiceBerryEnv) {
+      return GuiceBerryEnvTwo.class.getName();
+    }
+  }
+
+  private static final class MyInvalidGuiceBerryEnvRemapper implements GuiceBerryEnvRemapper {
+    public MyInvalidGuiceBerryEnvRemapper(int foo) {
+    }
+
+    public String remap(TestCase test, String guiceBerryEnv) {
+      return null;
+    }
+  }
+
+  private static final class MyNonGuiceBerryEnvRemapper {    
+  }
   
   @GuiceBerryEnv(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)
   private static final class TestAnnotatedWithStubService1 
@@ -863,13 +971,13 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
   
   @GuiceBerryEnv(GuiceBerryEnvWithNonTrivialTestScopeListener.MODULE_NAME_INJECTS_TEST_CASE_IN_TEST_SCOPE_LISTENER)
-  private static final class TestAnnotatedWitthModuleInjectsTestCaseInTestScopeListener
+  private static final class TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener
       extends TestCase {
     
-    static TestAnnotatedWitthModuleInjectsTestCaseInTestScopeListener createInstance() {
-      TestAnnotatedWitthModuleInjectsTestCaseInTestScopeListener result = 
-        new TestAnnotatedWitthModuleInjectsTestCaseInTestScopeListener();
-      result.setName(TestAnnotatedWitthModuleInjectsTestCaseInTestScopeListener.class
+    static TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener createInstance() {
+      TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener result = 
+        new TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener();
+      result.setName(TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener.class
           .getCanonicalName());
       return result;
     }  
