@@ -24,7 +24,8 @@ import junit.framework.TestCase;
  * 
  * <p>The primary purpose for this is to allow for running tests under
  * different "integration" modes, as can be seen in the tutorial example
- * TODO -- i.e. run any given test against multiple {@link GuiceBerryEnv}s.
+ * TODO -- i.e. run any given test against multiple 
+ * {@link com.google.inject.testing.guiceberry.GuiceBerryEnv}s.
  * 
  * @author Luiz-Otavio Zorzella
  */
@@ -38,8 +39,9 @@ public interface GuiceBerryEnvRemapper {
         "GuiceBerryEnvRemapper";
 
     /**
-     * Returns the name of the {@link GuiceBerryEnv} to be used in place of 
-     * the given {@code guiceBerryEnvName} for the given {@code testCase}.
+     * Returns the name of the 
+     * {@link com.google.inject.testing.guiceberry.GuiceBerryEnv} to be used in 
+     * place of the given {@code guiceBerryEnvName} for the given {@code testCase}.
      * 
      * <p>Note that the given {@code testCase} has not yet had its fields
      * {@code @Injected}, since GuiceBerry requires the result of this
