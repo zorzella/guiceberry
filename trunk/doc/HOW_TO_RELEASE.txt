@@ -17,6 +17,12 @@ $ ant clean test dist
 
 $ svn commit -m "release x.y.z"
 
+5) Create a tar of the release itself
+
+$ svn export . build/dist/guiceberry-release-x.y.z
+$ cd build/dist
+$ zip -r guiceberry-release-x.y.z.zip guiceberry-release-x.y.z
+
 5) Upload jars to GoogleCode
 
 The URL is http://code.google.com/p/guiceberry/downloads/list > New Download. Upload these files:
@@ -24,5 +30,6 @@ The URL is http://code.google.com/p/guiceberry/downloads/list > New Download. Up
 build/dist/guiceberry-x.y.z/guiceberry-x.y.z-src.jar
 build/dist/guiceberry-x.y.z/guiceberry-x.y.z.jar
 build/dist/guiceberry-x.y.z/guiceberry-x.y.z-tutorial.jar
+build/dist/guiceberry-release-x.y.z.zip
 
 
