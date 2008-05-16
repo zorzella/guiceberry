@@ -32,4 +32,4 @@ build/dist/guiceberry-x.y.z/guiceberry-x.y.z.jar
 build/dist/guiceberry-x.y.z/guiceberry-x.y.z-tutorial.jar
 build/dist/guiceberry-release-x.y.z.zip
 
-
+Also, make sure to check the installation instructions at http://docs.google.com/Doc?id=dddf9mmq_2sjv9nkk4 particularly if you changed the version of a dependent lib.
