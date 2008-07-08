@@ -283,7 +283,7 @@ public class GuiceBerryJunit3 {
       String guiceBerryModuleName) {
     Class<?> className;
     try {
-      className = Class.forName(guiceBerryModuleName);   
+      className = GuiceBerryJunit3.class.getClassLoader().loadClass(guiceBerryModuleName);   
     } catch (ClassNotFoundException e) {  
       String msg = String.format(
     		  "@GuiceBerryModule class '%s' was not found.", 
@@ -313,7 +313,8 @@ public class GuiceBerryJunit3 {
     if (remapperName != null) {
       Class<? extends GuiceBerryEnvRemapper> clazz;
       try {
-        clazz = (Class<? extends GuiceBerryEnvRemapper>) Class.forName(remapperName);
+        clazz = (Class<? extends GuiceBerryEnvRemapper>) 
+        GuiceBerryJunit3.class.getClassLoader().loadClass(remapperName);
         } catch (ClassNotFoundException e) {
           throw new IllegalArgumentException(String.format(
             "Class '%s', which is being declared as a GuiceBerryEnvRemapper, does not exist.", remapperName), e);
