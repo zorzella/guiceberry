@@ -93,7 +93,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       assertEquals(
               "Test class " +
               "'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test' " +
-              "must have an @GuiceBerryModule annotation.", 
+              "must have an @GuiceBerryEnv annotation.", 
               expected.getMessage());
     }
   }
@@ -106,7 +106,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       fail();
    } catch (IllegalArgumentException expected) { 
        assertEquals(
-               "@GuiceBerryModule class " +
+               "@GuiceBerryEnv class " +
                "'com.this.guice.berry.env.does.NotExist' " +
                "was not found.", 
                expected.getMessage());
@@ -137,7 +137,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       GuiceBerryJunit3.setUp(testClass);
       fail();
     } catch (IllegalArgumentException expected) {
-        assertEquals("@GuiceBerryModule class " +
+        assertEquals("@GuiceBerryEnv class " +
                 "'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$NotAGuiceBerryEnvOne' " +
                 "must be a Guice Module (i.e. implement com.google.inject.Module).", 
                 expected.getMessage());
@@ -151,7 +151,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       GuiceBerryJunit3.setUp(testClass);
       fail();
     } catch (IllegalArgumentException expected) {
-      assertEquals("@GuiceBerryModule class " +
+      assertEquals("@GuiceBerryEnv class " +
               "'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$GuiceBerryEnvWithIllegalConstructor' " +
               "must have a public zero-arguments constructor", 
               expected.getMessage());
