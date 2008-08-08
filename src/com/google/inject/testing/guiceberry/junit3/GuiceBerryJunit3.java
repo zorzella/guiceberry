@@ -59,14 +59,6 @@ import com.google.inject.testing.guiceberry.TestScoped;
  */
 public class GuiceBerryJunit3 { 
   
-  /**
-   * Singleton so that we can keep a persistent list of modules and 
-   * internal structures corresponding to them. It lets store the information  
-   * which test is currently running. It also allows to reuse an injector 
-   * if there are multiple tests that need the same kind of injector. 
-   */
-  private static final GuiceBerryJunit3 instance = new GuiceBerryJunit3();
-
   private static final GuiceBerryEnvRemapper DEFAULT_GUICE_BERRY_ENV_REMAPPER = 
 	  new DefaultGuiceBerryEnvRemapper();
   
@@ -148,7 +140,10 @@ public class GuiceBerryJunit3 {
    * @see GuiceBerryEnv                                      
    */
   public synchronized static void setUp(final TestCase testCase) { 
-     
+    new GuiceBerryJunit3().goSetUp(testCase);
+  }
+  
+  private synchronized void goSetUp(final TestCase testCase) {
     GuiceBerryEnv guiceBerryEnvAnnotation = getGuiceBerryEnvAnnotation(testCase);
     if (guiceBerryEnvAnnotation == null) {
       throw new IllegalArgumentException(String.format(
@@ -159,7 +154,7 @@ public class GuiceBerryJunit3 {
     checkPreviousTestCalledTearDown(testCase);
     //Setup after registering tearDown so that if an exception is thrown here,
     //we still do a tearDown.
-    instance.doSetUp(testCase);
+    doSetUp(testCase);
     
   }
   
@@ -192,7 +187,7 @@ public class GuiceBerryJunit3 {
     // causing a bug -- e.d. a Provider<TestId> could not be used in the 
     // exitingScope method of the TestScopeListener. I haven't yet found a
     // good way to test this change.
-    instance.doTearDown(testCase);
+    doTearDown(testCase);
   }
   
   /**
@@ -396,7 +391,7 @@ public class GuiceBerryJunit3 {
     injector.getInstance(TestScopeListener.class).exitingScope();
   }
 
-  private void doTearDown(TestCase testCase) {
+  private static void doTearDown(TestCase testCase) {
   
     if (testCurrentlyRunningOnThisThread.get() != testCase) {
       String msg = String.format( GuiceBerryJunit3.class.toString() 
