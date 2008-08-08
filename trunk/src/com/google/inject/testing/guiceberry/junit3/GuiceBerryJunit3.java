@@ -79,8 +79,14 @@ public class GuiceBerryJunit3 {
 
   private static InheritableThreadLocal<TestCase> testCurrentlyRunningOnThisThread  = 
     new InheritableThreadLocal<TestCase>();
+
+  private final TestCase testCase;
+  private final GuiceBerryEnvRemapper remapper;
  
-  private GuiceBerryJunit3(){}
+  private GuiceBerryJunit3(TestCase testCase, GuiceBerryEnvRemapper remapper) {
+    this.testCase = testCase;
+    this.remapper = remapper;
+  }
   
   /**
    * Sets up the {@link TestCase} (given as the argument) to be ready to run. 
@@ -140,7 +146,8 @@ public class GuiceBerryJunit3 {
    * @see GuiceBerryEnv                                      
    */
   public synchronized static void setUp(final TestCase testCase) { 
-    new GuiceBerryJunit3().goSetUp(testCase);
+    GuiceBerryEnvRemapper remapper = getRemapper();
+    new GuiceBerryJunit3(testCase, remapper).goSetUp(testCase);
   }
   
   private synchronized void goSetUp(final TestCase testCase) {
@@ -154,20 +161,27 @@ public class GuiceBerryJunit3 {
     checkPreviousTestCalledTearDown(testCase);
     //Setup after registering tearDown so that if an exception is thrown here,
     //we still do a tearDown.
-    doSetUp(testCase);
+    doSetUp();
     
   }
   
   /**   
-   * Stops storing the information that {@link TestCase} (given as the argument) 
+   * You should only call this method if your test does <em>not</em> implement 
+   * {@link TearDownAccepter}.
+   *
+   * <p>Stops storing the information that {@link TestCase} (given as the argument) 
    * is being run.
-   * <p>
    * 
-   * Notifies {@link  TestScopeListener} corresponding to this module (
+   * <p>Notifies {@link  TestScopeListener} corresponding to this module (
    * The {@link GuiceBerryEnv} annotation of the test case provides the name  
    * of the module)that {@link TestCase} has just become out of scope.
    * It also causes that {@link TestCase} is removed from the {@code TestScope} 
    * assigned to this  module. 
+   * 
+   * <p>Do not change the value (if any) of the
+   * {@link GuiceBerryEnvRemapper#GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME} 
+   * property, as it will likely cause the wrong {@link GuiceBerryEnv} to be
+   * used on your tearDown.
    *
    * @throws IllegalArgumentException If the {@link TestCase} provided  as an 
    *     argument  has no {@link GuiceBerryEnv} annotation or the module 
@@ -175,19 +189,29 @@ public class GuiceBerryJunit3 {
    *     a type of {@code Class <? extends Module>}.   
    * @throws RuntimeException If the method {@link GuiceBerryJunit3#setUp(TestCase)} 
    *     wasn't called before calling this method.                                 
-   *                            
-   *                                  
+   * 
    * @see TestScopeListener
    * @see JunitTestScope
    */
   public synchronized static void tearDown(TestCase testCase) {
-    Class<? extends Module> moduleClass = getGuiceBerryEnvClassForTest(testCase);
-    notifyTestScopeListenerOfOutScope(moduleClass, testCase);
+    //TODO(zorzella): fix tests to enable this
+//    if (testCase instanceof TearDownAccepter) {
+//      throw new UnsupportedOperationException("You must not call " +
+//      		"GuiceBerryJunit3.tearDown (it's only needed for tests that do " +
+//      		"not implement TearDownAccepter).");
+//    }
+    GuiceBerryEnvRemapper remapper = getRemapper();
+    new GuiceBerryJunit3(testCase, remapper).goTearDown();
+  }
+  
+  private void goTearDown() {
+    Class<? extends Module> guiceBerryEnvClass = getGuiceBerryEnvClassForTest();
+    notifyTestScopeListenerOfOutScope(guiceBerryEnvClass, testCase);
     // TODO: this line used to be before the notifyTestScopeListenerOfOutScope
     // causing a bug -- e.d. a Provider<TestId> could not be used in the 
     // exitingScope method of the TestScopeListener. I haven't yet found a
     // good way to test this change.
-    doTearDown(testCase);
+    doTearDown(guiceBerryEnvClass);
   }
   
   /**
@@ -207,21 +231,23 @@ public class GuiceBerryJunit3 {
    * @return The name of the property corresponding to the module class name 
    *     from the parameter. 
    */
+  @Deprecated
   public static String buildModuleOverrideProperty(String moduleClassName) {
     return "GuiceBerry_Override_" + moduleClassName;
   }
 
-  private void doSetUp(TestCase testCase) {   
+  private void doSetUp() {
       
-    final Class<? extends Module> guiceBerryEnvClass = getGuiceBerryEnvClassForTest(testCase);
+    final Class<? extends Module> guiceBerryEnvClass = 
+      getGuiceBerryEnvClassForTest();
     testCurrentlyRunningOnThisThread.set(testCase);
     Injector injector = getInjector(guiceBerryEnvClass);
     injector.getInstance(TestScopeListener.class).enteringScope();
-    injectMembersIntoTest(testCase, guiceBerryEnvClass, injector); 
+    injectMembersIntoTest(guiceBerryEnvClass, injector); 
    
   }
 
-  private void injectMembersIntoTest(TestCase testCase,
+  private void injectMembersIntoTest(
       final Class<? extends Module> moduleClass, Injector injector) {
   
     try {
@@ -260,7 +286,7 @@ public class GuiceBerryJunit3 {
   }
   
   @SuppressWarnings("unchecked") 
-  private static Class<? extends Module> getGuiceBerryEnvClassForTest(TestCase testCase) {
+  private Class<? extends Module> getGuiceBerryEnvClassForTest() {
   
     String guiceBerryEnvName = getGuiceBerryEnvName(testCase);
     Class<? extends Module> moduleClass = 
@@ -296,11 +322,10 @@ public class GuiceBerryJunit3 {
     return guiceBerryEnvAnnotation;
   }  
   
-  private static String getGuiceBerryEnvName(TestCase testCase) {
+  private String getGuiceBerryEnvName(TestCase testCase) {
 
     GuiceBerryEnv guiceBerryModuleAnnotation = getGuiceBerryEnvAnnotation(testCase); 
     String result = guiceBerryModuleAnnotation.value();
-    GuiceBerryEnvRemapper remapper = getRemapper();
     return remapper.remap(testCase, result);
   }
 
@@ -391,7 +416,7 @@ public class GuiceBerryJunit3 {
     injector.getInstance(TestScopeListener.class).exitingScope();
   }
 
-  private static void doTearDown(TestCase testCase) {
+  private void doTearDown(Class<? extends Module> guiceBerryEnvClass) {
   
     if (testCurrentlyRunningOnThisThread.get() != testCase) {
       String msg = String.format( GuiceBerryJunit3.class.toString() 
@@ -403,16 +428,16 @@ public class GuiceBerryJunit3 {
       throw new RuntimeException(msg); 
     }
     testCurrentlyRunningOnThisThread.set(null);
-    moduleClassToGuiceBerryStuffMap.get(getGuiceBerryEnvClassForTest(testCase)).testScope 
+    moduleClassToGuiceBerryStuffMap.get(guiceBerryEnvClass).testScope 
       .finishScope(testCase);    
   }  
   
-  private static void addGuiceBerryTearDown(final TestCase testCase) {
+  private void addGuiceBerryTearDown(final TestCase testCase) {
     if (testCase instanceof TearDownAccepter) {
       TearDownAccepter tdtc = (TearDownAccepter) testCase;
       tdtc.addRequiredTearDown(new TearDown() {
         public void tearDown() {
-          GuiceBerryJunit3.tearDown(testCase);
+          goTearDown();
         }
       });
     }
