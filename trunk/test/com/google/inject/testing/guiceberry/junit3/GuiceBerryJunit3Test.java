@@ -982,6 +982,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       return result;
     }  
   }
+
   
 // BELOW CLASSES IMPLEMENTS INTERFACE MODULE
 // USED FOR GuiceBerryEnv ANNOTATIONS -- only for testing  
@@ -1075,9 +1076,9 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
    * {@link GuiceBerryEnv}s must be {@link Module}s.
    */
   public static class NotAGuiceBerryEnvOne {
-
     private static final String NOT_A_GUICE_BERRY_ENV_ONE = 
-    GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$NotAGuiceBerryEnvOne"; }
+      GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$NotAGuiceBerryEnvOne"; 
+  }
 
 //BELOW CLASSES ARE USED TO TEST IF GUICEBERRY BINDS THINGS PROPERLY   
 // used only for testing
