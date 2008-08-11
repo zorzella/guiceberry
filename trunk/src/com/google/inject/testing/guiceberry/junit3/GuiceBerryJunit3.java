@@ -60,7 +60,7 @@ import com.google.inject.testing.guiceberry.TestScoped;
 public class GuiceBerryJunit3 { 
   
   private static final GuiceBerryEnvRemapper DEFAULT_GUICE_BERRY_ENV_REMAPPER = 
-	  new DefaultGuiceBerryEnvRemapper();
+	  new IdentityGuiceBerryEnvRemapper();
   
   //TODO(zorzella): think about not needing the testScope and killing this
   private static final class GuiceBerryStuff {
@@ -214,28 +214,6 @@ public class GuiceBerryJunit3 {
     doTearDown(guiceBerryEnvClass);
   }
   
-  /**
-   * Builds the name of the system property that controls which 
-   * module is used to override the particular module. 
-   * 
-   * <p> If the value of the system property isn't set to anything or this 
-   * system property  was cleared the module is not overridden. Otherwise the 
-   * value of this system property is used to create the module (instead of the
-   * value of {@link GuiceBerryEnv} annotation).       
-   * 
-   * To get the system property corresponding to the given module, call this 
-   * method with the argument that is the name of this module.   
-   *  
-   * @param moduleClassName The module class name of the module for which system 
-   *     property is needed.   
-   * @return The name of the property corresponding to the module class name 
-   *     from the parameter. 
-   */
-  @Deprecated
-  public static String buildModuleOverrideProperty(String moduleClassName) {
-    return "GuiceBerry_Override_" + moduleClassName;
-  }
-
   private void doSetUp() {
       
     final Class<? extends Module> guiceBerryEnvClass = 
@@ -323,10 +301,17 @@ public class GuiceBerryJunit3 {
   }  
   
   private String getGuiceBerryEnvName(TestCase testCase) {
-
     GuiceBerryEnv guiceBerryModuleAnnotation = getGuiceBerryEnvAnnotation(testCase); 
-    String result = guiceBerryModuleAnnotation.value();
-    return remapper.remap(testCase, result);
+    String declaredGuiceBerryEnv = guiceBerryModuleAnnotation.value();
+    String result = remapper.remap(testCase, declaredGuiceBerryEnv);
+    if (result == null) {
+      throw new IllegalArgumentException(String.format(
+          "The installed GuiceBerryEnvRemapper '%s' returned 'null' for the " +
+          "'%s' test, which declares '%s' as its GuiceBerryEnv", 
+          remapper.getClass().getName(), 
+          testCase.getName(), declaredGuiceBerryEnv));
+    }
+    return result;
   }
 
   @SuppressWarnings("unchecked")
@@ -473,4 +458,18 @@ public class GuiceBerryJunit3 {
     return guiceBerryStuff.testScope;
   }
  
+  /**
+   * An "identity" remapper, that remaps a
+   * {@link com.google.inject.testing.guiceberry.GuiceBerryEnv} to itself.
+   * This remapper is installed by default.
+   * 
+   * {@inheritDoc}
+   * 
+   * @author Luiz-Otavio Zorzella
+   */
+  private static class IdentityGuiceBerryEnvRemapper implements GuiceBerryEnvRemapper {
+    public String remap(TestCase test, String env) {
+      return env;
+    }
+  }
 }

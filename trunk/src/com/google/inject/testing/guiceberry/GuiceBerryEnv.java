@@ -27,10 +27,9 @@ import java.lang.annotation.Target;
  * Each "test case" that wants GooseBerry injection must be annotated with this.
  * In JUnit lingo, this is a {@link junit.framework.TestCase}.
  * 
- * <p>The given string parameter to this annotation is expected to be a 
- * canonical name of a {@code Class<? extends Module>} that defines a "main" 
- * module for GooseBerry -- i.e. one that will be used to create an 
- * {@link com.google.inject.Injector}. 
+ * <p>The given string parameter to this annotation is expected to be the 
+ * fully-qualified name of a {@code Class<? extends Module>}; and that class 
+ * must completely define an {@link com.google.inject.Injector}.
  * 
  * 
  * @see GuiceBerryJunit3 

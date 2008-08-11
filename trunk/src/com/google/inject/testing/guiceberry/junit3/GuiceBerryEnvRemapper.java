@@ -20,12 +20,18 @@ import junit.framework.TestCase;
 /**
  * A remapper can be used to instruct GuiceBerry to use a different 
  * {@link com.google.inject.testing.guiceberry.GuiceBerryEnv} than the 
- * one actually specified in a given test class annotation.
+ * one actually declared in a given test class annotation.
+ * 
+ * <p>To use a remapper, set the {@link #GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME}
+ * property.
  * 
  * <p>The primary purpose for this is to allow for running tests under
  * different "integration" modes, as can be seen in the tutorial example
- * TODO -- i.e. run any given test against multiple 
+ * {@link com.google.inject.testing.guiceberry.tutorial.Example5Remapper}.
+ * I.e., this allows oen to run any given test against multiple
  * {@link com.google.inject.testing.guiceberry.GuiceBerryEnv}s.
+ * 
+ * <p>See {@link #remap(TestCase, String)}
  * 
  * @author Luiz-Otavio Zorzella
  */
@@ -35,7 +41,7 @@ public interface GuiceBerryEnvRemapper {
      * The name of the {@code System} property used to tell GuiceBerry 
      * which {@link GuiceBerryEnvRemapper} (if any) to use.
      */
-    public static final String GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME = 
+    String GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME = 
         "GuiceBerryEnvRemapper";
 
     /**
