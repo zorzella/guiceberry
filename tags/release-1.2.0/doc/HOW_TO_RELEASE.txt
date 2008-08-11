@@ -1,0 +1,46 @@
+How To release a new version of GuiceBerry
+==========================================
+
+1) Create a release SVN tag:
+
+$ svn cp trunk tags/release-x.y.z
+
+2) Edit this tag's build.properties, changing the 'version=snapshot' line to
+
+version=x.y.z
+
+3) Build a dist
+
+$ ant clean test dist
+
+4) Commit:
+
+$ svn commit -m "release x.y.z"
+
+5) Create a tar of the release itself
+
+$ svn export . build/dist/guiceberry-release-x.y.z
+$ cd build/dist
+$ zip -r guiceberry-release-x.y.z.zip guiceberry-release-x.y.z
+
+5) Upload jars to GoogleCode
+
+The URL is http://code.google.com/p/guiceberry/downloads/list > New Download. Upload these files, in this order:
+
+build/dist/guiceberry-release-x.y.z.zip
+Summary: Full source code
+Labels: Type-Source
+
+build/dist/guiceberry-x.y.z/guiceberry-x.y.z-src.jar
+Summary: source
+Labels: Type-Source, OpSys-All
+
+build/dist/guiceberry-x.y.z/guiceberry-x.y.z-tutorial.jar
+Summary: Tutorial -- see the project home page for a link to the docs
+Labels: Type-Docs, OpSys-All
+
+build/dist/guiceberry-x.y.z/guiceberry-x.y.z.jar
+Summary: jar
+Labels: Featured, Type-Package, OpSys-All
+
+Delete the older release, and also, make sure to check the installation instructions at http://docs.google.com/Doc?id=dddf9mmq_2sjv9nkk4 particularly if you changed the version of a dependent lib.
