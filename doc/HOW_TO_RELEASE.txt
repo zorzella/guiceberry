@@ -43,4 +43,4 @@ build/dist/guiceberry-x.y.z/guiceberry-x.y.z.jar
 Summary: jar
 Labels: Featured, Type-Package, OpSys-All
 
-Delete the older release, and also, make sure to check the installation instructions at http://docs.google.com/Doc?id=dddf9mmq_2sjv9nkk4 particularly if you changed the version of a dependent lib.
+Mark the older release as deprecated (which you'll find as an option under "Delete"), and also, make sure to check the installation instructions at http://docs.google.com/Doc?id=dddf9mmq_2sjv9nkk4 particularly if you changed the version of a dependent lib.
