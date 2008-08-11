@@ -305,28 +305,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     assertEquals(INJECTED_INFORMATION, testClass.fooService.get());
    }
   
-  public void testSimpleOverrideSystemPropertyOverridesModule() {
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
-    
-    TearDown tearDown = new TearDown() {
-    
-      public void tearDown() throws Exception {
-        System.clearProperty(GuiceBerryJunit3
-            .buildModuleOverrideProperty(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
-      }
-    };
-    addRequiredTearDown(tearDown);
-    System.setProperty(GuiceBerryJunit3
-        .buildModuleOverrideProperty(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE), 
-        GuiceBerryEnvTwo.GUICE_BERRY_ENV_TWO);
-    
-    GuiceBerryJunit3.setUp(testClass);
-    assertEquals(BarServiceTwo.class, testClass.barService.getClass());
-    assertEquals(FooServiceTwo.class, testClass.fooService.getClass());
-  }
-
-  public void testRemapperSystemPropertyOverridesModule() {
+  public void testRemapper() {
     TestAnnotatedWithStubService1 testClass = 
       TestAnnotatedWithStubService1.createInstance();
 
@@ -343,6 +322,35 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     GuiceBerryJunit3.setUp(testClass);
     assertEquals(BarServiceTwo.class, testClass.barService.getClass());
     assertEquals(FooServiceTwo.class, testClass.fooService.getClass());
+  }
+  
+  public void testRemapperThatReturnsNullGivesGoodErrorMessage() {
+    TestAnnotatedWithStubService1 testClass = 
+      TestAnnotatedWithStubService1.createInstance();
+
+    TearDown tearDown = new TearDown() {
+
+      public void tearDown() throws Exception {
+        System.clearProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
+      }
+    };
+    addRequiredTearDown(tearDown);
+    System.setProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME, 
+      MyGuiceBerryEnvRemapperThatReturnsNull.class.getName());
+
+    try {
+      GuiceBerryJunit3.setUp(testClass);
+      fail("An exception should have been thrown.");
+    } catch (IllegalArgumentException e) {
+      assertEquals(
+          "The installed GuiceBerryEnvRemapper " +
+          "'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$MyGuiceBerryEnvRemapperThatReturnsNull' " +
+          "returned 'null' for the 'fooTest' test, " +
+          "which declares " +
+          "'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$GuiceBerryEnvOne' " +
+          "as its GuiceBerryEnv", 
+          e.getMessage());
+    }
   }
   
   public void testRemapperSystemPropertyNeedsClassThatExists() {
@@ -404,39 +412,15 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     };
     addRequiredTearDown(tearDown);
     System.setProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME, 
-      MyInvalidGuiceBerryEnvRemapper.class.getName());
+      MyGuiceBerryEnvRemapperWithInvalidConstructor.class.getName());
 
     try {
       GuiceBerryJunit3.setUp(testClass);
       fail();
     } catch (IllegalArgumentException expected) {
-      assertEquals("GuiceBerryEnvRemapper 'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$MyInvalidGuiceBerryEnvRemapper' " +
+      assertEquals("GuiceBerryEnvRemapper 'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$MyGuiceBerryEnvRemapperWithInvalidConstructor' " +
         "must have public zero-arguments constructor", expected.getMessage());
     }
-  }
-
-  public void testNotExistingModuldeOverridesModuleThrowsException() {
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
-    
-    TearDown tearDown = new TearDown() {
-    
-      public void tearDown() throws Exception {
-        System.clearProperty(GuiceBerryJunit3
-            .buildModuleOverrideProperty(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
-      }
-    };
-    
-    addRequiredTearDown(tearDown);
-    
-    System.setProperty(GuiceBerryJunit3
-        .buildModuleOverrideProperty(
-         GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE), GUICE_BERRY_ENV_THAT_DOES_NOT_EXIST);
-    
-    try {
-      GuiceBerryJunit3.setUp(testClass);
-      fail();
-    } catch (IllegalArgumentException expected) {}
   }
 
   public void testTestGetsInjectedWithTestId() {
@@ -789,19 +773,26 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
 //THE BELOW CLASSES ARE USED ONLY FOR TESTING GuiceBerry
   
-  public static final class MyGuiceBerryEnvRemapper implements GuiceBerryEnvRemapper {
-
+  public static final class MyGuiceBerryEnvRemapper 
+      implements GuiceBerryEnvRemapper {
     public String remap(TestCase test, String guiceBerryEnv) {
       return GuiceBerryEnvTwo.class.getName();
     }
   }
 
-  private static final class MyInvalidGuiceBerryEnvRemapper implements GuiceBerryEnvRemapper {
-    public MyInvalidGuiceBerryEnvRemapper(int foo) {
-    }
-
+  public static final class MyGuiceBerryEnvRemapperThatReturnsNull 
+      implements GuiceBerryEnvRemapper {
     public String remap(TestCase test, String guiceBerryEnv) {
       return null;
+    }
+  }
+
+  private static final class MyGuiceBerryEnvRemapperWithInvalidConstructor 
+      implements GuiceBerryEnvRemapper {
+    public MyGuiceBerryEnvRemapperWithInvalidConstructor(int foo) {}
+
+    public String remap(TestCase test, String guiceBerryEnv) {
+      return GuiceBerryEnvTwo.class.getName();
     }
   }
 
