@@ -66,7 +66,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
         GuiceBerryJunit3.clear();
       }
     };
-    addRequiredTearDown(tearDown);
+    addTearDown(tearDown);
   }
 
   public void testSelfCanonicalNameConstantIsCorrect() throws Exception {
@@ -315,7 +315,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
         System.clearProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
       }
     };
-    addRequiredTearDown(tearDown);
+    addTearDown(tearDown);
     System.setProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME, 
       MyGuiceBerryEnvRemapper.class.getName());
 
@@ -334,7 +334,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
         System.clearProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
       }
     };
-    addRequiredTearDown(tearDown);
+    addTearDown(tearDown);
     System.setProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME, 
       MyGuiceBerryEnvRemapperThatReturnsNull.class.getName());
 
@@ -363,7 +363,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
         System.clearProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
       }
     };
-    addRequiredTearDown(tearDown);
+    addTearDown(tearDown);
     System.setProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME, 
       "foo");
 
@@ -386,7 +386,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
         System.clearProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
       }
     };
-    addRequiredTearDown(tearDown);
+    addTearDown(tearDown);
     System.setProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME, 
           MyNonGuiceBerryEnvRemapper.class.getName());
 
@@ -410,7 +410,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
         System.clearProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
       }
     };
-    addRequiredTearDown(tearDown);
+    addTearDown(tearDown);
     System.setProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME, 
       MyGuiceBerryEnvRemapperWithInvalidConstructor.class.getName());
 
@@ -573,7 +573,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     } catch (RuntimeException expected) {}   
   }
   
-  public void testAddRequiredTearDownToTearDownTestCase() {
+  public void testAddTearDownToTearDownTestCase() {
     TestAnnotatedWithStubService1 testClass = 
       TestAnnotatedWithStubService1.createInstance();
    

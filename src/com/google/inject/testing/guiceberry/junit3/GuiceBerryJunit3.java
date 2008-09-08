@@ -422,7 +422,7 @@ public class GuiceBerryJunit3 {
   private void addGuiceBerryTearDown(final TestCase testCase) {
     if (testCase instanceof TearDownAccepter) {
       TearDownAccepter tdtc = (TearDownAccepter) testCase;
-      tdtc.addRequiredTearDown(new TearDown() {
+      tdtc.addTearDown(new TearDown() {
         public void tearDown() {
           goTearDown();
         }

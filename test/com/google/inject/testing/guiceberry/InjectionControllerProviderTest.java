@@ -83,7 +83,6 @@ public class InjectionControllerProviderTest extends TestCase {
     // Nothing we did changed the InjectionControllerProvider so far
     assertEquals(0, injectionControllerProvider.size());
 
-
     TearDownStack tearDownStack = new TearDownStack();
 
     // At this point, we're changing the provider
@@ -111,7 +110,7 @@ public class InjectionControllerProviderTest extends TestCase {
     // in particular, Foo.class is not in the controller
     assertEquals(expectedFoo, foo);
 
-    tearDownStack.runTearDown(false);
+    tearDownStack.runTearDown();
 
     // After tear down, it should be empty again
     assertEquals(0, injectionControllerProvider.size());
