@@ -3,12 +3,12 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="doc/tutorial"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="lib" path="lib/tl4j-1.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/guice-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/google-collect-snapshot-20071022.jar"/>
 	<classpathentry kind="lib" path="lib/junit3.8.1.jar"/>
 	<classpathentry kind="lib" path="lib/servlet-api-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/guice-commands-snapshot-20080305.jar"/>
+	<classpathentry kind="lib" path="lib/tl4j-1.1.0.jar"/>
 	<classpathentry kind="output" path="build/eclipse-bin"/>
 </classpath>
