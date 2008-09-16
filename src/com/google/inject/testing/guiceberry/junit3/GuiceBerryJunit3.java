@@ -81,10 +81,15 @@ public class GuiceBerryJunit3 {
     new InheritableThreadLocal<TestCase>();
 
   private final TestCase testCase;
+  private final GuiceBerryEnv guiceBerryEnvAnnotation;
   private final GuiceBerryEnvRemapper remapper;
- 
-  private GuiceBerryJunit3(TestCase testCase, GuiceBerryEnvRemapper remapper) {
+  
+  private GuiceBerryJunit3(
+      TestCase testCase,
+      GuiceBerryEnv guiceBerryEnvAnnotation,
+      GuiceBerryEnvRemapper remapper) {
     this.testCase = testCase;
+    this.guiceBerryEnvAnnotation = guiceBerryEnvAnnotation;
     this.remapper = remapper;
   }
   
@@ -147,11 +152,12 @@ public class GuiceBerryJunit3 {
    */
   public synchronized static void setUp(final TestCase testCase) { 
     GuiceBerryEnvRemapper remapper = getRemapper();
-    new GuiceBerryJunit3(testCase, remapper).goSetUp(testCase);
+    new GuiceBerryJunit3(testCase, 
+        getGuiceBerryEnvAnnotation(testCase), 
+        remapper).goSetUp(testCase);
   }
   
   private synchronized void goSetUp(final TestCase testCase) {
-    GuiceBerryEnv guiceBerryEnvAnnotation = getGuiceBerryEnvAnnotation(testCase);
     if (guiceBerryEnvAnnotation == null) {
       throw new IllegalArgumentException(String.format(
     		  "Test class '%s' must have an @%s annotation.",
@@ -182,6 +188,11 @@ public class GuiceBerryJunit3 {
    * {@link GuiceBerryEnvRemapper#GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME} 
    * property, as it will likely cause the wrong {@link GuiceBerryEnv} to be
    * used on your tearDown.
+   * 
+   * <p>If your code, for whatever reason, happens to synchronize on the test
+   * class while calling the {@link #setUp(TestCase)} method, <em>and</em> you 
+   * run your tests in parallel, you should likewise synchronize the 
+   * {@link #tearDown(TestCase)}.
    *
    * @throws IllegalArgumentException If the {@link TestCase} provided  as an 
    *     argument  has no {@link GuiceBerryEnv} annotation or the module 
@@ -203,7 +214,10 @@ public class GuiceBerryJunit3 {
       }
     }
     GuiceBerryEnvRemapper remapper = getRemapper();
-    new GuiceBerryJunit3(testCase, remapper).goTearDown();
+    new GuiceBerryJunit3(
+        testCase, 
+        getGuiceBerryEnvAnnotation(testCase),
+        remapper).goTearDown();
   }
   
   private void goTearDown() {
@@ -303,8 +317,7 @@ public class GuiceBerryJunit3 {
   }  
   
   private String getGuiceBerryEnvName(TestCase testCase) {
-    GuiceBerryEnv guiceBerryModuleAnnotation = getGuiceBerryEnvAnnotation(testCase); 
-    String declaredGuiceBerryEnv = guiceBerryModuleAnnotation.value();
+    String declaredGuiceBerryEnv = this.guiceBerryEnvAnnotation.value();
     String result = remapper.remap(testCase, declaredGuiceBerryEnv);
     if (result == null) {
       throw new IllegalArgumentException(String.format(
@@ -430,11 +443,11 @@ public class GuiceBerryJunit3 {
     }
   }
   
-  static TestCase getActualTestCase(){ 
+  static TestCase getActualTestCase() { 
      return testCurrentlyRunningOnThisThread.get();
    }
   
-//BELOW ARE CLASSES ARE USED ONLY FOR TESTS  
+  // METHODS BELOW ARE USED ONLY FOR TESTS  
   static void clear() {
     moduleClassToGuiceBerryStuffMap = Maps.newHashMap();
     testCurrentlyRunningOnThisThread.set(null);
@@ -469,7 +482,7 @@ public class GuiceBerryJunit3 {
    * 
    * @author Luiz-Otavio Zorzella
    */
-  private static class IdentityGuiceBerryEnvRemapper implements GuiceBerryEnvRemapper {
+  private static final class IdentityGuiceBerryEnvRemapper implements GuiceBerryEnvRemapper {
     public String remap(TestCase test, String env) {
       return env;
     }
