@@ -37,7 +37,7 @@ import com.google.inject.ScopeAnnotation;
  * @author Luiz-Otavio Zorzella
  * @author Danka Karwanska
  */
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @ScopeAnnotation
 public @interface TestScoped {}
