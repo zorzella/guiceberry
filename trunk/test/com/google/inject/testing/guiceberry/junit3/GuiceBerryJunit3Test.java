@@ -29,6 +29,7 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
 import com.google.inject.Singleton;
+import com.google.inject.CreationException;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
 import com.google.inject.testing.guiceberry.TestId;
@@ -766,11 +767,38 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       throws Exception {
     TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener testClass = 
       TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener.createInstance();
-    
+
     GuiceBerryJunit3.setUp(testClass);
     testClass.run();
   }
-  
+
+  public void testModuleThatFailsInjectorCreation() throws Throwable {
+    TestModuleThatFailsInjectorCreation testCase =
+        TestModuleThatFailsInjectorCreation.createInstance();
+
+    // the first run should die on Injector-creation
+    try {
+      testCase.runBare();
+      fail();
+    } catch (CreationException expected) {
+      assertTrue(expected.getMessage(), expected.getMessage().contains("kaboom!"));
+    }
+
+    // the second run should die earlier. Guiceberry shouldn't even try to build the Injector
+    try {
+      testCase.runBare();
+      fail();
+    } catch (IllegalStateException expected) {
+      assertEquals("Not creating GuiceBerry env "
+          + GuiceBerryEnvThatFailsInjectorCreation.GUICE_BERRY_ENV_THAT_FAILS_INJECTOR_CREATION
+          + " due to previous failure",
+          expected.getMessage());
+      assertEquals("kaboom!", expected.getCause().getMessage());
+      assertTrue(expected.getCause().getMessage(), 
+          expected.getCause().getMessage().contains("kaboom!"));
+    }
+  }
+
 //THE BELOW CLASSES ARE USED ONLY FOR TESTING GuiceBerry
   
   public static final class MyGuiceBerryEnvRemapper 
@@ -974,7 +1002,24 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     }  
   }
 
-  
+  @GuiceBerryEnv(GuiceBerryEnvThatFailsInjectorCreation.GUICE_BERRY_ENV_THAT_FAILS_INJECTOR_CREATION)
+  public static final class TestModuleThatFailsInjectorCreation
+      extends TearDownTestCase {
+    static TestModuleThatFailsInjectorCreation createInstance() {
+      TestModuleThatFailsInjectorCreation result =
+          new TestModuleThatFailsInjectorCreation();
+      result.setName("testNothing");
+      return result;
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+      GuiceBerryJunit3.setUp(this);
+    }
+
+    public void testNothing() {}
+  }
+
 // BELOW CLASSES IMPLEMENTS INTERFACE MODULE
 // USED FOR GuiceBerryEnv ANNOTATIONS -- only for testing  
   
@@ -1070,6 +1115,23 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     private static final String NOT_A_GUICE_BERRY_ENV_ONE = 
       GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$NotAGuiceBerryEnvOne"; 
   }
+
+  public static class GuiceBerryEnvThatFailsInjectorCreation
+      extends AbstractModule  {
+    private static final String GUICE_BERRY_ENV_THAT_FAILS_INJECTOR_CREATION =
+        GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvThatFailsInjectorCreation";
+
+    @Override
+    public void configure() {
+      install(new BasicJunit3Module());
+      requestStaticInjection(getClass());
+    }
+
+    @Inject static void throwAnExceptionPlease() {
+      throw new UnsupportedOperationException("kaboom!");
+    }
+  }
+
 
 //BELOW CLASSES ARE USED TO TEST IF GUICEBERRY BINDS THINGS PROPERLY   
 // used only for testing
