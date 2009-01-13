@@ -17,6 +17,7 @@
 package com.google.inject.testing.guiceberry;
 
 import com.google.common.testing.TearDownStack;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.inject.Provider;
 import com.google.inject.Key;
@@ -88,7 +89,7 @@ public class InjectionControllerProviderTest extends TestCase {
     // At this point, we're changing the provider
     injectionController = InjectionControllerProvider.forTest(test1Id,
         tearDownStack);
-    injectionController.addSubstitutableKeys(Sets.<Key<?>>immutableSet(Key.get(Foo.class)));
+    injectionController.addSubstitutableKeys(ImmutableSet.<Key<?>>of(Key.get(Foo.class)));
     // The InjectionControllerProvider now has an entry
     assertEquals(1, injectionControllerProvider.size());
 

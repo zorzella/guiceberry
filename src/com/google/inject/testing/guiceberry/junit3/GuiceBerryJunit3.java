@@ -16,6 +16,7 @@
 
 package com.google.inject.testing.guiceberry.junit3;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -23,6 +24,7 @@ import junit.framework.TestCase;
 import com.google.common.collect.Maps;
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
+import com.google.inject.CreationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -32,6 +34,7 @@ import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.TestScoped;
+import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test.GuiceBerryEnvThatFailsInjectorCreation;
 
 /**
  * Provides the tools to manage the JUnit tests that use {@code Guice}.  
@@ -61,6 +64,14 @@ public class GuiceBerryJunit3 {
   
   private static final GuiceBerryEnvRemapper DEFAULT_GUICE_BERRY_ENV_REMAPPER = 
 	  new IdentityGuiceBerryEnvRemapper();
+
+  /**
+   * If something goes wrong trying to get a valid instance of an Injector
+   * for some GuiceBerryEnv name, this instance is stored in the 
+   * {@link #moduleClassToGuiceBerryStuffMap}, to allow for graceful error handling.
+   */
+  private static final GuiceBerryStuff BOGUS_GUICE_BERRY_STUFF = 
+    new GuiceBerryStuff(null, null);
   
   //TODO(zorzella): think about not needing the testScope and killing this
   private static final class GuiceBerryStuff {
@@ -222,12 +233,23 @@ public class GuiceBerryJunit3 {
   
   private void goTearDown() {
     Class<? extends Module> guiceBerryEnvClass = getGuiceBerryEnvClassForTest();
-    notifyTestScopeListenerOfOutScope(guiceBerryEnvClass, testCase);
+    
+    GuiceBerryStuff guiceBerryStuff = 
+      moduleClassToGuiceBerryStuffMap.get(guiceBerryEnvClass);
+    if (guiceBerryStuff == BOGUS_GUICE_BERRY_STUFF) {
+      // We failed to get a valid injector for this module in the setUp method,
+      // so we just gracefully return, after cleaning up the threadlocal (which
+      // normally would happen in the doTearDown method).
+      testCurrentlyRunningOnThisThread.set(null);
+      return;
+    }
+    
+    notifyTestScopeListenerOfOutScope(guiceBerryStuff);
     // TODO: this line used to be before the notifyTestScopeListenerOfOutScope
     // causing a bug -- e.d. a Provider<TestId> could not be used in the 
     // exitingScope method of the TestScopeListener. I haven't yet found a
     // good way to test this change.
-    doTearDown(guiceBerryEnvClass);
+    doTearDown(guiceBerryStuff);
   }
   
   private void doSetUp() {
@@ -249,7 +271,7 @@ public class GuiceBerryJunit3 {
     } catch (RuntimeException e) {  
       String msg = String.format("Binding error in the module '%s': '%s'.", 
           moduleClass.toString(), e.getMessage());
-      notifyTestScopeListenerOfOutScope(moduleClass, testCase);
+      notifyTestScopeListenerOfOutScope(moduleClassToGuiceBerryStuffMap.get(moduleClass));
       throw new RuntimeException(msg, e);
     }
   }
@@ -258,7 +280,14 @@ public class GuiceBerryJunit3 {
     if (!moduleClassToGuiceBerryStuffMap.containsKey(guiceBerryEnvClass)) {    
       return foundModuleForTheFirstTime(guiceBerryEnvClass);  
     } else {
-      return moduleClassToGuiceBerryStuffMap.get(guiceBerryEnvClass).injector; 
+      GuiceBerryStuff guiceBerryStuff = 
+        moduleClassToGuiceBerryStuffMap.get(guiceBerryEnvClass);
+      if (guiceBerryStuff == BOGUS_GUICE_BERRY_STUFF) {
+        throw new RuntimeException(String.format(
+            "Skipping '%s' GuiceBerryEnv which failed previously during injector creation.",
+            guiceBerryEnvClass.getName()));
+      }
+      return guiceBerryStuff.injector; 
     }
   }
 
@@ -365,26 +394,33 @@ public class GuiceBerryJunit3 {
   private Injector foundModuleForTheFirstTime(
       final Class<? extends Module> guiceBerryEnvClass) {
     
-    Module guiceBerryEnvInstance = createGuiceBerryInstanceFromClass(guiceBerryEnvClass);
-    Injector injector = Guice.createInjector(guiceBerryEnvInstance);
-     
-    try {
-    // This is not actually used, but ensures at this point that 
-    // TestScopeListener has been bound 
-    @SuppressWarnings("unused")
-	TestScopeListener testScopeListener = 
-        injector.getInstance(TestScopeListener.class);
-    //TODO(zorzella): catch ConfigurationException
-    } catch (RuntimeException e) {
-      String msg = String.format("Error while creating the instance of: " +
-            "'%s': '%s'.", TestScopeListener.class, e.getMessage());
-      throw new RuntimeException(msg, e); 
-    }
+    GuiceBerryStuff guiceBerryStuff = BOGUS_GUICE_BERRY_STUFF;
     
-    JunitTestScope testScope = injector.getInstance(JunitTestScope.class);
-    GuiceBerryStuff guiceBerryStuff = new GuiceBerryStuff(injector, testScope);
-    moduleClassToGuiceBerryStuffMap.put(guiceBerryEnvClass, guiceBerryStuff);
-    return injector;
+    try {
+      Module guiceBerryEnvInstance = createGuiceBerryInstanceFromClass(guiceBerryEnvClass);
+      Injector injector = Guice.createInjector(guiceBerryEnvInstance);
+
+      try {
+        // This is not actually used, but ensures at this point that 
+        // TestScopeListener has been bound 
+        @SuppressWarnings("unused")
+        TestScopeListener testScopeListener = 
+          injector.getInstance(TestScopeListener.class);
+        //TODO(zorzella): catch ConfigurationException
+      } catch (RuntimeException e) {
+        String msg = String.format("Error while creating the instance of: " +
+            "'%s': '%s'.", TestScopeListener.class, e.getMessage());
+        throw new RuntimeException(msg, e); 
+      }
+
+      JunitTestScope testScope = injector.getInstance(JunitTestScope.class);
+      guiceBerryStuff = new GuiceBerryStuff(injector, testScope);
+      return injector;
+    } finally {
+      // This is in the finally block to ensure that BOGUS_GUICE_BERRY_STUFF 
+      // is put in the map if things go bad.
+      moduleClassToGuiceBerryStuffMap.put(guiceBerryEnvClass, guiceBerryStuff);
+    }
   }
 
   private Module createGuiceBerryInstanceFromClass(
@@ -409,14 +445,12 @@ public class GuiceBerryJunit3 {
   }
 
   private static void notifyTestScopeListenerOfOutScope(
-      Class <? extends Module> moduleClass,
-      TestCase testCase) {
-    Injector injector = 
-      moduleClassToGuiceBerryStuffMap.get(moduleClass).injector;
+      GuiceBerryStuff guiceBerryStuff) {
+    Injector injector = guiceBerryStuff.injector;
     injector.getInstance(TestScopeListener.class).exitingScope();
   }
 
-  private void doTearDown(Class<? extends Module> guiceBerryEnvClass) {
+  private void doTearDown(GuiceBerryStuff guiceBerryStuff) {
   
     if (testCurrentlyRunningOnThisThread.get() != testCase) {
       String msg = String.format( GuiceBerryJunit3.class.toString() 
@@ -428,8 +462,7 @@ public class GuiceBerryJunit3 {
       throw new RuntimeException(msg); 
     }
     testCurrentlyRunningOnThisThread.set(null);
-    moduleClassToGuiceBerryStuffMap.get(guiceBerryEnvClass).testScope 
-      .finishScope(testCase);    
+    guiceBerryStuff.testScope.finishScope(testCase);    
   }  
   
   private void addGuiceBerryTearDown(final TestCase testCase) {
