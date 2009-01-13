@@ -778,24 +778,27 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
     // the first run should die on Injector-creation
     try {
-      testCase.runBare();
+      testCase.setUp();
       fail();
-    } catch (CreationException expected) {
-      assertTrue(expected.getMessage(), expected.getMessage().contains("kaboom!"));
+    } catch (RuntimeException expected) {
+      // TODO: when Guice upgrade happens, this test will fail, to serve as
+      // a reminder that the catch block needs to be changed to catch CreationException
+      assertFalse(expected instanceof CreationException);
+      // TODO: assert kaboom! when CreationException is properly thrown by Guice
     }
-
-    // the second run should die earlier. Guiceberry shouldn't even try to build the Injector
+    
+    // Even when setUp fails (in this case with CreationException), tearDown
+    // will execute, and should not throw an Exception
+    GuiceBerryJunit3.tearDown(testCase);
+      
     try {
-      testCase.runBare();
+      testCase.setUp();
       fail();
-    } catch (IllegalStateException expected) {
-      assertEquals("Not creating GuiceBerry env "
-          + GuiceBerryEnvThatFailsInjectorCreation.GUICE_BERRY_ENV_THAT_FAILS_INJECTOR_CREATION
-          + " due to previous failure",
+    } catch (RuntimeException expected) {
+      assertEquals(String.format(
+          "Skipping '%s' GuiceBerryEnv which failed previously during injector creation.",
+          GuiceBerryEnvThatFailsInjectorCreation.GUICE_BERRY_ENV_THAT_FAILS_INJECTOR_CREATION),
           expected.getMessage());
-      assertEquals("kaboom!", expected.getCause().getMessage());
-      assertTrue(expected.getCause().getMessage(), 
-          expected.getCause().getMessage().contains("kaboom!"));
     }
   }
 
@@ -1004,7 +1007,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
   @GuiceBerryEnv(GuiceBerryEnvThatFailsInjectorCreation.GUICE_BERRY_ENV_THAT_FAILS_INJECTOR_CREATION)
   public static final class TestModuleThatFailsInjectorCreation
-      extends TearDownTestCase {
+      extends TestCase {
     static TestModuleThatFailsInjectorCreation createInstance() {
       TestModuleThatFailsInjectorCreation result =
           new TestModuleThatFailsInjectorCreation();
@@ -1018,6 +1021,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     }
 
     public void testNothing() {}
+    
   }
 
 // BELOW CLASSES IMPLEMENTS INTERFACE MODULE
@@ -1161,7 +1165,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     TestCase testCase;
     
     public void enteringScope() {
-      Objects.nonNull(testCase, "TestCase is null, ");
+      Objects.firstNonNull(testCase, "TestCase is null, ");
     }
 
     public void exitingScope() { }
