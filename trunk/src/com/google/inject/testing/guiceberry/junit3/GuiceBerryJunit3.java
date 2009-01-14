@@ -16,15 +16,9 @@
 
 package com.google.inject.testing.guiceberry.junit3;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-
-import junit.framework.TestCase;
-
 import com.google.common.collect.Maps;
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
-import com.google.inject.CreationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -34,7 +28,10 @@ import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.TestScoped;
-import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test.GuiceBerryEnvThatFailsInjectorCreation;
+
+import junit.framework.TestCase;
+
+import java.util.Map;
 
 /**
  * Provides the tools to manage the JUnit tests that use {@code Guice}.  
