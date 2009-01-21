@@ -29,6 +29,18 @@
     </copy -->
   </target>
 
+  <path id="project.class.path">
+    <pathelement location="${build.dir}/classes"/>
+    <pathelement location="${lib.dir}/aopalliance.jar"/>
+    <pathelement location="${lib.dir}/easymock.jar"/>
+    <pathelement location="${lib.dir}/google-collect-snapshot-20080820.jar"/>
+    <pathelement location="${lib.dir}/guice-1.0.jar"/>
+    <pathelement location="${lib.dir}/guice-commands-snapshot-20080305.jar"/>
+    <pathelement location="${lib.dir}/junit3.8.1.jar"/>
+    <pathelement location="${lib.dir}/servlet-api-2.4.jar"/>
+    <pathelement location="${lib.dir}/tl4j-1.1.0.jar"/>
+  </path>
+
   <target name="test.compile"
       depends="compile"
       description="Compile test source.">
@@ -36,40 +48,49 @@
     <javac srcdir="${test.dir}"
          debug="on"
          target="${target}"
-         destdir="${build.dir}/test">
-      <classpath>
-        <pathelement location="${build.dir}/classes"/>
-        <pathelement location="${lib.dir}/aopalliance.jar"/>
-        <pathelement location="${lib.dir}/junit3.8.1.jar"/>
-        <pathelement location="${lib.dir}/guice-1.0.jar"/>
-        <pathelement location="${lib.dir}/guice-commands-snapshot-20080305.jar"/>
-        <pathelement location="${lib.dir}/tl4j-1.1.0.jar"/>
-        <pathelement location="${lib.dir}/servlet-api-2.4.jar"/>
-        <pathelement location="${lib.dir}/google-collect-snapshot-20080820.jar"/>
-      </classpath>
+         destdir="${build.dir}/test"
+         classpathref="project.class.path"
+           >
     </javac>
   </target>
 
   <target name="test"
       depends="test.compile"
       description="Execute JUnit tests.">
-    <java fork="true"
-        classname="junit.textui.TestRunner"
-        failonerror="true"
-        taskname="junit">
+    
+    <mkdir dir="${build.dir}/junitreport"/>
+
+  	<junit 
+  		printsummary="yes" 
+  		haltonfailure="yes">
+      <classpath
+      	refid="project.class.path"/>
       <classpath>
         <pathelement location="${build.dir}/test"/>
-        <pathelement location="${build.dir}/classes"/>
-        <pathelement location="${lib.dir}/aopalliance.jar"/>
-        <pathelement location="${lib.dir}/junit3.8.1.jar"/>
-        <pathelement location="${lib.dir}/guice-1.0.jar"/>
-        <pathelement location="${lib.dir}/guice-commands-snapshot-20080305.jar"/>
-        <pathelement location="${lib.dir}/tl4j-1.1.0.jar"/>
-        <pathelement location="${lib.dir}/servlet-api-2.4.jar"/>
-        <pathelement location="${lib.dir}/google-collect-snapshot-20080820.jar"/>
       </classpath>
+
+      <formatter type="plain"/>
+
+      <!-- test name="my.test.TestCase" haltonfailure="no" outfile="result">
+        <formatter type="xml"/>
+      </test -->
+
+      <batchtest fork="no" todir="${build.dir}/junitreport">
+        <fileset dir="${test.dir}">
+          <include name="**/*Test*.java"/>
+          <exclude name="**/AllTests.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+    
+  	<!-- java fork="true"
+        classname="junit.textui.TestRunner"
+        failonerror="true"
+        taskname="junit"
+        classpathref="project.class.path"
+  	>
       <arg value="${test.class}"/>
-    </java>
+    </java -->
   </target>
 
   <target name="clean"
@@ -116,7 +137,8 @@
          destdir="${build.dir}/javadoc"
          author="true"
          protected="true"
-         windowtitle="GuiceBerry">
+         windowtitle="GuiceBerry"
+    	   classpathref="project.class.path">
       <sourcepath>
         <pathelement location="${src.dir}"/>
       </sourcepath>
