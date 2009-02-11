@@ -10,6 +10,6 @@
 	<classpathentry kind="lib" path="lib/guice-commands-snapshot-20080305.jar"/>
 	<classpathentry kind="lib" path="lib/tl4j-1.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance.jar"/>
-	<classpathentry kind="lib" path="lib/google-collect-snapshot-20080820.jar"/>
+	<classpathentry kind="lib" path="lib/google-collect-snapshot-20090211.jar"/>
 	<classpathentry kind="output" path="build/eclipse-bin"/>
 </classpath>
