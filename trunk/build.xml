@@ -16,7 +16,7 @@
       <classpath>
         <pathelement location="${build.dir}/classes"/>
         <pathelement location="${lib.dir}/aopalliance.jar"/>
-        <pathelement location="${lib.dir}/google-collect-snapshot-20080820.jar"/>
+        <pathelement location="${lib.dir}/google-collect-snapshot-20090211.jar"/>
         <pathelement location="${lib.dir}/guice-1.0.jar"/>
         <pathelement location="${lib.dir}/guice-commands-snapshot-20080305.jar"/>
         <pathelement location="${lib.dir}/junit3.8.1.jar"/>
@@ -33,7 +33,7 @@
     <pathelement location="${build.dir}/classes"/>
     <pathelement location="${lib.dir}/aopalliance.jar"/>
     <pathelement location="${lib.dir}/easymock.jar"/>
-    <pathelement location="${lib.dir}/google-collect-snapshot-20080820.jar"/>
+    <pathelement location="${lib.dir}/google-collect-snapshot-20090211.jar"/>
     <pathelement location="${lib.dir}/guice-1.0.jar"/>
     <pathelement location="${lib.dir}/guice-commands-snapshot-20080305.jar"/>
     <pathelement location="${lib.dir}/junit3.8.1.jar"/>
