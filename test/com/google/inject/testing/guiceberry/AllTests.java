@@ -16,6 +16,9 @@
 
 package com.google.inject.testing.guiceberry;
 
+import com.google.inject.testing.guiceberry.controllable.InjectionControllerProviderTest;
+import com.google.inject.testing.guiceberry.controllable.InjectionControllerTest;
+import com.google.inject.testing.guiceberry.controllable.InterceptingBindingsBuilderTest;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test;
 import com.google.inject.testing.guiceberry.junit3.MutableSingletonScopeTest;
 
@@ -31,6 +34,7 @@ public class AllTests {
     suite.addTestSuite(GuiceBerryJunit3Test.class);
     suite.addTestSuite(InjectionControllerProviderTest.class);
     suite.addTestSuite(InjectionControllerTest.class);
+    suite.addTestSuite(InterceptingBindingsBuilderTest.class);
     suite.addTestSuite(MutableSingletonScopeTest.class);
     //$JUnit-END$
     return suite;

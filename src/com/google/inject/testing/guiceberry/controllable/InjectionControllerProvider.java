@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.inject.testing.guiceberry;
+package com.google.inject.testing.guiceberry.controllable;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -23,6 +23,7 @@ import com.google.common.testing.TearDownAccepter;
 import com.google.inject.Inject;
 import com.google.inject.Key;
 import com.google.inject.Provider;
+import com.google.inject.testing.guiceberry.TestId;
 
 import java.util.Map;
 

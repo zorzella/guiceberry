@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.google.inject.testing.guiceberry;
+package com.google.inject.testing.guiceberry.controllable;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.Sets;
 import com.google.inject.*;
-import com.google.inject.commands.intercepting.ProvisionInterceptor;
 import com.google.inject.name.Named;
 
 import java.util.Collections;
@@ -47,18 +46,19 @@ import java.util.Set;
  * <pre>
  * InjectionController injectionController = new InjectionController();
  *
- * Injector injector = new InterceptingInjectorBuilder()
+ * Injector injector = Guice.createInjector(
+ *   new InterceptingBindingsBuilder()
  *     .install(new MyApplicationModule(), injectionController.createModule());
  *     .intercept(PersistenceEngine.class)
  *     .intercept(DeliveryRequestService.class)
- *     .build();
+ *     .build());
  *
  * injectionController.substitute(PersistenceEngine.class, new MockPersistenceEngine());
  * </pre>
  * 
- * @author zorzella@google.com
- * @author jessewilson@google.com (Jesse Wilson)
- * @author jmourits@google.com (Jerome Mourits)
+ * @author zorzella
+ * @author Jesse Wilson
+ * @author Jerome Mourits
  */
 public class InjectionController {
   private final Set<Key<?>> interceptableKeys = Sets.newHashSet();
