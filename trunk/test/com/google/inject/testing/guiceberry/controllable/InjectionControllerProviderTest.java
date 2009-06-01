@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package com.google.inject.testing.guiceberry;
+package com.google.inject.testing.guiceberry.controllable;
 
-import com.google.common.testing.TearDownStack;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import com.google.inject.Provider;
+import com.google.common.testing.TearDownStack;
 import com.google.inject.Key;
+import com.google.inject.Provider;
+import com.google.inject.testing.guiceberry.TestId;
+import com.google.inject.testing.guiceberry.controllable.InjectionController;
+import com.google.inject.testing.guiceberry.controllable.InjectionControllerProvider;
+
 import junit.framework.TestCase;
 
 public class InjectionControllerProviderTest extends TestCase {

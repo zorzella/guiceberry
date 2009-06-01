@@ -24,6 +24,7 @@ import com.google.common.testing.junit3.JUnitAsserts;
 import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
+import com.google.inject.ConfigurationException;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -123,11 +124,13 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     } catch (RuntimeException expected) {
       //TODO: we should assert expected's cause is ConfigurationException, but 
       //that exception is private
+      assertEquals(ConfigurationException.class, expected.getCause().getClass());
       assertTrue(expected.getMessage().startsWith("Binding error in the module"));
-      String configurationExceptionSuffix = "Binding to " +
-        BarService.class.getName() +
-        " not found. No bindings to that type were found.";
-      assertTrue(expected.getCause().getMessage().endsWith(configurationExceptionSuffix));
+      String configurationExceptionMeat = 
+        "No implementation for " +
+      	BarService.class.getName() +
+      	" was bound.";
+      assertTrue(expected.getCause().getMessage().contains(configurationExceptionMeat));
     }
   }
  
@@ -781,10 +784,9 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       testCase.setUp();
       fail();
     } catch (RuntimeException expected) {
-      // TODO: when Guice upgrade happens, this test will fail, to serve as
-      // a reminder that the catch block needs to be changed to catch CreationException
-      assertFalse(expected instanceof CreationException);
-      // TODO: assert kaboom! when CreationException is properly thrown by Guice
+      String expectedMessage = 
+        "Error injecting method, java.lang.UnsupportedOperationException: kaboom!";
+      assertTrue(expected.getMessage().contains(expectedMessage));
     }
     
     // Even when setUp fails (in this case with CreationException), tearDown
@@ -1164,9 +1166,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     @Inject
     TestCase testCase;
     
-    public void enteringScope() {
-      Objects.firstNonNull(testCase, "TestCase is null, ");
-    }
+    public void enteringScope() { }
 
     public void exitingScope() { }
   }

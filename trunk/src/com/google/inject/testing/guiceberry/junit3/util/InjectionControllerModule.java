@@ -21,9 +21,9 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
-import com.google.inject.testing.guiceberry.InjectionController;
-import com.google.inject.testing.guiceberry.InjectionControllerProvider;
 import com.google.inject.testing.guiceberry.TestId;
+import com.google.inject.testing.guiceberry.controllable.InjectionController;
+import com.google.inject.testing.guiceberry.controllable.InjectionControllerProvider;
 
 import junit.framework.TestCase;
 

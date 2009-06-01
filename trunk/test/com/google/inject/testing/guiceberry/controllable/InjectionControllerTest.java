@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package com.google.inject.testing.guiceberry;
+package com.google.inject.testing.guiceberry.controllable;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
+import com.google.inject.CreationException;
+import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.google.inject.commands.intercepting.InterceptingInjectorBuilder;
+import com.google.inject.Module;
 import com.google.inject.name.Names;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
+import com.google.inject.testing.guiceberry.controllable.InjectionController;
+import com.google.inject.testing.guiceberry.controllable.InterceptingBindingsBuilder;
+
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -56,7 +60,8 @@ public class InjectionControllerTest extends TestCase {
   }
 
   public void testSimpleOverride() throws Exception {
-    Injector injector = new InterceptingInjectorBuilder()
+    Injector injector = Guice.createInjector(
+        new InterceptingBindingsBuilder()
         .install(injectionController.createModule(),
             new AbstractModule() {
               @Override
@@ -65,7 +70,7 @@ public class InjectionControllerTest extends TestCase {
               }
             })
         .intercept(String.class)
-        .build();
+        .build());
 
     assertEquals("a", injector.getInstance(String.class));
     injectionController.substitute(String.class, "b");
@@ -78,7 +83,8 @@ public class InjectionControllerTest extends TestCase {
    *    than the static InjectionControllerProvider.forTest method.
    */
   public void SUPPRESSED_testSubstituteWithoutWhitelistFails() throws Exception {
-    Injector injector = new InterceptingInjectorBuilder()
+    Injector injector = Guice.createInjector(
+        new InterceptingBindingsBuilder()
         .install(injectionController.createModule(),
             new AbstractModule() {
               @Override
@@ -86,7 +92,7 @@ public class InjectionControllerTest extends TestCase {
                 bind(String.class).toInstance("a");
               }
             })
-        .build();
+        .build());
 
     try {
       injectionController.substitute(String.class, "b");
@@ -98,7 +104,7 @@ public class InjectionControllerTest extends TestCase {
   }
 
   public void testBareBindingFails() throws Exception {
-    InterceptingInjectorBuilder builder = new InterceptingInjectorBuilder()
+    Module built = new InterceptingBindingsBuilder()
         .install(injectionController.createModule(),
             new AbstractModule() {
               @Override
@@ -106,12 +112,13 @@ public class InjectionControllerTest extends TestCase {
                 bind(ArrayList.class);
               }
             })
-        .intercept(ArrayList.class);
+        .intercept(ArrayList.class)
+        .build();
 
     try {
-      builder.build();
+      Guice.createInjector(built);
       fail();
-    } catch (UnsupportedOperationException expected) {
+    } catch (CreationException expected) {
     }
   }
 }

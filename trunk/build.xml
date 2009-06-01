@@ -16,9 +16,10 @@
       <classpath>
         <pathelement location="${build.dir}/classes"/>
         <pathelement location="${lib.dir}/aopalliance.jar"/>
-        <pathelement location="${lib.dir}/google-collect-snapshot-20090211.jar"/>
-        <pathelement location="${lib.dir}/guice-1.0.jar"/>
-        <pathelement location="${lib.dir}/guice-commands-snapshot-20080305.jar"/>
+        <pathelement location="${lib.dir}/google-collect-1.0-rc1.jar"/>
+        <!-- guice-servlet is not really necessary -->
+        <pathelement location="${lib.dir}/guice-2.0.jar"/>
+        <pathelement location="${lib.dir}/guice-servlet-2.0.jar"/>
         <pathelement location="${lib.dir}/junit3.8.1.jar"/>
         <pathelement location="${lib.dir}/servlet-api-2.4.jar"/>
         <pathelement location="${lib.dir}/tl4j-1.1.0.jar"/>
@@ -33,9 +34,10 @@
     <pathelement location="${build.dir}/classes"/>
     <pathelement location="${lib.dir}/aopalliance.jar"/>
     <pathelement location="${lib.dir}/easymock.jar"/>
-    <pathelement location="${lib.dir}/google-collect-snapshot-20090211.jar"/>
-    <pathelement location="${lib.dir}/guice-1.0.jar"/>
-    <pathelement location="${lib.dir}/guice-commands-snapshot-20080305.jar"/>
+    <pathelement location="${lib.dir}/google-collect-1.0-rc1.jar"/>
+    <pathelement location="${lib.dir}/guice-2.0.jar"/>
+    <!-- guice-servlet is not really necessary -->
+    <pathelement location="${lib.dir}/guice-servlet-2.0.jar"/>
     <pathelement location="${lib.dir}/junit3.8.1.jar"/>
     <pathelement location="${lib.dir}/servlet-api-2.4.jar"/>
     <pathelement location="${lib.dir}/tl4j-1.1.0.jar"/>
@@ -62,7 +64,7 @@
 
   	<junit 
   		printsummary="yes" 
-  		haltonfailure="yes">
+  		haltonfailure="no">
       <classpath
       	refid="project.class.path"/>
       <classpath>
@@ -75,7 +77,7 @@
         <formatter type="xml"/>
       </test -->
 
-      <batchtest fork="no" todir="${build.dir}/junitreport">
+      <batchtest fork="true" todir="${build.dir}/junitreport">
         <fileset dir="${test.dir}">
           <include name="**/*Test*.java"/>
           <exclude name="**/AllTests.java"/>

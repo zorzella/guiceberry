@@ -38,6 +38,8 @@ import javax.servlet.http.Cookie;
 //@Immutable
 public final class TestId implements Comparable<TestId>, CharSequence {
 
+  public static final String COOKIE_NAME = "testid";
+  
   private final String testCaseName;
   private final String testMethodName;
   // @VisibleForTesting
@@ -57,7 +59,7 @@ public final class TestId implements Comparable<TestId>, CharSequence {
   }
   
   // @VisibleForTesting
-  TestId(String testCaseName, String testMethodName, long random) {
+  public TestId(String testCaseName, String testMethodName, long random) {
     this.testCaseName = testCaseName; 
     this.testMethodName = testMethodName;
     this.random = random;
