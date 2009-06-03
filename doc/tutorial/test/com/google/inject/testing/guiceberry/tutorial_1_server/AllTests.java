@@ -9,7 +9,7 @@ public class AllTests {
     TestSuite suite = new TestSuite(
       "Test for com.google.inject.testing.guiceberry.tutorial_0_basic");
     //$JUnit-BEGIN$
-    suite.addTestSuite(Example0StartingAnHttpServerTest.class);
+    suite.addTestSuite(Example0HelloWorldTest.class);
     //$JUnit-END$
     return suite;
   }

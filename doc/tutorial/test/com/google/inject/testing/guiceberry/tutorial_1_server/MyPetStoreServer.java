@@ -22,9 +22,11 @@ import javax.servlet.http.HttpServletResponse;
 
 public class MyPetStoreServer {
   
-  private Server server;
+  private final Server server;
+  private final int portNumber;
   
   public MyPetStoreServer(int portNumber) {
+    this.portNumber = portNumber;
     server = new Server(portNumber);    
     Context root = new Context(server, "/", Context.SESSIONS);
     
@@ -41,6 +43,10 @@ public class MyPetStoreServer {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+  
+  public int getPortNumber() {
+    return portNumber;
   }
 
   private Injector getInjector() {
