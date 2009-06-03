@@ -8,7 +8,7 @@ import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-@GuiceBerryEnv("com.google.inject.testing.guiceberry.tutorial.Example3TestScopeListenerTest$ExampleGuiceBerryEnv")
+@GuiceBerryEnv(TutorialEnvs.EXAMPLE_3)
 public class Example3TestScopeListenerTest extends GuiceBerryJunit3TestCase {
 
   public void testOne() throws Exception {
@@ -33,7 +33,7 @@ public class Example3TestScopeListenerTest extends GuiceBerryJunit3TestCase {
     }
   }
 
-  public static final class ExampleGuiceBerryEnv extends GuiceBerryJunit3Env {
+  public static final class Env extends GuiceBerryJunit3Env {
     @Override
     protected Class<? extends TestScopeListener> getTestScopeListener() {
       return Example3TestScopeListener.class;

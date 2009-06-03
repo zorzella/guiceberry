@@ -11,7 +11,7 @@ import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.junit3.BasicJunit3Module;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3;
 
-@GuiceBerryEnv("com.google.inject.testing.guiceberry.tutorial.Example4VerboseHelloWorldTest$ExampleGuiceBerryEnv")
+@GuiceBerryEnv(TutorialEnvs.EXAMPLE_4)
 public class Example4VerboseHelloWorldTest extends TearDownTestCase {
 
   @Override
