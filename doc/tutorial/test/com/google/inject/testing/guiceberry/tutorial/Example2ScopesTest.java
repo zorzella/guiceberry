@@ -16,7 +16,7 @@ import com.google.inject.testing.guiceberry.TestScoped;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-@GuiceBerryEnv("com.google.inject.testing.guiceberry.tutorial.Example2ScopesTest$ExampleGuiceBerryEnv")
+@GuiceBerryEnv(TutorialEnvs.EXAMPLE_2)
 public class Example2ScopesTest extends GuiceBerryJunit3TestCase {
 
   @Inject
@@ -53,7 +53,7 @@ public class Example2ScopesTest extends GuiceBerryJunit3TestCase {
     assertEquals(103, unscopedIncrementingNumber.get().intValue());
   }
 
-  public static final class ExampleGuiceBerryEnv extends GuiceBerryJunit3Env {
+  public static final class Env extends GuiceBerryJunit3Env {
     private static final class IncrementingProvider implements Provider<Integer> {
       private int number;
 
@@ -81,34 +81,31 @@ public class Example2ScopesTest extends GuiceBerryJunit3TestCase {
       IncrementingProvider singletonScopedIncrementingNumberProvider = 
         new IncrementingProvider(300);
       bind(Integer.class)
-      .annotatedWith(UnscopedIncrementingNumber.class)
-      .toProvider(unscopedIncrementingNumberProvider);
+        .annotatedWith(UnscopedIncrementingNumber.class)
+        .toProvider(unscopedIncrementingNumberProvider);
       bind(Integer.class)
-      .annotatedWith(TestScopedIncrementingNumber.class)
-      .toProvider(testScopedIncrementingNumberProvider)
-      .in(TestScoped.class);
+        .annotatedWith(TestScopedIncrementingNumber.class)
+        .toProvider(testScopedIncrementingNumberProvider)
+        .in(TestScoped.class);
       bind(Integer.class)
-      .annotatedWith(SingletonScopedIncrementingNumber.class)
-      .toProvider(singletonScopedIncrementingNumberProvider)
-      .in(Scopes.SINGLETON);
+        .annotatedWith(SingletonScopedIncrementingNumber.class)
+        .toProvider(singletonScopedIncrementingNumberProvider)
+        .in(Scopes.SINGLETON);
     }
   }
 
   @Retention(RetentionPolicy.RUNTIME) 
   @Target(ElementType.FIELD) 
   @BindingAnnotation
-  private @interface UnscopedIncrementingNumber {
-  }
+  private @interface UnscopedIncrementingNumber {}
 
   @Retention(RetentionPolicy.RUNTIME) 
   @Target(ElementType.FIELD) 
   @BindingAnnotation
-  private @interface TestScopedIncrementingNumber {
-  }
+  private @interface TestScopedIncrementingNumber {}
 
   @Retention(RetentionPolicy.RUNTIME) 
   @Target(ElementType.FIELD) 
   @BindingAnnotation
-  private @interface SingletonScopedIncrementingNumber {
-  }
+  private @interface SingletonScopedIncrementingNumber {}
 }

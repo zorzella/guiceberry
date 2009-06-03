@@ -23,6 +23,7 @@ import com.google.inject.Provider;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.controllable.InjectionController;
 import com.google.inject.testing.guiceberry.controllable.InjectionControllerProvider;
+import com.google.inject.util.Providers;
 
 import junit.framework.TestCase;
 
@@ -45,29 +46,10 @@ public class InjectionControllerProviderTest extends TestCase {
     }
   }
 
-  /**
-   * Returns a {@link com.google.inject.Provider} that returns the object
-   * passed in on a {@code get()} method call.
-   *
-   * <p> A provider of any supertype of T can be returned by upcasting
-   * the {@code provided} argument.  For example:
-   * <code>
-   *   Provider&lt;Object&gt; objectProvider
-   *      = Providers.providerFor((Object) "a string");
-   * </code>
-   */
-  private static <T> Provider<T> providerFor(final T provided) {
-    return new Provider<T>() {
-      public T get() {
-        return provided;
-      }
-    };
-  }
-
   public void testSimpleSunnyCaseSemantics() throws Exception {
     TestId test1Id = new TestId("test1","test1", 1);
 
-    Provider<TestId> testIdProvider = providerFor(test1Id);
+    Provider<TestId> testIdProvider = Providers.of(test1Id);
 
     InjectionControllerProvider injectionControllerProvider = 
       new InjectionControllerProvider(testIdProvider);
