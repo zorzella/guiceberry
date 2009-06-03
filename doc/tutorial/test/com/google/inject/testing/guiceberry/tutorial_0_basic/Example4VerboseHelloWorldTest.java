@@ -1,4 +1,4 @@
-package com.google.inject.testing.guiceberry.tutorial;
+package com.google.inject.testing.guiceberry.tutorial_0_basic;
 
 import static com.google.inject.Scopes.SINGLETON;
 
@@ -11,7 +11,7 @@ import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.junit3.BasicJunit3Module;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3;
 
-@GuiceBerryEnv(TutorialEnvs.EXAMPLE_4)
+@GuiceBerryEnv(Tutorial0Envs.EXAMPLE_4)
 public class Example4VerboseHelloWorldTest extends TearDownTestCase {
 
   @Override
@@ -24,7 +24,7 @@ public class Example4VerboseHelloWorldTest extends TearDownTestCase {
     assertTrue(true);
   }
 
-  public static final class ExampleGuiceBerryEnv implements Module {
+  public static final class Env implements Module {
 
     public void configure(Binder binder) {
       binder.install(new BasicJunit3Module());

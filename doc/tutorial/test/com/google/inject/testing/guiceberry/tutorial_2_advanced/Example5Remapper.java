@@ -1,4 +1,4 @@
-package com.google.inject.testing.guiceberry.tutorial;
+package com.google.inject.testing.guiceberry.tutorial_2_advanced;
 
 import com.google.common.testing.TearDown;
 import com.google.inject.Inject;
@@ -12,7 +12,7 @@ import com.google.inject.testing.guiceberry.junit3.util.SimpleMapGuiceBerryEnvRe
 
 import junit.framework.TestCase;
 
-@GuiceBerryEnv("com.google.inject.testing.guiceberry.tutorial.Example5Remapper$FakeGuiceBerryEnv")
+@GuiceBerryEnv(Tutorial2Envs.EXAMPLE_5)
 public class Example5Remapper extends GuiceBerryJunit3TestCase {
   
   /**
