@@ -17,30 +17,27 @@ import java.lang.annotation.Target;
 
 public final class RegularPetStoreAt8080Env extends GuiceBerryJunit3Env {
   
-  private static final int PORT_NUMBER = 8080;
-
   @Retention(RetentionPolicy.RUNTIME) 
-  @Target({ElementType.FIELD, ElementType.PARAMETER}) 
+  @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER}) 
   @BindingAnnotation
-  private @interface PortNumber {}
+  public @interface PortNumber {}
 
-  @Override
-  protected void configure() {
-    super.configure();
-    bind(Integer.class).annotatedWith(PortNumber.class).toInstance(8080);
+  @Provides
+  @PortNumber
+  int getPortNumber(MyPetStoreServer server) {
+    return server.getPortNumber();
   }
   
   @Provides
-  WebDriver getWebDriver(@PortNumber int portNumber) {
+  WebDriver getWebDriver() {
     WebDriver driver = new HtmlUnitDriver();
-    driver.get("http://localhost:" + portNumber);
     return driver;
   }
   
   @Provides
   @Singleton
   MyPetStoreServer startServer() {
-    MyPetStoreServer result = new MyPetStoreServer(RegularPetStoreAt8080Env.PORT_NUMBER);
+    MyPetStoreServer result = new MyPetStoreServer(8080);
     // It's always sane to separate the "start"ing of a server from the
     // constructor.
     result.start();
