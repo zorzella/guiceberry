@@ -15,8 +15,14 @@ public class Example1PageObjectsTest extends GuiceBerryJunit3TestCase {
   @Inject
   WelcomeTestPage welcomeTestPage;
   
-  public void testMyServlet() {
+  public void testMyServletDiv() {
+    welcomeTestPage.goTo();
     welcomeTestPage.assertWelcomeMessage();
+  }
+
+  public void testMyServletTitle() {
+    welcomeTestPage.goTo();
+    welcomeTestPage.assertTitle();
   }
   
   public static final class WelcomeTestPage {
@@ -34,6 +40,10 @@ public class Example1PageObjectsTest extends GuiceBerryJunit3TestCase {
     public void assertWelcomeMessage() {
       WebElement element = driver.findElement(By.xpath("//div[@id='welcome']"));
       assertEquals("Welcome!", element.getText());
+    }
+    
+    public void assertTitle() {
+      assertEquals("Welcome to the pet store", driver.getTitle());
     }
   }
 }
