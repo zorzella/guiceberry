@@ -1,8 +1,8 @@
-package com.google.inject.testing.guiceberry.tutorial;
+package com.google.inject.testing.guiceberry.tutorial_0_basic;
 
-public interface TutorialEnvs {
+public interface Tutorial0Envs {
 
-  String PACKAGE = "com.google.inject.testing.guiceberry.tutorial.";
+  String PACKAGE = "com.google.inject.testing.guiceberry.tutorial_0_basic.";
   String SUFFIX = "$Env";
   
   String EXAMPLE_1 = PACKAGE + "Example1GetsInjectedTest" + SUFFIX;
