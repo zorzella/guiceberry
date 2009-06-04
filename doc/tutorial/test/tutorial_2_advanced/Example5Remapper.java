@@ -3,8 +3,6 @@ package tutorial_2_advanced;
 import com.google.common.testing.TearDown;
 import com.google.inject.Inject;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
-import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
-import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryEnvRemapper;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
@@ -79,11 +77,7 @@ public class Example5Remapper extends GuiceBerryJunit3TestCase {
   }
   
   public static final class FakeGuiceBerryEnv extends GuiceBerryJunit3Env {
-    @Override
-    protected Class<? extends TestScopeListener> getTestScopeListener() {
-      return NoOpTestScopeListener.class;
-    }
-    
+   
     @Override
     protected void configure() {
       super.configure();
@@ -92,11 +86,7 @@ public class Example5Remapper extends GuiceBerryJunit3TestCase {
   }
 
   public static final class RealGuiceBerryEnv extends GuiceBerryJunit3Env {
-    @Override
-    protected Class<? extends TestScopeListener> getTestScopeListener() {
-      return NoOpTestScopeListener.class;
-    }
-    
+
     @Override
     protected void configure() {
       super.configure();
