@@ -1,4 +1,4 @@
-package tutorial_1_server.prod_2_manual_controllable_injection;
+package tutorial_1_server;
 
 import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
@@ -18,7 +18,7 @@ import tutorial_1_server.prod.PortNumber;
 import java.util.List;
 import java.util.Random;
 
-public final class ManualCIPetStoreAt8080Env extends GuiceBerryJunit3Env {
+public final class PetStoreEnv2GlobalStaticControllablePotm extends GuiceBerryJunit3Env {
   
   @Provides
   @PortNumber

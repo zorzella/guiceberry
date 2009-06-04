@@ -5,10 +5,10 @@ import com.google.inject.Inject;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
+import tutorial_1_server.PetStoreEnv2GlobalStaticControllablePotm.PetStoreModuleWithGlobalStaticOverride;
 import tutorial_1_server.prod.PetOfTheMonth;
-import tutorial_1_server.prod_2_manual_controllable_injection.ManualCIPetStoreAt8080Env.PetStoreModuleWithGlobalStaticOverride;
 
-@GuiceBerryEnv(Tutorial1Envs.MANUAL_CONTROLLABLE_INJECTION_PET_STORE_AT_8080_ENV)
+@GuiceBerryEnv(Tutorial1Envs.PET_STORE_ENV_2_GLOBAL_STATIC_POTM)
 public class Example2ManualControlledInjectionTest extends GuiceBerryJunit3TestCase {
 
   @Inject
