@@ -3,7 +3,6 @@ package com.google.inject.testing.guiceberry.tutorial_1_server;
 import com.google.inject.Inject;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
-import com.google.inject.testing.guiceberry.tutorial_1_server.RegularPetStoreAt8080Env.PortNumber;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

@@ -1,7 +1,8 @@
 package com.google.inject.testing.guiceberry.tutorial_1_server;
 
 import com.google.inject.Inject;
-import com.google.inject.testing.guiceberry.tutorial_1_server.RegularPetStoreAt8080Env.PortNumber;
+
+import junit.framework.TestCase;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -21,10 +22,15 @@ public final class WelcomeTestPage {
   
   public void assertWelcomeMessage() {
     WebElement element = driver.findElement(By.xpath("//div[@id='welcome']"));
-    Example1PageObjectsTest.assertEquals("Welcome!", element.getText());
+    TestCase.assertEquals("Welcome!", element.getText());
   }
   
   public void assertTitle() {
-    Example1PageObjectsTest.assertEquals("Welcome to the pet store", driver.getTitle());
+    TestCase.assertEquals("Welcome to the pet store", driver.getTitle());
+  }
+
+  public void assertPetOfTheMonth(PetOfTheMonth petOfTheMonth) {
+    WebElement element = driver.findElement(By.xpath("//div[@id='potm']"));
+    TestCase.assertEquals(petOfTheMonth.toString(), element.getText());
   }
 }
