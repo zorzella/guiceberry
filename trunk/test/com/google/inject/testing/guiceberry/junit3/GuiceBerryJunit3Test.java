@@ -16,9 +16,6 @@
 
 package com.google.inject.testing.guiceberry.junit3;
 
-import junit.framework.TestCase;
-
-import com.google.common.base.Objects;
 import com.google.common.testing.TearDown;
 import com.google.common.testing.junit3.JUnitAsserts;
 import com.google.common.testing.junit3.TearDownTestCase;
@@ -30,11 +27,12 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
 import com.google.inject.Singleton;
-import com.google.inject.CreationException;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScopeListener;
+
+import junit.framework.TestCase;
 
 /**
  * Tests the {@link GuiceBerryJunit3} class.

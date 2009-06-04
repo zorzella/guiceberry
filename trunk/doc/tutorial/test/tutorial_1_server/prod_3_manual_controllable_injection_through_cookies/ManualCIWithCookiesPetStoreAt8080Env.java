@@ -7,9 +7,8 @@ import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
-import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
 import com.google.inject.testing.guiceberry.TestId;
-import com.google.inject.testing.guiceberry.TestScopeListener;
+import com.google.inject.testing.guiceberry.controllable.TestIdServerModule;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 
 import org.openqa.selenium.Cookie;
@@ -50,16 +49,12 @@ public final class ManualCIWithCookiesPetStoreAt8080Env extends GuiceBerryJunit3
       protected List<? extends Module> getModules() {
         return Lists.newArrayList(
             new PetStoreModuleWithTestIdBasedOverride(),
-            new ServletModule());
+            new ServletModule(),
+            new TestIdServerModule());
       }
     };
     result.start();
     return result;
-  }
-  
-  @Override
-  protected Class<? extends TestScopeListener> getTestScopeListener() {
-    return NoOpTestScopeListener.class;
   }
   
   public static final class PetStoreModuleWithTestIdBasedOverride extends AbstractModule {

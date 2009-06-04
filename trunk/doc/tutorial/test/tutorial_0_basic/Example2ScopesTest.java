@@ -1,20 +1,18 @@
 package tutorial_0_basic;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Scopes;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
-import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
-import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.TestScoped;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 @GuiceBerryEnv(Tutorial0Envs.EXAMPLE_2)
 public class Example2ScopesTest extends GuiceBerryJunit3TestCase {
@@ -64,11 +62,6 @@ public class Example2ScopesTest extends GuiceBerryJunit3TestCase {
       public Integer get() {
         return number++;
       }
-    }
-
-    @Override
-    protected Class<? extends TestScopeListener> getTestScopeListener() {
-      return NoOpTestScopeListener.class;
     }
 
     @Override
