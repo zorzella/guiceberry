@@ -8,7 +8,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import tutorial_1_server.prod_0_simple.PortNumber;
+import tutorial_1_server.prod.PortNumber;
 
 @GuiceBerryEnv(Tutorial1Envs.REGULAR_PET_STORE_AT_8080_ENV)
 public class Example0HelloWorldTest extends GuiceBerryJunit3TestCase {

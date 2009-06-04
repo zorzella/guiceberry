@@ -9,6 +9,9 @@ import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
+import tutorial_1_server.prod.MyPetStoreServer;
+import tutorial_1_server.prod.PortNumber;
+
 
 public class RegularPetStoreAt8080Env extends GuiceBerryJunit3Env {
   

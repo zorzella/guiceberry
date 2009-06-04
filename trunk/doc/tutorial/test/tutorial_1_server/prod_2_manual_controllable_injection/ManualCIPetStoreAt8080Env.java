@@ -11,9 +11,9 @@ import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-import tutorial_1_server.prod_0_simple.MyPetStoreServer;
-import tutorial_1_server.prod_0_simple.PetOfTheMonth;
-import tutorial_1_server.prod_0_simple.PortNumber;
+import tutorial_1_server.prod.MyPetStoreServer;
+import tutorial_1_server.prod.PetOfTheMonth;
+import tutorial_1_server.prod.PortNumber;
 
 import java.util.List;
 import java.util.Random;
