@@ -90,12 +90,8 @@ public class MyPetStoreServer {
   }
 
   public static final class PetStoreModule extends AbstractModule {
-    private final Random rand = new Random();
 
     public static final Map<TestId, PetOfTheMonth> override = Maps.newHashMap();
-    
-    @Override
-    protected void configure() {}
 
     @Provides
     // !!!HERE!!!!
@@ -104,11 +100,21 @@ public class MyPetStoreServer {
       if (petOfTheMonth != null) {
         return petOfTheMonth;
       }
+      return somePetOfTheMonth();
+    }
+
+    private final Random rand = new Random();
+
+    /** Simulates a call to a non-deterministic service -- maybe an external
+     * server, maybe a DB call to a volatile entry, etc.
+     */
+    private PetOfTheMonth somePetOfTheMonth() {
       PetOfTheMonth[] allPetsOfTheMonth = PetOfTheMonth.values();
-      // Simulates a call to a non-deterministic service -- maybe an external
-      // server, maybe a DB call to a volatile entry, etc.
       return allPetsOfTheMonth[(rand.nextInt(allPetsOfTheMonth.length))];
     }
+
+    @Override
+    protected void configure() {}
   }
 
   public static void main(String[] args) throws Exception {

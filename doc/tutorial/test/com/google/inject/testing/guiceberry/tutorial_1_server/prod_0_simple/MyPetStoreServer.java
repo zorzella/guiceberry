@@ -85,18 +85,24 @@ public class MyPetStoreServer {
   }
 
   private final static class PetStoreModule extends AbstractModule {
-    private final Random rand = new Random();
-
-    @Override
-    protected void configure() {}
 
     @Provides
     PetOfTheMonth getPetOfTheMonth() {
+      return somePetOfTheMonth();
+    }
+    
+    private final Random rand = new Random();
+
+    /** Simulates a call to a non-deterministic service -- maybe an external
+     * server, maybe a DB call to a volatile entry, etc.
+     */
+    private PetOfTheMonth somePetOfTheMonth() {
       PetOfTheMonth[] allPetsOfTheMonth = PetOfTheMonth.values();
-      // Simulates a call to a non-deterministic service -- maybe an external
-      // server, maybe a DB call to a volatile entry, etc.
       return allPetsOfTheMonth[(rand.nextInt(allPetsOfTheMonth.length))];
     }
+
+    @Override
+    protected void configure() {}
   }
 
   public static void main(String[] args) throws Exception {
