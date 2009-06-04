@@ -1,4 +1,4 @@
-package tutorial_1_server;
+package tutorial_1_server.prod_0_simple;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
