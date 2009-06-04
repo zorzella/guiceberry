@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-import tutorial_1_server.prod_1_manual_controllable_injection.MyPetStoreServer.PetStoreModule;
+import tutorial_1_server.prod_2_manual_controllable_injection.MyPetStoreServer.PetStoreModule;
 
 @GuiceBerryEnv(Tutorial1Envs.MANUAL_CONTROLLABLE_INJECTION_PET_STORE_AT_8080_ENV)
 public class Example2ManualControlledInjectionTest extends GuiceBerryJunit3TestCase {
