@@ -1,4 +1,4 @@
-package tutorial_1_server.prod_0_simple;
+package tutorial_1_server;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -10,7 +10,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import tutorial_1_server.prod.MyPetStoreServer;
 import tutorial_1_server.prod.PortNumber;
 
-public class RegularPetStoreAt8080Env extends GuiceBerryJunit3Env {
+public class PetStoreEnv0Simple extends GuiceBerryJunit3Env {
   
   @Provides
   @PortNumber

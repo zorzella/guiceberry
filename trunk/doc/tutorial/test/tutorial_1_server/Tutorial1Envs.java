@@ -4,12 +4,14 @@ public interface Tutorial1Envs {
 
   String PACKAGE = "tutorial_1_server.";
 
-  String REGULAR_PET_STORE_AT_8080_ENV = PACKAGE + 
-    "prod_0_simple.RegularPetStoreAt8080Env";
+  String PET_STORE_ENV_0_SIMPLE = PACKAGE + 
+    "PetStoreEnv0Simple";
   
-  String MANUAL_CONTROLLABLE_INJECTION_PET_STORE_AT_8080_ENV = PACKAGE + 
-    "prod_2_manual_controllable_injection.ManualCIPetStoreAt8080Env";
+  // Example 1 uses the same env as example 0
   
-  String MANUAL_CONTROLLABLE_INJECTION_THROUGH_COOKIE_PET_STORE_AT_8080_ENV = PACKAGE + 
-    "prod_3_manual_controllable_injection_through_cookies.ManualCIWithCookiesPetStoreAt8080Env";
+  String PET_STORE_ENV_2_GLOBAL_STATIC_POTM = PACKAGE + 
+    "PetStoreEnv2GlobalStaticControllablePotm";
+  
+  String PET_STORE_ENV_3_COOKIES_BASED_POTM = PACKAGE + 
+    "PetStoreEnv3CookiesControlledPotm";
 }

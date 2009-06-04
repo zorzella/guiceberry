@@ -10,7 +10,7 @@ import org.openqa.selenium.WebElement;
 
 import tutorial_1_server.prod.PortNumber;
 
-@GuiceBerryEnv(Tutorial1Envs.REGULAR_PET_STORE_AT_8080_ENV)
+@GuiceBerryEnv(Tutorial1Envs.PET_STORE_ENV_0_SIMPLE)
 public class Example0HelloWorldTest extends GuiceBerryJunit3TestCase {
 
   @Inject

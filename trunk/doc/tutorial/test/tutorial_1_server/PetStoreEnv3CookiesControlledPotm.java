@@ -1,4 +1,4 @@
-package tutorial_1_server.prod_3_manual_controllable_injection_through_cookies;
+package tutorial_1_server;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public final class ManualCIWithCookiesPetStoreAt8080Env extends GuiceBerryJunit3Env {
+public final class PetStoreEnv3CookiesControlledPotm extends GuiceBerryJunit3Env {
   
   @Provides
   @PortNumber
