@@ -9,9 +9,8 @@ import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-import tutorial_1_server.PortNumber;
 
-public final class RegularPetStoreAt8080Env extends GuiceBerryJunit3Env {
+public class RegularPetStoreAt8080Env extends GuiceBerryJunit3Env {
   
   @Provides
   @PortNumber
@@ -27,7 +26,7 @@ public final class RegularPetStoreAt8080Env extends GuiceBerryJunit3Env {
   
   @Provides
   @Singleton
-  MyPetStoreServer startServer() {
+  protected MyPetStoreServer startServer() {
     MyPetStoreServer result = new MyPetStoreServer(8080);
     // It's always sane to separate the "start"ing of a server from the
     // constructor.

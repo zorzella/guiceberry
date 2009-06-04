@@ -21,6 +21,7 @@ import static com.google.inject.Scopes.SINGLETON;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
+import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
 import com.google.inject.testing.guiceberry.TestScopeListener;
 
 /**
@@ -41,7 +42,9 @@ import com.google.inject.testing.guiceberry.TestScopeListener;
  */
 public abstract class GuiceBerryJunit3Env extends AbstractModule {
 
-  protected abstract Class<? extends TestScopeListener> getTestScopeListener();
+  protected Class<? extends TestScopeListener> getTestScopeListener() {
+    return NoOpTestScopeListener.class;
+  }
 
   @Override
   protected void configure() {

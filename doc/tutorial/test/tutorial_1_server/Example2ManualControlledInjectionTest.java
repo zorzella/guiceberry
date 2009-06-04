@@ -5,7 +5,8 @@ import com.google.inject.Inject;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-import tutorial_1_server.prod_2_manual_controllable_injection.MyPetStoreServer.PetStoreModule;
+import tutorial_1_server.prod_0_simple.PetOfTheMonth;
+import tutorial_1_server.prod_2_manual_controllable_injection.ManualCIPetStoreAt8080Env.PetStoreModuleWithGlobalStaticOverride;
 
 @GuiceBerryEnv(Tutorial1Envs.MANUAL_CONTROLLABLE_INJECTION_PET_STORE_AT_8080_ENV)
 public class Example2ManualControlledInjectionTest extends GuiceBerryJunit3TestCase {
@@ -15,12 +16,12 @@ public class Example2ManualControlledInjectionTest extends GuiceBerryJunit3TestC
   
   public void testDogAsPotm() {
     PetOfTheMonth expected = PetOfTheMonth.DOG;
-    PetStoreModule.override = expected;
+    PetStoreModuleWithGlobalStaticOverride.override = expected;
     // register a tearDown, so that at the end of the test, 
     // the override is set to null again
     addTearDown(new TearDown() {
       public void tearDown() {
-        PetStoreModule.override = null;
+        PetStoreModuleWithGlobalStaticOverride.override = null;
       }
     });
     welcomeTestPage.goTo();
@@ -29,12 +30,12 @@ public class Example2ManualControlledInjectionTest extends GuiceBerryJunit3TestC
 
   public void testCatAsPotm() {
     PetOfTheMonth expected = PetOfTheMonth.CAT;
-    PetStoreModule.override = expected;
+    PetStoreModuleWithGlobalStaticOverride.override = expected;
     // register a tearDown, so that at the end of the test, 
     // the override is set to null again
     addTearDown(new TearDown() {
       public void tearDown() {
-        PetStoreModule.override = null;
+        PetStoreModuleWithGlobalStaticOverride.override = null;
       }
     });
     welcomeTestPage.goTo();

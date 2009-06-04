@@ -6,7 +6,8 @@ import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-import tutorial_1_server.prod_3_manual_controllable_injection_through_cookies.MyPetStoreServer.PetStoreModule;
+import tutorial_1_server.prod_0_simple.PetOfTheMonth;
+import tutorial_1_server.prod_3_manual_controllable_injection_through_cookies.ManualCIWithCookiesPetStoreAt8080Env.PetStoreModuleWithTestIdBasedOverride;
 
 @GuiceBerryEnv(Tutorial1Envs.MANUAL_CONTROLLABLE_INJECTION_THROUGH_COOKIE_PET_STORE_AT_8080_ENV)
 public class Example3ManualControlledInjectionThroughCookieTest extends GuiceBerryJunit3TestCase {
@@ -19,12 +20,12 @@ public class Example3ManualControlledInjectionThroughCookieTest extends GuiceBer
   
   public void testDogAsPotm() {
     PetOfTheMonth expected = PetOfTheMonth.DOG;
-    PetStoreModule.override.put(testId, expected);
+    PetStoreModuleWithTestIdBasedOverride.override.put(testId, expected);
     // register a tearDown, so that at the end of the test, 
     // the override is set to null again
     addTearDown(new TearDown() {
       public void tearDown() {
-        PetStoreModule.override.remove(testId);
+        PetStoreModuleWithTestIdBasedOverride.override.remove(testId);
       }
     });
     welcomeTestPage.goTo();
@@ -33,12 +34,12 @@ public class Example3ManualControlledInjectionThroughCookieTest extends GuiceBer
 
   public void testCatAsPotm() {
     PetOfTheMonth expected = PetOfTheMonth.CAT;
-    PetStoreModule.override.put(testId, expected);
+    PetStoreModuleWithTestIdBasedOverride.override.put(testId, expected);
     // register a tearDown, so that at the end of the test, 
     // the override is set to null again
     addTearDown(new TearDown() {
       public void tearDown() {
-        PetStoreModule.override.remove(testId);
+        PetStoreModuleWithTestIdBasedOverride.override.remove(testId);
       }
     });
     welcomeTestPage.goTo();

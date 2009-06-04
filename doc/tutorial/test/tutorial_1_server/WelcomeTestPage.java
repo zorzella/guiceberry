@@ -8,6 +8,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import tutorial_1_server.prod_0_simple.PetOfTheMonth;
+import tutorial_1_server.prod_0_simple.PortNumber;
+
 public final class WelcomeTestPage {
   @Inject
   WebDriver driver;
