@@ -1,4 +1,4 @@
-package com.google.inject.testing.guiceberry.tutorial_1_server;
+package com.google.inject.testing.guiceberry.tutorial_1_server.prod_0_simple;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -7,6 +7,9 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
+import com.google.inject.servlet.GuiceFilter;
+import com.google.inject.servlet.ServletModule;
+import com.google.inject.testing.guiceberry.tutorial_1_server.PetOfTheMonth;
 
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
@@ -32,6 +35,7 @@ public class MyPetStoreServer {
     
     MyServlet myServlet = new MyServlet();
     root.addServlet(new ServletHolder(myServlet), "/*");
+    root.addFilter(GuiceFilter.class, "/", 0);
 
     Injector injector = getInjector();
     injector.injectMembers(myServlet);
@@ -50,8 +54,8 @@ public class MyPetStoreServer {
   }
 
   private Injector getInjector() {
-    Module modules = new PetStoreModule();
-    return Guice.createInjector(modules);
+    Module module = new PetStoreModule();
+    return Guice.createInjector(module, new ServletModule());
   }
 
   private static final class MyServlet extends HttpServlet {
@@ -80,7 +84,7 @@ public class MyPetStoreServer {
     }
   }
 
-  private final class PetStoreModule extends AbstractModule {
+  private final static class PetStoreModule extends AbstractModule {
     private final Random rand = new Random();
 
     @Override
@@ -88,16 +92,13 @@ public class MyPetStoreServer {
 
     @Provides
     PetOfTheMonth getPetOfTheMonth() {
-      return PetOfTheMonth.values()[(rand.nextInt(PetOfTheMonth.values().length))];
+      PetOfTheMonth[] allPetsOfTheMonth = PetOfTheMonth.values();
+      // Simulates a call to a non-deterministic service -- maybe an external
+      // server, maybe a DB call to a volatile entry, etc.
+      return allPetsOfTheMonth[(rand.nextInt(allPetsOfTheMonth.length))];
     }
   }
 
-  public enum PetOfTheMonth {
-    CAT,
-    DOG,
-    TAMARIN,
-  }
-  
   public static void main(String[] args) throws Exception {
     MyPetStoreServer petStoreServer = new MyPetStoreServer(8080);
     petStoreServer.start();

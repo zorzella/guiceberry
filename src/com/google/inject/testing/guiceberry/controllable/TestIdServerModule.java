@@ -15,15 +15,13 @@
  */
 package com.google.inject.testing.guiceberry.controllable;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.ImmutableMap.Builder;
 import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
-import com.google.inject.TypeLiteral;
 import com.google.inject.servlet.RequestScoped;
 import com.google.inject.testing.guiceberry.TestId;
 
@@ -32,7 +30,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Collection;
-import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +44,13 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class TestIdServerModule extends AbstractModule {
 
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+  @BindingAnnotation
+  @interface CookieMap {}
+  
   @Provides
+  @RequestScoped
   TestId get(@CookieMap Multimap<String,Cookie> cookieMap) {
     Collection<Cookie> temp = cookieMap.get(TestId.COOKIE_NAME);
     if (temp.size() > 1) {
@@ -59,24 +62,15 @@ public class TestIdServerModule extends AbstractModule {
     return new TestId(temp.iterator().next());
   }
 
-  @Override
-  protected void configure() {
-    bind(TestId.class).in(RequestScoped.class);
-    bind(new TypeLiteral<Map<String,Cookie>>(){})
-      .annotatedWith(CookieMap.class).in(RequestScoped.class);
-  }
-  
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target({ElementType.FIELD, ElementType.PARAMETER})
-  @BindingAnnotation
-  @interface CookieMap {}
-  
   @Provides
-  Map<String,Cookie> getCookieMap(
+  @CookieMap
+  @RequestScoped
+  Multimap<String,Cookie> getCookieMap(
       Provider<HttpServletRequest> httpServletRequestProvider) {
     
     Cookie[] cookies = httpServletRequestProvider.get().getCookies();
-    Builder<String, Cookie> temp = new ImmutableMap.Builder<String, Cookie>();
+    ImmutableMultimap.Builder<String, Cookie> temp = 
+      new ImmutableMultimap.Builder<String, Cookie>();
     if (cookies != null) {
       for (Cookie cookie : cookies) {
         temp.put(cookie.getName(), cookie);
@@ -84,4 +78,7 @@ public class TestIdServerModule extends AbstractModule {
     }
     return temp.build();
   }
+
+  @Override
+  protected void configure() {}
 }
