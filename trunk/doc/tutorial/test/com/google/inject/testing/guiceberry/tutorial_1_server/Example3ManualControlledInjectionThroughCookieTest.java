@@ -18,10 +18,9 @@ public class Example3ManualControlledInjectionThroughCookieTest extends GuiceBer
   
   public void testDogAsPotm() {
     PetOfTheMonth expected = PetOfTheMonth.DOG;
-    // Create a stub instance of the mapper that always returns "DOG" as the
-    // country
     PetStoreModule.override.put(testId, expected);
-    // register a tearDown, so that at the end of the test, the override is null again
+    // register a tearDown, so that at the end of the test, 
+    // the override is set to null again
     addTearDown(new TearDown() {
       public void tearDown() {
         PetStoreModule.override.remove(testId);
@@ -33,10 +32,9 @@ public class Example3ManualControlledInjectionThroughCookieTest extends GuiceBer
 
   public void testCatAsPotm() {
     PetOfTheMonth expected = PetOfTheMonth.CAT;
-    // Create a stub instance of the mapper that always returns "DOG" as the
-    // country
     PetStoreModule.override.put(testId, expected);
-    // register a tearDown, so that at the end of the test, the override is null again
+    // register a tearDown, so that at the end of the test, 
+    // the override is set to null again
     addTearDown(new TearDown() {
       public void tearDown() {
         PetStoreModule.override.remove(testId);

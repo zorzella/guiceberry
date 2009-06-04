@@ -4,7 +4,15 @@
 package com.google.inject.testing.guiceberry.tutorial_1_server;
 
 public enum PetOfTheMonth {
+  CAMELEON,
+  CAPYBARA,
   CAT,
   DOG,
+  FERRET,
+  HUMMUNGBIRD,
+  MACAW,
+  PARROT,
   TAMARIN,
+  TOUCAN,
+  WEASEL,
 }
