@@ -56,7 +56,7 @@ public class MyPetStoreServer {
 
   private Injector getInjector() {
     Module module = new PetStoreModule();
-    return Guice.createInjector(module, new ServletModule());
+    return Guice.createInjector(module);
   }
 
   private static final class MyServlet extends HttpServlet {
@@ -110,7 +110,9 @@ public class MyPetStoreServer {
     }
 
     @Override
-    protected void configure() {}
+    protected void configure() {
+      install(new ServletModule());
+    }
   }
 
   public static void main(String[] args) throws Exception {
