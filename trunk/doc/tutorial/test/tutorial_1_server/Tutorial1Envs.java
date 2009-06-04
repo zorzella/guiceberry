@@ -11,5 +11,5 @@ public interface Tutorial1Envs {
     "prod_1_manual_controllable_injection.ManualCIPetStoreAt8080Env";
   
   String MANUAL_CONTROLLABLE_INJECTION_THROUGH_COOKIE_PET_STORE_AT_8080_ENV = PACKAGE + 
-    "prod_2_manual_controllable_injection.ManualCIWithCookiesPetStoreAt8080Env";
+    "prod_3_manual_controllable_injection_though_cookies.ManualCIWithCookiesPetStoreAt8080Env";
 }

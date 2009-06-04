@@ -1,4 +1,4 @@
-package tutorial_1_server.prod_2_manual_controllable_injection;
+package tutorial_1_server.prod_3_manual_controllable_injection_through_cookies;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
