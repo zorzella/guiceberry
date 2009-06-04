@@ -1,8 +1,6 @@
 package tutorial_0_basic;
 
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
-import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
-import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
@@ -13,10 +11,5 @@ public class Example0HelloWorldTest extends GuiceBerryJunit3TestCase {
     assertTrue(true);
   }
 
-  public static final class Env extends GuiceBerryJunit3Env {
-    @Override
-    protected Class<? extends TestScopeListener> getTestScopeListener() {
-      return NoOpTestScopeListener.class;
-    }
-  }
+  public static final class Env extends GuiceBerryJunit3Env {}
 }
