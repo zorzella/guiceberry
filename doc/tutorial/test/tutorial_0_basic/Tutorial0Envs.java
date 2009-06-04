@@ -2,7 +2,7 @@ package tutorial_0_basic;
 
 public interface Tutorial0Envs {
 
-  String PACKAGE = "com.google.inject.testing.guiceberry.tutorial_0_basic.";
+  String PACKAGE = "tutorial_0_basic.";
   String SUFFIX = "$Env";
   
   String EXAMPLE_1 = PACKAGE + "Example1GetsInjectedTest" + SUFFIX;

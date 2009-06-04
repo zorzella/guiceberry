@@ -6,7 +6,7 @@ import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-@GuiceBerryEnv("com.google.inject.testing.guiceberry.tutorial_0_basic.Example0HelloWorldTest$Env")
+@GuiceBerryEnv("tutorial_0_basic.Example0HelloWorldTest$Env")
 public class Example0HelloWorldTest extends GuiceBerryJunit3TestCase {
 
   public void testNothing() throws Exception {
