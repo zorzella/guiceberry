@@ -1,4 +1,4 @@
-package tutorial_1_server.prod_0_simple;
+package tutorial_1_server.prod;
 
 import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;

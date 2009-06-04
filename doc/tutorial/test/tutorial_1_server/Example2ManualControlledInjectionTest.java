@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-import tutorial_1_server.prod_0_simple.PetOfTheMonth;
+import tutorial_1_server.prod.PetOfTheMonth;
 import tutorial_1_server.prod_2_manual_controllable_injection.ManualCIPetStoreAt8080Env.PetStoreModuleWithGlobalStaticOverride;
 
 @GuiceBerryEnv(Tutorial1Envs.MANUAL_CONTROLLABLE_INJECTION_PET_STORE_AT_8080_ENV)
