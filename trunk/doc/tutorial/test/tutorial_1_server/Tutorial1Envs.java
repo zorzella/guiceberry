@@ -14,4 +14,7 @@ public interface Tutorial1Envs {
   
   String PET_STORE_ENV_3_COOKIES_BASED_POTM = PACKAGE + 
     "PetStoreEnv3CookiesControlledPotm";
+
+  String PET_STORE_ENV_4_CANONICAL_SAME_JVM_CONTROLLABLE_POTM = PACKAGE + 
+    "PetStoreEnv4CanonicalSameJvmControllablePotm";
 }
