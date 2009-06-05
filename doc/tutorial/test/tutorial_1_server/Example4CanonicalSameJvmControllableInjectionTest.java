@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
+import tutorial_1_server.PetStoreEnv4CanonicalSameJvmControllablePotm.ClientController;
 import tutorial_1_server.PetStoreEnv4CanonicalSameJvmControllablePotm.InjectionControllerRegistry;
 import tutorial_1_server.prod.PetOfTheMonth;
 
@@ -14,20 +15,20 @@ public class Example4CanonicalSameJvmControllableInjectionTest extends GuiceBerr
   WelcomeTestPage welcomeTestPage;
   
   @Inject
-  private InjectionControllerRegistry injectionControllerRegistry;
+  private ClientController injectionControllerRegistry;
 
   // TODO: tests are failing -- fix the Env to actually rewrite the bindings.
   
   public void testDogAsPotm() {
     PetOfTheMonth expected = PetOfTheMonth.DOG;
-    injectionControllerRegistry.get(PetOfTheMonth.class).substituteFor(expected);
+    injectionControllerRegistry.setOverride(PetOfTheMonth.class, expected);
     welcomeTestPage.goTo();
     welcomeTestPage.assertPetOfTheMonth(expected);
   }
 
   public void testCatAsPotm() {
     PetOfTheMonth expected = PetOfTheMonth.CAT;
-  injectionControllerRegistry.get(PetOfTheMonth.class).substituteFor(expected);
+  injectionControllerRegistry.setOverride(PetOfTheMonth.class, expected);
   welcomeTestPage.goTo();
   welcomeTestPage.assertPetOfTheMonth(expected);
   }
