@@ -53,6 +53,13 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
     result.start();
     return result;
   }
+  
+  @Override
+  protected void configure() {
+    super.configure();
+    // !!!! HERE !!!!
+    install(new ControllableInjectionClientModule());
+  }
 
   private static List<? extends Module> rewrite(
       ModuleRewriter moduleRewriter, 
@@ -99,7 +106,7 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
     }
   }
   
-  // TODO: simply do this while rewriting the server module!
+  // TODO: simply do this while rewriting the server module! Consolidate with TestIdServerModule?
   static final class ControllableInjectionServerModule extends AbstractModule {
     @Override
     protected void configure() {
@@ -140,7 +147,7 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
     private final Map<Class<?>, ControllerSupport> map = Maps.newHashMap();
     
     public ModuleRewriter forModules(List<? extends Module> modules) {
-      if (modules != null) {
+      if (this.modules != null) {
         throw new IllegalStateException();
       }
       this.modules = modules;
