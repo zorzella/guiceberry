@@ -2,9 +2,9 @@ package tutorial_1_server;
 
 import com.google.inject.Inject;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
+import com.google.inject.testing.guiceberry.controllable.IcClient;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-import tutorial_1_server.PetStoreEnv4CanonicalSameJvmControllablePotm.IcClient;
 import tutorial_1_server.prod.PetOfTheMonth;
 
 @GuiceBerryEnv(Tutorial1Envs.PET_STORE_ENV_4_CANONICAL_SAME_JVM_CONTROLLABLE_POTM)

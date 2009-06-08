@@ -4,7 +4,7 @@
 package tutorial_1_server.prod;
 
 public enum PetOfTheMonth {
-  CAMELEON,
+  CHAMELEON,
   CAPYBARA,
   CAT,
   DOG,
