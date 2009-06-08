@@ -11,6 +11,9 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.internal.Maps;
 import com.google.inject.testing.guiceberry.TestId;
+import com.google.inject.testing.guiceberry.controllable.IcClient;
+import com.google.inject.testing.guiceberry.controllable.IcServer;
+import com.google.inject.testing.guiceberry.controllable.TestIdServerModule;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.util.Types;
 
@@ -53,6 +56,8 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
       @Override
       protected List<? extends Module> getModules() {
         List<Module> modules = new ArrayList<Module>();
+        // !!! HERE !!!
+        modules.add(new TestIdServerModule());
         // TODO: add rewritten modules instead
         modules.addAll(super.getModules());
         modules.add(moduleRewriter.buildServerModule());
@@ -111,8 +116,16 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
       public IcClient<T> get() {
         return new IcClient<T>() {     
           public void setOverride(T override) {
+            if (override == null) {
+              throw new NullPointerException();
+            }
             clientControllerSupportProvider.get().setOverride(
                 new ControllableId(testIdProvider.get(), key), override);
+          }
+
+          public void resetOverride() {
+            clientControllerSupportProvider.get().setOverride(
+                new ControllableId(testIdProvider.get(), key), null);
           }
         };
       }
@@ -206,17 +219,6 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
     }
   }
   
-  public interface IcServer<T> {
-    // TODO Key
-    T getOverride();
-  }
-  
-  public interface IcClient<T> {
-    // TODO Key
-    void setOverride(T override);
-    //TODO void resetOverride(Class<?> clazz);
-  }
-
   /**
    * On such class per injection controlling "strategy"
    * 
