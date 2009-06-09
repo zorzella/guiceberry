@@ -619,7 +619,10 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     try {
       GuiceBerryJunit3.setUp(testClass);
       fail();
-    } catch (RuntimeException expected) {}  
+    } catch (RuntimeException expected) {
+      assertEquals("TestScopeListener must be bound in your GuiceBerryEnv.", 
+          expected.getMessage());
+    }  
   }
   
   public void testModuleThatBindsTestScopeListenerToNoOpTestScopeListener() 

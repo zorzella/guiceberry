@@ -22,6 +22,7 @@ import com.google.common.testing.TearDownAccepter;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
@@ -399,8 +400,12 @@ public class GuiceBerryJunit3 {
       Injector injector = Guice.createInjector(guiceBerryEnvInstance);
 
       try {
-        // This is not actually used, but ensures at this point that 
-        // TestScopeListener has been bound 
+        if (injector.getBindings().get(Key.get(TestScopeListener.class)) == null) {
+          String msg = "TestScopeListener must be bound in your GuiceBerryEnv.";
+          throw new RuntimeException(msg); 
+        }
+        // This is not actually used, but ensures at this point that the bound
+        // TestScopeListener can be created
         @SuppressWarnings("unused")
         TestScopeListener testScopeListener = 
           injector.getInstance(TestScopeListener.class);
