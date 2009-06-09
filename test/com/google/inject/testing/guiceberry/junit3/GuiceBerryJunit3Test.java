@@ -538,30 +538,25 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     }  
   }
   
-  public void testGbeThatBindsTestScopeListenerToNoOpTestScopeListener() 
-      throws ClassNotFoundException {
+  public void testGbeThatBindsTestScopeListenerToNoOpTestScopeListener() {
     TestWithGbeOne test = TestWithGbeOne.createInstance();
-
     GuiceBerryJunit3.setUp(test);
-    TestScopeListener scopeListener =
-      GuiceBerryJunit3.getInjectorFromGB(
-      Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE))
-      .getInstance(TestScopeListener.class);
     
-    assertTrue(scopeListener instanceof NoOpTestScopeListener);    
+    assertTrue(test.testScopeListener instanceof NoOpTestScopeListener);    
   }
   
-  public void testGbeWithCustomTestScopeListener() 
-      throws ClassNotFoundException {
+  public void testGbeWithCustomTestScopeListener() {
     TestWithGbeTwo test = TestWithGbeTwo.createInstance();
-      
-      GuiceBerryJunit3.setUp(test);
-      TestScopeListener scopeListener =
-        GuiceBerryJunit3.getInjectorFromGB(
-        Class.forName(GuiceBerryEnvTwo.GUICE_BERRY_ENV_TWO))
-        .getInstance(TestScopeListener.class);
-      
-      assertTrue(scopeListener instanceof BazService);    
+    GuiceBerryJunit3.setUp(test);
+
+    assertTrue(test.testScopeListener instanceof BazService);    
+  }
+
+  public void SUPPRESS_testGbeWithEnvMain() {
+    TestWithGbeWithEnvMain test = TestWithGbeWithEnvMain.createInstance();
+    assertEquals(0, GuiceBerryEnvWithEnvMain.MyGuiceBerryEnvMain.count);
+    GuiceBerryJunit3.setUp(test);
+    assertEquals(1, GuiceBerryEnvWithEnvMain.MyGuiceBerryEnvMain.count);
   }
  
   public void testTearDownOnModuleNoTestScopeListenerBindingNoPreviousSetUp() {
@@ -732,6 +727,10 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   @GuiceBerryEnv(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)
   private static final class TestWithGbeOne extends TearDownTestCase {
+    
+    @Inject
+    private TestScopeListener testScopeListener;
+    
     @Inject
     private BarService barService; 
     
@@ -766,22 +765,16 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     @Inject 
     private TestCase testCase;
 
-    static AnotherTestWithGbeOne createInstance() {
-      AnotherTestWithGbeOne result = new AnotherTestWithGbeOne();
-      result.setName(AnotherTestWithGbeOne.class.getCanonicalName()); 
-      return result;
+    private static AnotherTestWithGbeOne createInstance() {
+      return namedTest(new AnotherTestWithGbeOne());
     }
   }
   
   @GuiceBerryEnv(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)
   private static final class NonTdtcForGbeOne extends TestCase {
-    @Inject
-    TestCase testCase;
-    
-    static NonTdtcForGbeOne createInstance() {
-      NonTdtcForGbeOne result = new NonTdtcForGbeOne();
-      result.setName(NonTdtcForGbeOne.class.getCanonicalName());
-      return result;
+
+    private static NonTdtcForGbeOne createInstance() {
+      return namedTest(new NonTdtcForGbeOne());
     }  
   }
   
@@ -789,7 +782,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   private static final class TestWithGbeTwo extends TearDownTestCase {
 
     @Inject
-    private BarService barService;  
+    private TestScopeListener testScopeListener;  
     
     @Inject
     private int number;
@@ -797,35 +790,36 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     @Inject
     private BazService baz;
    
-    static TestWithGbeTwo createInstance() {
-      TestWithGbeTwo result = new TestWithGbeTwo();
-      result.setName(TestWithGbeTwo.class.getCanonicalName());
-      return result;
+    private static TestWithGbeTwo createInstance() {
+      return namedTest(new TestWithGbeTwo());
     }  
   }
-  
+
+  @GuiceBerryEnv(GuiceBerryEnvWithEnvMain.GUICE_BERRY_ENV_WITH_ENV_MAIN)
+  private static final class TestWithGbeWithEnvMain extends TearDownTestCase {
+
+    private static TestWithGbeWithEnvMain createInstance() {
+      return namedTest(new TestWithGbeWithEnvMain());
+    }
+  }
+
   @GuiceBerryEnv(GUICE_BERRY_ENV_THAT_DOES_NOT_EXIST)
-  private static final class TestWithNonExistingGbe 
-      extends TearDownTestCase {
-    static TestWithNonExistingGbe createInstance() {
-      TestWithNonExistingGbe result = new TestWithNonExistingGbe();
-      result.setName(TestWithNonExistingGbe.class.getCanonicalName());
-      return result;
+  private static final class TestWithNonExistingGbe extends TearDownTestCase {
+    
+    private static TestWithNonExistingGbe createInstance() {
+      return namedTest(new TestWithNonExistingGbe());
     }  
   }
 
   @GuiceBerryEnv(GuiceBerryEnvWithoutBindingsForFooOrBar.GUICE_BERRY_ENV_WITHOUT_BINDINGS_FOR_FOO_OR_BAR)
   private static final class TestWithGbeThatHasMissingBindings 
       extends TearDownTestCase {
+    @SuppressWarnings("unused")
     @Inject
-    BarService barService; 
+    private BarService barService; 
     
-    static TestWithGbeThatHasMissingBindings createInstance() {
-      TestWithGbeThatHasMissingBindings result = 
-        new TestWithGbeThatHasMissingBindings();
-      result.setName(TestWithGbeThatHasMissingBindings
-          .class.getCanonicalName());
-      return result;
+    private static TestWithGbeThatHasMissingBindings createInstance() {
+      return namedTest(new TestWithGbeThatHasMissingBindings());
     }  
   }
   
@@ -833,25 +827,17 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   private static final class TestWithGbeThatNotImplementsModule 
       extends TearDownTestCase {
     
-    static TestWithGbeThatNotImplementsModule createInstance() {
-      TestWithGbeThatNotImplementsModule result = 
-        new TestWithGbeThatNotImplementsModule();
-      result.setName(TestWithGbeThatNotImplementsModule
-          .class.getCanonicalName());
-      return result;
+    private static TestWithGbeThatNotImplementsModule createInstance() {
+      return namedTest(new TestWithGbeThatNotImplementsModule());
     }  
   }
 
   @GuiceBerryEnv(GuiceBerryEnvWithIllegalConstructor.GUICE_BERRY_ENV_WITH_ILLEGAL_CONSTRUCTOR)
   private static final class TestWithGbeThatHasAnIllegalConstructor
-    extends TearDownTestCase {
+      extends TearDownTestCase {
     
-    static TestWithGbeThatHasAnIllegalConstructor createInstance() {
-      TestWithGbeThatHasAnIllegalConstructor result = 
-        new TestWithGbeThatHasAnIllegalConstructor();
-      result.setName(TestWithGbeThatHasAnIllegalConstructor
-          .class.getCanonicalName());
-      return result;
+    private static TestWithGbeThatHasAnIllegalConstructor createInstance() {
+      return namedTest(new TestWithGbeThatHasAnIllegalConstructor());
     }  
   }
 
@@ -859,12 +845,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   private static final class TestWithGbeThatDoesNotBindATestScopeListener 
       extends TearDownTestCase {
     
-    static TestWithGbeThatDoesNotBindATestScopeListener createInstance() {
-      TestWithGbeThatDoesNotBindATestScopeListener result = 
-        new TestWithGbeThatDoesNotBindATestScopeListener();
-      result.setName(TestWithGbeThatDoesNotBindATestScopeListener
-          .class.getCanonicalName());
-      return result;
+    private static TestWithGbeThatDoesNotBindATestScopeListener createInstance() {
+      return namedTest(new TestWithGbeThatDoesNotBindATestScopeListener());
     }  
   }
 
@@ -872,12 +854,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   private static final class TestWithGbeThatIsAnAbstractClass 
       extends TearDownTestCase {
     
-    static TestWithGbeThatIsAnAbstractClass createInstance() {
-      TestWithGbeThatIsAnAbstractClass result = 
-        new TestWithGbeThatIsAnAbstractClass();
-      result.setName(TestWithGbeThatIsAnAbstractClass
-          .class.getCanonicalName());
-      return result;
+    private static TestWithGbeThatIsAnAbstractClass createInstance() {
+      return namedTest(new TestWithGbeThatIsAnAbstractClass());
     }  
   }
   
@@ -885,23 +863,16 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   private static final class TestWithGbeThatInjectsATestCaseIntoTestScopeListener
       extends TestCase {
     
-    static TestWithGbeThatInjectsATestCaseIntoTestScopeListener createInstance() {
-      TestWithGbeThatInjectsATestCaseIntoTestScopeListener result = 
-        new TestWithGbeThatInjectsATestCaseIntoTestScopeListener();
-      result.setName(TestWithGbeThatInjectsATestCaseIntoTestScopeListener.class
-          .getCanonicalName());
-      return result;
+    private static TestWithGbeThatInjectsATestCaseIntoTestScopeListener createInstance() {
+      return namedTest(new TestWithGbeThatInjectsATestCaseIntoTestScopeListener());
     }  
   }
 
   @GuiceBerryEnv(GuiceBerryEnvThatFailsInjectorCreation.GUICE_BERRY_ENV_THAT_FAILS_INJECTOR_CREATION)
   public static final class TestWithGbeThatFailsInjectorCreation
       extends TestCase {
-    static TestWithGbeThatFailsInjectorCreation createInstance() {
-      TestWithGbeThatFailsInjectorCreation result =
-          new TestWithGbeThatFailsInjectorCreation();
-      result.setName("testNothing");
-      return result;
+    private static TestWithGbeThatFailsInjectorCreation createInstance() {
+      return namedTest(new TestWithGbeThatFailsInjectorCreation());
     }
 
     @Override
@@ -910,7 +881,6 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     }
 
     public void testNothing() {}
-    
   }
 
 // BELOW CLASSES IMPLEMENTS INTERFACE MODULE
@@ -933,15 +903,33 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
 
   /**
-   * List GbeOne but binds a TestScopeListener and a GuiceBerryEnvMain
+   * Like GbeOne but binds a TestScopeListener
    */
   public static class GuiceBerryEnvTwo extends AbstractModule {
     private static final String GUICE_BERRY_ENV_TWO = 
       GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvTwo";
 
-    private static final class MyGuiceBerryEnvMain implements GuiceBerryEnvMain {
+    @Override
+    public void configure() {
+      install(new BasicJunit3Module());
+      bind(FooService.class).to(FooServiceTwo.class);
+      bind(BarService.class).to(BarServiceTwo.class);      
+      bind(Integer.class).toInstance(NUMBER++);
+      bind(BazService.class).in(Singleton.class);
+      bind(TestScopeListener.class).to(BazService.class).in(Scopes.SINGLETON);
+    }
+  }
+  
+  /**
+   * Like GbeOne but binds a TestScopeListener and a GuiceBerryEnvMain
+   */
+  public static class GuiceBerryEnvWithEnvMain extends AbstractModule {
+    private static final String GUICE_BERRY_ENV_WITH_ENV_MAIN = 
+      GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvWithEnvMain";
+
+    static final class MyGuiceBerryEnvMain implements GuiceBerryEnvMain {
       
-      private int count = 0;
+      private static int count = 0;
       
       public void main() {
         count++;
@@ -955,11 +943,10 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       bind(BarService.class).to(BarServiceTwo.class);      
       bind(Integer.class).toInstance(NUMBER++);
       bind(BazService.class).in(Singleton.class);
-      bind(TestScopeListener.class).to(BazService.class).in(Scopes.SINGLETON);
+      bind(TestScopeListener.class).toInstance(new NoOpTestScopeListener());
       bind(GuiceBerryEnvMain.class).to(MyGuiceBerryEnvMain.class);
     }
   }
-
   public static class GuiceBerryEnvWithoutBindingsForFooOrBar 
       extends AbstractModule  {
     private static final String GUICE_BERRY_ENV_WITHOUT_BINDINGS_FOR_FOO_OR_BAR =
@@ -1100,9 +1087,13 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
          
   private static class BarServiceOne implements BarService {
-    
     public TestId getTestId(){
       return null;
     }
   } 
+
+  private static <T extends TestCase> T namedTest(T test) {
+    test.setName(test.getClass().getCanonicalName());
+    return test;
+  }  
 }
