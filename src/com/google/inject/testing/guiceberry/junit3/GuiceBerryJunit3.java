@@ -26,6 +26,7 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
+import com.google.inject.testing.guiceberry.GuiceBerryEnvMain;
 import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScopeListener;
@@ -398,7 +399,7 @@ public class GuiceBerryJunit3 {
     try {
       Module guiceBerryEnvInstance = createGuiceBerryInstanceFromClass(guiceBerryEnvClass);
       Injector injector = Guice.createInjector(guiceBerryEnvInstance);
-
+      callGuiceBerryEnvMainIfBound(injector);
       try {
         if (injector.getBindings().get(Key.get(TestScopeListener.class)) == null) {
           String msg = "TestScopeListener must be bound in your GuiceBerryEnv.";
@@ -422,6 +423,12 @@ public class GuiceBerryJunit3 {
       // This is in the finally block to ensure that BOGUS_GUICE_BERRY_STUFF 
       // is put in the map if things go bad.
       moduleClassToGuiceBerryStuffMap.put(guiceBerryEnvClass, guiceBerryStuff);
+    }
+  }
+
+  private void callGuiceBerryEnvMainIfBound(Injector injector) {
+    if (injector.getBindings().get(Key.get(GuiceBerryEnvMain.class)) != null) {
+      injector.getInstance(GuiceBerryEnvMain.class).run();
     }
   }
 
