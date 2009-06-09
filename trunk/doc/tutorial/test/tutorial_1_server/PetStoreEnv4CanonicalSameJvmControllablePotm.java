@@ -1,18 +1,21 @@
 package tutorial_1_server;
 
+import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
-import com.google.inject.Binder;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
-import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.internal.Maps;
+import com.google.inject.internal.Objects;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.controllable.IcClient;
 import com.google.inject.testing.guiceberry.controllable.IcServer;
+import com.google.inject.testing.guiceberry.controllable.InterceptingBindingsBuilder;
+import com.google.inject.testing.guiceberry.controllable.ProvisionInterceptor;
 import com.google.inject.testing.guiceberry.controllable.TestIdServerModule;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.util.Types;
@@ -29,6 +32,7 @@ import tutorial_1_server.prod.PortNumber;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +55,7 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
   
   @Provides
   @Singleton
-  MyPetStoreServer startServer(final IcMaster moduleRewriter) {
+  MyPetStoreServer startServer(final IcMaster icMaster) {
     MyPetStoreServer result = new MyPetStoreServer(8080) {
       @Override
       protected List<? extends Module> getModules() {
@@ -60,8 +64,7 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
         modules.add(new TestIdServerModule());
         // TODO: add rewritten modules instead
         modules.addAll(super.getModules());
-        modules.add(moduleRewriter.buildServerModule());
-        return modules;
+        return ImmutableList.of(icMaster.buildServerModule(modules));
       }
     };
     result.start();
@@ -95,7 +98,7 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
     @Override
     protected void configure() {
       for (Map.Entry<Key<?>, IcStrategyCouple> e : rewriter.entrySet()) {
-        bindWithAnnotation(binder(), Types.newParameterizedType(IcClient.class, e.getKey().getTypeLiteral().getType()), e.getKey())
+        bind(wrap(IcClient.class, e.getKey()))
            .toProvider(new MyClientProvider(e.getKey(), getProvider(TestId.class), 
                getProvider(e.getValue().clientControllerClass())));
       }
@@ -115,6 +118,7 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
 
       public IcClient<T> get() {
         return new IcClient<T>() {     
+          @SuppressWarnings("unchecked")
           public void setOverride(T override) {
             if (override == null) {
               throw new NullPointerException();
@@ -123,6 +127,7 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
                 new ControllableId(testIdProvider.get(), key), override);
           }
 
+          @SuppressWarnings("unchecked")
           public void resetOverride() {
             clientControllerSupportProvider.get().setOverride(
                 new ControllableId(testIdProvider.get(), key), null);
@@ -132,14 +137,15 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
     }
   }
   
-  static AnnotatedBindingBuilder<?> bindWithAnnotation(Binder binder, Type type, Key<?> annotationHolder) {
-    AnnotatedBindingBuilder<?> builder = binder.bind(TypeLiteral.get(type));
+  static Key<?> wrap(Type raw, Key<?> annotationHolder) {
+    Type type = Types.newParameterizedType(raw, annotationHolder.getTypeLiteral().getType());
     if (annotationHolder.getAnnotation() != null) {
-      builder.annotatedWith(annotationHolder.getAnnotation());
+      return Key.get(type, annotationHolder.getAnnotation());
     } else if (annotationHolder.getAnnotationType() != null) {
-      builder.annotatedWith(annotationHolder.getAnnotationType());
+      return Key.get(type, annotationHolder.getAnnotationType());
+    } else {
+      return Key.get(type);
     }
-    return builder;
   }
 
   static final class ControllableInjectionServerModule extends AbstractModule {
@@ -154,9 +160,9 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
     @Override
     protected void configure() {
       for (Map.Entry<Key<?>, IcStrategyCouple> e : rewriter.entrySet()) {
-        bindWithAnnotation(binder(), Types.newParameterizedType(IcServer.class, e.getKey().getTypeLiteral().getType()), e.getKey())
+        bind(wrap(IcServer.class, e.getKey()))
              .toProvider(new MyServerProvider(e.getKey(), getProvider(TestId.class), 
-               getProvider(e.getValue().clientControllerClass())));
+               getProvider(e.getValue().serverControllerClass())));
       }
     }
 
@@ -165,7 +171,7 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
       private final Provider<IcServerStrategy> serControllerSupportProvider;
       private final Provider<TestId> testIdProvider;
       
-      public MyServerProvider(Key<T> key,  
+      public MyServerProvider(Key<T> key,
           Provider<TestId> testIdProvider, Provider<IcServerStrategy> serverControllerSupportProvider) {
         this.key = key;
         this.testIdProvider = testIdProvider;
@@ -174,9 +180,9 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
 
       public IcServer<T> get() {
         return new IcServer<T>() {     
-          public T getOverride() {
+          public T getOverride(Provider<? extends T> delegate) {
             return serControllerSupportProvider.get().getOverride(
-                new ControllableId(testIdProvider.get(), key));
+                new ControllableId<T>(testIdProvider.get(), key), delegate);
           }
         };
       }
@@ -213,9 +219,33 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
     public Module buildClientModule() {
       return new ControllableInjectionClientModule(controlledKeysToStrategy);
     }
+    
+    private static class ProvisionInterceptorModule extends AbstractModule {
 
-    public Module buildServerModule() {
-      return new ControllableInjectionServerModule(controlledKeysToStrategy);
+      @Override
+      protected void configure() {
+        bind(ProvisionInterceptor.class).to(MyProvisionInterceptor.class);
+      }
+      
+      private static class MyProvisionInterceptor implements ProvisionInterceptor {
+
+        @Inject Injector injector;
+        
+        @SuppressWarnings("unchecked")
+        public <T> T intercept(Key<T> key, Provider<? extends T> delegate) {
+          IcServer<T> instance = (IcServer<T>) injector.getInstance(wrap(IcServer.class, key));
+          return instance.getOverride(delegate);
+        }
+      }
+    }
+
+    public Module buildServerModule(final Collection<? extends Module> modules) {
+      return new InterceptingBindingsBuilder()
+        .install(modules)
+        .install(new ProvisionInterceptorModule())
+        .install(new ControllableInjectionServerModule(controlledKeysToStrategy))
+        .intercept(controlledKeysToStrategy.keySet())
+        .build();
     }
   }
   
@@ -227,13 +257,11 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
   public static class IcStrategyCouple {
     
     public interface IcServerStrategy {
-      //TODO: kill <T>?
-      <T> T getOverride(ControllableId pair);
+      <T> T getOverride(ControllableId<T> pair, Provider<? extends T> delegate);
     }
     
     public interface IcClientStrategy {
-      //TODO: kill <T>?
-      <T> void setOverride(ControllableId pair, T override);
+      <T> void setOverride(ControllableId<T> pair, T override);
     }
     
     private final Class<? extends IcClientStrategy> clientControllerSupport;
@@ -255,65 +283,51 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
     }
   }
   
-  // TODO Key
-  public static class ControllableId {
+  public static class ControllableId<T> {
     private final TestId testId;
-    private final Key<?> key;
+    private final Key<T> key;
 
-    public ControllableId(TestId test, Key<?> key) {
+    public ControllableId(TestId test, Key<T> key) {
       this.testId = test;
       this.key = key;
     }
 
     @Override
     public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((key == null) ? 0 : key.hashCode());
-      result = prime * result + ((testId == null) ? 0 : testId.hashCode());
-      return result;
+      return Objects.hashCode(testId, key);
     }
 
     @Override
-    public boolean equals(Object obj) {
-      if (this == obj)
-        return true;
-      if (obj == null)
-        return false;
-      if (getClass() != obj.getClass())
-        return false;
-      ControllableId other = (ControllableId) obj;
-      if (key == null) {
-        if (other.key != null)
-          return false;
-      } else if (!key.equals(other.key))
-        return false;
-      if (testId == null) {
-        if (other.testId != null)
-          return false;
-      } else if (!testId.equals(other.testId))
-        return false;
-      return true;
+    public boolean equals(Object other) {
+      if (other instanceof ControllableId) {
+        ControllableId<?> that = (ControllableId<?>) other;
+        return Objects.equal(this.testId, that.testId)
+          && Objects.equal(this.key, that.key);
+      }
+      return false;
     }
   }
   
   public static final class LocalJvmIcStrategy {
 
-    private static final Map<ControllableId,Object> map = Maps.newHashMap();
+    private static final Map<ControllableId<?>,Object> map = Maps.newHashMap();
 
     public IcStrategyCouple getControllerSupport() {
       return new IcStrategyCouple(MyClientController.class, MyServerController.class);
     }
     
     private static final class MyClientController implements IcClientStrategy {
-      public <T> void setOverride(ControllableId pair, T override) {
+      public <T> void setOverride(ControllableId<T> pair, T override) {
         map.put(pair, override);
       }
     }
     
     private static final class MyServerController implements IcServerStrategy {
       @SuppressWarnings("unchecked")
-      public <T> T getOverride(ControllableId pair) {
+      public <T> T getOverride(ControllableId<T> pair, Provider<? extends T> delegate) {
+        if (!map.containsKey(pair)) {
+          return delegate.get();
+        }
         return (T) map.get(pair);
       }
     }

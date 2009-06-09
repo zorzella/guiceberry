@@ -15,6 +15,8 @@
  */
 package com.google.inject.testing.guiceberry.controllable;
 
+import com.google.inject.Provider;
+
 public interface IcServer<T> {
-  T getOverride();
+  T getOverride(Provider<? extends T> delegate);
 }

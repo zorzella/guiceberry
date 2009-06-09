@@ -100,7 +100,7 @@ public final class InterceptingBindingsBuilder {
     return this;
   }
 
-  public InterceptingBindingsBuilder install(Collection<Module> modules) {
+  public InterceptingBindingsBuilder install(Collection<? extends Module> modules) {
     this.modules.addAll(modules);
     return this;
   }
