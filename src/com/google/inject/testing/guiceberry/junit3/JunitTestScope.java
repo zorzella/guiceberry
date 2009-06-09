@@ -25,6 +25,7 @@ import com.google.inject.testing.guiceberry.TestScoped;
 
 import junit.framework.TestCase;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ import java.util.Map;
 class JunitTestScope implements Scope {
 
   private final Map<TestCase, Map<Key<?>, Object>> testMap =
-    new HashMap<TestCase, Map <Key<?>, Object> >();
+    Collections.synchronizedMap(new HashMap<TestCase, Map <Key<?>, Object> >());
 
   JunitTestScope() {
   }
