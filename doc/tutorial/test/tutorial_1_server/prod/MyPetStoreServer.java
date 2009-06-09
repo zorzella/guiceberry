@@ -30,7 +30,7 @@ public class MyPetStoreServer {
     
     WelcomePageServlet myServlet = new WelcomePageServlet();
     root.addServlet(new ServletHolder(myServlet), "/*");
-    root.addFilter(GuiceFilter.class, "/", 0);
+    root.addFilter(GuiceFilter.class, "/*", 0);
 
     Injector injector = getInjector();
     injector.injectMembers(myServlet);
