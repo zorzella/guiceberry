@@ -100,8 +100,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   public void testAnnotationWithModuleThatNotExistsThrowsException() {
    try {
-      TestAnnotatedWithModuleThatNotExist testClass = 
-        TestAnnotatedWithModuleThatNotExist.createInstance();
+      TestWithNonExistingGbe testClass = 
+        TestWithNonExistingGbe.createInstance();
       GuiceBerryJunit3.setUp(testClass);
       fail();
    } catch (IllegalArgumentException expected) { 
@@ -115,8 +115,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
  
   public void testAnnotationWithModuleThatHasMissingBindingsThrowsException() {   
     try {
-      TestAnnotatedWithModuleThatHasMissingBindings testClass = 
-        TestAnnotatedWithModuleThatHasMissingBindings.createInstance();
+      TestWithGbeThatHasMissingBindings testClass = 
+        TestWithGbeThatHasMissingBindings.createInstance();
       GuiceBerryJunit3.setUp(testClass);
       fail();
     } catch (RuntimeException expected) {
@@ -134,8 +134,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
  
   public void testAnnotationWithClassThatNotImplementsModuleThrowsException() {
     try {
-      TestAnnotatedWithClassThatNotImplementsModule testClass = 
-        TestAnnotatedWithClassThatNotImplementsModule.createInstance();
+      TestWithGbeThatNotImplementsModule testClass = 
+        TestWithGbeThatNotImplementsModule.createInstance();
       GuiceBerryJunit3.setUp(testClass);
       fail();
     } catch (IllegalArgumentException expected) {
@@ -148,8 +148,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
      
   public void testAnnotationWithClassThatHasWrongConstructorThrowsException() {
     try {
-      TestAnnotatedWithModuleThatHAsWrongConstructor testClass = 
-        TestAnnotatedWithModuleThatHAsWrongConstructor.createInstance();
+      TestWithGbeThatHasAnIllegalConstructor testClass = 
+        TestWithGbeThatHasAnIllegalConstructor.createInstance();
       GuiceBerryJunit3.setUp(testClass);
       fail();
     } catch (IllegalArgumentException expected) {
@@ -161,8 +161,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
  
   public void testAnotatedClassWithAbstractClassModuleThrowsException() {
-    TestAnnotatedWithModuleThatIsAbstractClass testClass = 
-      TestAnnotatedWithModuleThatIsAbstractClass.createInstance();
+    TestWithGbeThatIsAnAbstractClass testClass = 
+      TestWithGbeThatIsAnAbstractClass.createInstance();
     try {
       GuiceBerryJunit3.setUp(testClass);
       fail();
@@ -172,14 +172,14 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
   
   public void testAnnotaionWithAbstractModuleThatImplementsOtherInterfaces() {      
-    TestAnnotatedWithStubService1 testClass =
-      TestAnnotatedWithStubService1.createInstance();    
+    TestWithGbeOne testClass =
+      TestWithGbeOne.createInstance();    
     GuiceBerryJunit3.setUp(testClass);    
   }
   
   public void testThatTestCaseGetsInjectedWithSomething() {
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass = 
+      TestWithGbeOne.createInstance();
     GuiceBerryJunit3.setUp(testClass);
     assertNotNull(testClass.barService);
     assertNotNull(testClass.fooService);
@@ -195,8 +195,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
   
   public void testThatThreadLocalsInherit() throws InterruptedException {
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass = 
+      TestWithGbeOne.createInstance();
     GuiceBerryJunit3.setUp(testClass);
 
     // Finding the current test case from a secondary thread.
@@ -205,22 +205,22 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     myThread.join();
     
     assertNotNull(myThread.theTestCase);
-    assertEquals(TestAnnotatedWithStubService1.class.getName(), 
+    assertEquals(TestWithGbeOne.class.getName(), 
         myThread.theTestCase.getClass().getName());
 
   }
 
   public void testThatTestCaseGetsInjectedWithWhatsConfiguredInTheModule() {
-   TestAnnotatedWithStubService1 testClass = 
-     TestAnnotatedWithStubService1.createInstance();
+   TestWithGbeOne testClass = 
+     TestWithGbeOne.createInstance();
    GuiceBerryJunit3.setUp(testClass);
    assertTrue(testClass.barService instanceof BarServiceOne);
    assertTrue(testClass.fooService instanceof FooServiceOne);
   }
   
   public void testInjectorMapIsSetAfterATest() throws ClassNotFoundException {
-    TestAnnotatedWithStubService1 firstTest = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne firstTest = 
+      TestWithGbeOne.createInstance();
     Injector injector = GuiceBerryJunit3.getInjectorFromGB(
           Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
     assertNull(injector);
@@ -232,10 +232,10 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     assertNotNull(injector);
   }
   
-  public void testNumberOfInjectorsNotChangesForTestCaseThatDeclaresSameModule() 
+  public void testThatTwoTestsWithSameGbeUseTheSameInjector() 
       throws ClassNotFoundException {
-    TestAnnotatedWithStubService1 firstTest = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne firstTest = 
+      TestWithGbeOne.createInstance();
     GuiceBerryJunit3.setUp(firstTest);
     
     Injector firstInjector = 
@@ -243,41 +243,34 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
           Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
     GuiceBerryJunit3.tearDown(firstTest);
 
-    TestAnnotatedWithStubService2 secondTest = 
-      TestAnnotatedWithStubService2.createInstance();
+    AnotherTestWithGbeOne secondTest = 
+      AnotherTestWithGbeOne.createInstance();
     GuiceBerryJunit3.setUp(secondTest);
     
     Injector secondInjector = 
       GuiceBerryJunit3.getInjectorFromGB(
           Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
-    
+
+    // "number" is bound to a random, so this will only pass if the injector
+    // used for both tests was the same
+    assertEquals(firstTest.number, secondTest.number);
+    // This would fail if the first injector was, say, thrown away and replaced
+    // when running the second test
     assertSame(firstInjector, secondInjector);    
+    // This would fail if GuiceBerryJunit3 creates another injector for the
+    // benefit of the second test
     assertEquals(1, GuiceBerryJunit3.numberOfInjectorsInUse());    
   }
   
-  public void testReUseingInjectorForTestCasesThatDeclaresSameModuleName() {
-    
-    TestAnnotatedWithStubService1 firstTest = 
-      TestAnnotatedWithStubService1.createInstance();
-    GuiceBerryJunit3.setUp(firstTest);    
-    GuiceBerryJunit3.tearDown(firstTest);
-    
-    TestAnnotatedWithStubService2 secondTest = 
-      TestAnnotatedWithStubService2.createInstance();
-    GuiceBerryJunit3.setUp(secondTest);
-    assertEquals(firstTest.number, secondTest.number);
-
-  }
-
   public void testNotReUseingInjectorForTestsThatDeclaresDifferentModules() {
     
-    TestAnnotatedWithStubService1 firstTest = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne firstTest = 
+      TestWithGbeOne.createInstance();
     GuiceBerryJunit3.setUp(firstTest);    
     GuiceBerryJunit3.tearDown(firstTest);
     
-    TestAnnotatedWithRealService secondTest = 
-      TestAnnotatedWithRealService.createInstance();
+    TestWithGbeTwo secondTest = 
+      TestWithGbeTwo.createInstance();
     GuiceBerryJunit3.setUp(secondTest);
     JUnitAsserts.assertNotEqual(firstTest.number, secondTest.number);
 
@@ -285,14 +278,14 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
   public void testPutTwoInjectorsInMapForTestsThatDeclareDifferentModules() {
    
-    TestAnnotatedWithStubService1 firstTest = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne firstTest = 
+      TestWithGbeOne.createInstance();
     
     GuiceBerryJunit3.setUp(firstTest);
     GuiceBerryJunit3.tearDown(firstTest);
     
-    TestAnnotatedWithRealService secondTest = 
-      TestAnnotatedWithRealService.createInstance();
+    TestWithGbeTwo secondTest = 
+      TestWithGbeTwo.createInstance();
     
     GuiceBerryJunit3.setUp(secondTest);
    
@@ -301,15 +294,15 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   public void testCreateingCascadingInjections() {
     
-    TestAnnotatedWithRealService testClass = 
-      TestAnnotatedWithRealService.createInstance();
+    TestWithGbeTwo testClass = 
+      TestWithGbeTwo.createInstance();
     GuiceBerryJunit3.setUp(testClass);       
     assertEquals(INJECTED_INFORMATION, testClass.fooService.get());
    }
   
   public void testRemapper() {
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass = 
+      TestWithGbeOne.createInstance();
 
     TearDown tearDown = new TearDown() {
 
@@ -327,8 +320,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
   
   public void testRemapperThatReturnsNullGivesGoodErrorMessage() {
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass = 
+      TestWithGbeOne.createInstance();
 
     TearDown tearDown = new TearDown() {
 
@@ -356,8 +349,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
   
   public void testRemapperSystemPropertyNeedsClassThatExists() {
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass = 
+      TestWithGbeOne.createInstance();
 
     TearDown tearDown = new TearDown() {
 
@@ -379,8 +372,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
   
   public void testRemapperSystemPropertyNeedsClassThatImplementsCorrectInterface() {
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass = 
+      TestWithGbeOne.createInstance();
 
     TearDown tearDown = new TearDown() {
 
@@ -403,8 +396,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
 
   public void testRemapperSystemPropertyNeedsClassWithZeroArgConstructor() {
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass = 
+      TestWithGbeOne.createInstance();
 
     TearDown tearDown = new TearDown() {
 
@@ -427,8 +420,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
   public void testTestGetsInjectedWithTestId() {
     
-    TestAnnotatedWithStubService1 testClass =  
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass =  
+      TestWithGbeOne.createInstance();
     
     assertNull(testClass.testId);
     GuiceBerryJunit3.setUp(testClass);
@@ -441,8 +434,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   public void testDifferentTestsGetInjectedWithDifferentTestId() {
     
-    TestAnnotatedWithStubService1 firstTest =  
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne firstTest =  
+      TestWithGbeOne.createInstance();
     
     GuiceBerryJunit3.setUp(firstTest);
     
@@ -452,8 +445,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
         firstTest.testId);
     GuiceBerryJunit3.tearDown(firstTest);
    
-    TestAnnotatedWithStubService2 secondTest = 
-      TestAnnotatedWithStubService2.createInstance();
+    AnotherTestWithGbeOne secondTest = 
+      AnotherTestWithGbeOne.createInstance();
     GuiceBerryJunit3.setUp(secondTest);
    
     assertEquals(
@@ -463,8 +456,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   public void testTestIdGetsInjectedIntoRealServiceDefinedByModule() {
     
-    TestAnnotatedWithRealService testClass = 
-      TestAnnotatedWithRealService.createInstance();
+    TestWithGbeTwo testClass = 
+      TestWithGbeTwo.createInstance();
     
     assertEquals(null, testClass.barService);    
     
@@ -477,8 +470,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
   
   public void testTestGetsInjectedWithTestCase() {  
-    TestAnnotatedWithStubService1 testClass =  
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass =  
+      TestWithGbeOne.createInstance();
     
     assertEquals(null, testClass.testCase);
     GuiceBerryJunit3.setUp(testClass);
@@ -488,8 +481,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   public void testDifferentTestsGetsInjectedWithDifferentTestCases() {
     
-    TestAnnotatedWithStubService1 firstTest =  
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne firstTest =  
+      TestWithGbeOne.createInstance();
     
     GuiceBerryJunit3.setUp(firstTest);
     
@@ -497,8 +490,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     
     GuiceBerryJunit3.tearDown(firstTest);
    
-    TestAnnotatedWithStubService2 secondTest = 
-      TestAnnotatedWithStubService2.createInstance();
+    AnotherTestWithGbeOne secondTest = 
+      AnotherTestWithGbeOne.createInstance();
     GuiceBerryJunit3.setUp(secondTest);
     
     assertEquals(secondTest.getName(), secondTest.testCase.getName());
@@ -507,8 +500,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
 
   public void testMethodTearDownWorksProperly() {
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass = 
+      TestWithGbeOne.createInstance();
     
     GuiceBerryJunit3.setUp(testClass);
     assertEquals(testClass,  GuiceBerryJunit3.getActualTestCase());
@@ -527,8 +520,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   public void testMethodTearDownNoPreviousSetupOnClassWithAnnotation() {
     
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass = 
+      TestWithGbeOne.createInstance();
     try {
       GuiceBerryJunit3.tearDown(testClass);
       fail();
@@ -538,12 +531,12 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   public void testTearDownNoPreviousSetupOnClassWithAnnotationThatWasUsed() {
 
-    TestAnnotatedWithStubService1 testClass1 = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass1 = 
+      TestWithGbeOne.createInstance();
     GuiceBerryJunit3.setUp(testClass1);
     testClass1.run();
-    TestAnnotatedWithStubService1 testClass2 = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass2 = 
+      TestWithGbeOne.createInstance();
     try {
       GuiceBerryJunit3.tearDown(testClass2);
       fail();
@@ -553,11 +546,11 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   public void testTearDownOnDifferentClassThatSetupWasCalled() {
 
-    TestAnnotatedWithStubService1 testClass1 = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass1 = 
+      TestWithGbeOne.createInstance();
     GuiceBerryJunit3.setUp(testClass1);
-    TestAnnotatedWithStubService2 testClass2 = 
-      TestAnnotatedWithStubService2.createInstance();
+    AnotherTestWithGbeOne testClass2 = 
+      AnotherTestWithGbeOne.createInstance();
     try {
       GuiceBerryJunit3.tearDown(testClass2);
       fail();
@@ -566,8 +559,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
  
   public void testCallingTwoSetupWithNoTearDownBetween() {
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass = 
+      TestWithGbeOne.createInstance();
     try {
       GuiceBerryJunit3.setUp(testClass);
       GuiceBerryJunit3.setUp(testClass);
@@ -576,8 +569,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
   
   public void testAddTearDownToTearDownTestCase() {
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass = 
+      TestWithGbeOne.createInstance();
    
     GuiceBerryJunit3.setUp(testClass);
     assertEquals(testClass, testClass.testCase);
@@ -587,20 +580,20 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
 
   public void testTestCaseCanBeUsedInsteadOfTearDownTestCase() {
-    TestCaseAnnotatedWithStubService testClass = 
-      TestCaseAnnotatedWithStubService.createInstance();
+    NonTdtcForGbeOne testClass = 
+      NonTdtcForGbeOne.createInstance();
     GuiceBerryJunit3.setUp(testClass);
     testClass.run();     
   }
   
   public void testMethodTearDownForTestCaseNotCalledAutomatically() {
-    TestCaseAnnotatedWithStubService testClass = 
-      TestCaseAnnotatedWithStubService.createInstance();
+    NonTdtcForGbeOne testClass = 
+      NonTdtcForGbeOne.createInstance();
     GuiceBerryJunit3.setUp(testClass);
     testClass.run();
 
-    TestAnnotatedWithStubService1 testClass2 = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass2 = 
+      TestWithGbeOne.createInstance();
     try {  
       GuiceBerryJunit3.setUp(testClass2);
       fail();
@@ -608,21 +601,21 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
  
   public void testMethodTearDownForTestCaseCalledManually() {
-    TestCaseAnnotatedWithStubService testClass = 
-      TestCaseAnnotatedWithStubService.createInstance();
+    NonTdtcForGbeOne testClass = 
+      NonTdtcForGbeOne.createInstance();
     GuiceBerryJunit3.setUp(testClass);   
     testClass.run();
  
     GuiceBerryJunit3.tearDown(testClass);
-    TestAnnotatedWithStubService1 testClass2 = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass2 = 
+      TestWithGbeOne.createInstance();
     GuiceBerryJunit3.setUp(testClass2);
     testClass2.run();
   }   
  
   public void testAnnotationWithModuleThaHasNoTestScopeListenerBinding() {
-    TestAnnotatedWithModuleThatProvidedNoTestScopeListener testClass = 
-      TestAnnotatedWithModuleThatProvidedNoTestScopeListener.createInstance();
+    TestWithGbeThatDoesNotBindATestScopeListener testClass = 
+      TestWithGbeThatDoesNotBindATestScopeListener.createInstance();
     try {
       GuiceBerryJunit3.setUp(testClass);
       fail();
@@ -631,8 +624,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   public void testModuleThatBindsTestScopeListenerToNoOpTestScopeListener() 
       throws ClassNotFoundException {
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass = 
+      TestWithGbeOne.createInstance();
 
     GuiceBerryJunit3.setUp(testClass);
     TestScopeListener scopeListener =
@@ -645,8 +638,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   public void testModuleThatBindsTestScopeListenerToSomeScopeListener() 
       throws ClassNotFoundException {
-    TestAnnotatedWithRealService testClass1 = 
-      TestAnnotatedWithRealService.createInstance();
+    TestWithGbeTwo testClass1 = 
+      TestWithGbeTwo.createInstance();
       
       GuiceBerryJunit3.setUp(testClass1);
       TestScopeListener scopeListener =
@@ -659,8 +652,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
  
   public void testTearDownOnModuleNoTestScopeListenerBindingNoPreviousSetUp() {
 
-    TestAnnotatedWithModuleThatProvidedNoTestScopeListener testClass = 
-      TestAnnotatedWithModuleThatProvidedNoTestScopeListener.createInstance();
+    TestWithGbeThatDoesNotBindATestScopeListener testClass = 
+      TestWithGbeThatDoesNotBindATestScopeListener.createInstance();
     
     try {
       GuiceBerryJunit3.tearDown(testClass);
@@ -669,8 +662,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
    
   public void testTestScopeListenerGetsNotifiesThatTestEntersTheScope() {
-    TestAnnotatedWithRealService testClass = 
-      TestAnnotatedWithRealService.createInstance();
+    TestWithGbeTwo testClass = 
+      TestWithGbeTwo.createInstance();
    
     long baz = BazService.counter;
     
@@ -684,8 +677,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
  
   public void testTestScopeListenerGetsNotifiesThatTestExitsTheScope() {
-    TestAnnotatedWithRealService testClass = 
-      TestAnnotatedWithRealService.createInstance();
+    TestWithGbeTwo testClass = 
+      TestWithGbeTwo.createInstance();
     
     GuiceBerryJunit3.setUp(testClass);
     assertNotNull(testClass.baz);
@@ -697,8 +690,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
   public void testTestScopeIsCreatedForModule() 
       throws ClassNotFoundException {
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass = 
+      TestWithGbeOne.createInstance();
     
    assertNull(GuiceBerryJunit3.getTestScopeFromGB(
        Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)));
@@ -709,10 +702,10 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     assertNotNull(testScope);
   }  
  
-  public void testReUseTestScopeByTwoTestsAnnotatedWithTheSameModule() 
+  public void testReUseTestScopeByTwoTestsWithSameGbe() 
     throws ClassNotFoundException{
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass = 
+      TestWithGbeOne.createInstance();
     assertNull(
         GuiceBerryJunit3.getTestScopeFromGB(
             Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)));
@@ -724,8 +717,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     
     testClass.run();
    
-    TestAnnotatedWithStubService2 testClass2 = 
-      TestAnnotatedWithStubService2.createInstance();
+    AnotherTestWithGbeOne testClass2 = 
+      AnotherTestWithGbeOne.createInstance();
     GuiceBerryJunit3.setUp(testClass2);
     assertNotNull(GuiceBerryJunit3.getTestScopeFromGB(
         Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)));
@@ -739,8 +732,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
   public void testUseDifferentTestScopeByTwoTestsAnnotatedWithDifferentModule() 
       throws ClassNotFoundException {
-    TestAnnotatedWithStubService1 testClass = 
-      TestAnnotatedWithStubService1.createInstance();
+    TestWithGbeOne testClass = 
+      TestWithGbeOne.createInstance();
    
     assertNull(GuiceBerryJunit3.getTestScopeFromGB(
         Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)));
@@ -752,8 +745,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
     testClass.run();
     
-    TestAnnotatedWithRealService testClass2 = 
-      TestAnnotatedWithRealService.createInstance();
+    TestWithGbeTwo testClass2 = 
+      TestWithGbeTwo.createInstance();
     GuiceBerryJunit3.setUp(testClass2);
     assertNotNull(GuiceBerryJunit3.getTestScopeFromGB(
         Class.forName(GuiceBerryEnvTwo.GUICE_BERRY_ENV_TWO)));
@@ -766,16 +759,16 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   public void testInjectingTestCasesIntoTestScopeListeners() 
       throws Exception {
-    TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener testClass = 
-      TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener.createInstance();
+    TestWithGbeThatInjectsATestCaseIntoTestScopeListener testClass = 
+      TestWithGbeThatInjectsATestCaseIntoTestScopeListener.createInstance();
 
     GuiceBerryJunit3.setUp(testClass);
     testClass.run();
   }
 
   public void testModuleThatFailsInjectorCreation() throws Throwable {
-    TestModuleThatFailsInjectorCreation testCase =
-        TestModuleThatFailsInjectorCreation.createInstance();
+    TestWithGbeThatFailsInjectorCreation testCase =
+        TestWithGbeThatFailsInjectorCreation.createInstance();
 
     // the first run should die on Injector-creation
     try {
@@ -827,12 +820,10 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     }
   }
 
-  private static final class MyNonGuiceBerryEnvRemapper {    
-  }
+  private static final class MyNonGuiceBerryEnvRemapper {}
   
   @GuiceBerryEnv(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)
-  private static final class TestAnnotatedWithStubService1 
-      extends TearDownTestCase {
+  private static final class TestWithGbeOne extends TearDownTestCase {
     @Inject
     private BarService barService; 
     
@@ -848,17 +839,15 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     @Inject
     private TestCase testCase; 
   
-    static TestAnnotatedWithStubService1 createInstance() {
-      TestAnnotatedWithStubService1 result = 
-        new TestAnnotatedWithStubService1();
+    static TestWithGbeOne createInstance() {
+      TestWithGbeOne result = new TestWithGbeOne();
       result.setName("fooTest");
       return result;
     }    
   }
   
   @GuiceBerryEnv(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)
-  private static final class TestAnnotatedWithStubService2 
-      extends TearDownTestCase {
+  private static final class AnotherTestWithGbeOne extends TearDownTestCase {
     
     @Inject
     private int number;
@@ -869,31 +858,27 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     @Inject 
     private TestCase testCase;
 
-    static TestAnnotatedWithStubService2 createInstance() {
-      TestAnnotatedWithStubService2 result = 
-        new TestAnnotatedWithStubService2();
-      result.setName(TestAnnotatedWithStubService2.class.getCanonicalName()); 
+    static AnotherTestWithGbeOne createInstance() {
+      AnotherTestWithGbeOne result = new AnotherTestWithGbeOne();
+      result.setName(AnotherTestWithGbeOne.class.getCanonicalName()); 
       return result;
     }
   }
   
   @GuiceBerryEnv(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)
-  private static final class TestCaseAnnotatedWithStubService extends TestCase {
+  private static final class NonTdtcForGbeOne extends TestCase {
     @Inject
     TestCase testCase;
     
-    static TestCaseAnnotatedWithStubService createInstance() {
-      TestCaseAnnotatedWithStubService result = 
-        new TestCaseAnnotatedWithStubService();
-      result.setName(TestCaseAnnotatedWithStubService
-          .class.getCanonicalName());
+    static NonTdtcForGbeOne createInstance() {
+      NonTdtcForGbeOne result = new NonTdtcForGbeOne();
+      result.setName(NonTdtcForGbeOne.class.getCanonicalName());
       return result;
     }  
   }
   
   @GuiceBerryEnv(GuiceBerryEnvTwo.GUICE_BERRY_ENV_TWO)
-  private static final class TestAnnotatedWithRealService 
-      extends TearDownTestCase {
+  private static final class TestWithGbeTwo extends TearDownTestCase {
     @Inject
     private FooService fooService;
 
@@ -906,111 +891,109 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     @Inject
     private BazService baz;
    
-    static TestAnnotatedWithRealService createInstance() {
-      TestAnnotatedWithRealService result = new TestAnnotatedWithRealService();
-      result.setName(TestAnnotatedWithRealService.class.getCanonicalName());
+    static TestWithGbeTwo createInstance() {
+      TestWithGbeTwo result = new TestWithGbeTwo();
+      result.setName(TestWithGbeTwo.class.getCanonicalName());
       return result;
     }  
   }
   
   @GuiceBerryEnv(GUICE_BERRY_ENV_THAT_DOES_NOT_EXIST)
-  private static final class TestAnnotatedWithModuleThatNotExist 
+  private static final class TestWithNonExistingGbe 
       extends TearDownTestCase {
-    static TestAnnotatedWithModuleThatNotExist createInstance() {
-      TestAnnotatedWithModuleThatNotExist result = 
-        new TestAnnotatedWithModuleThatNotExist();
-      result.setName(TestAnnotatedWithModuleThatNotExist
-          .class.getCanonicalName());
+    static TestWithNonExistingGbe createInstance() {
+      TestWithNonExistingGbe result = new TestWithNonExistingGbe();
+      result.setName(TestWithNonExistingGbe.class.getCanonicalName());
       return result;
     }  
   }
 
   @GuiceBerryEnv(GuiceBerryEnvWithoutBindingsForFooOrBar.GUICE_BERRY_ENV_WITHOUT_BINDINGS_FOR_FOO_OR_BAR)
-  private static final class TestAnnotatedWithModuleThatHasMissingBindings 
+  private static final class TestWithGbeThatHasMissingBindings 
       extends TearDownTestCase {
     @Inject
     BarService barService; 
     
-    static TestAnnotatedWithModuleThatHasMissingBindings createInstance() {
-      TestAnnotatedWithModuleThatHasMissingBindings result = 
-        new TestAnnotatedWithModuleThatHasMissingBindings();
-      result.setName(TestAnnotatedWithModuleThatHasMissingBindings
+    static TestWithGbeThatHasMissingBindings createInstance() {
+      TestWithGbeThatHasMissingBindings result = 
+        new TestWithGbeThatHasMissingBindings();
+      result.setName(TestWithGbeThatHasMissingBindings
           .class.getCanonicalName());
       return result;
     }  
   }
   
   @GuiceBerryEnv(NotAGuiceBerryEnvOne.NOT_A_GUICE_BERRY_ENV_ONE)
-  private static final class TestAnnotatedWithClassThatNotImplementsModule 
+  private static final class TestWithGbeThatNotImplementsModule 
       extends TearDownTestCase {
     
-    static TestAnnotatedWithClassThatNotImplementsModule createInstance() {
-      TestAnnotatedWithClassThatNotImplementsModule result = 
-        new TestAnnotatedWithClassThatNotImplementsModule();
-      result.setName(TestAnnotatedWithClassThatNotImplementsModule
+    static TestWithGbeThatNotImplementsModule createInstance() {
+      TestWithGbeThatNotImplementsModule result = 
+        new TestWithGbeThatNotImplementsModule();
+      result.setName(TestWithGbeThatNotImplementsModule
           .class.getCanonicalName());
       return result;
     }  
   }
 
   @GuiceBerryEnv(GuiceBerryEnvWithIllegalConstructor.GUICE_BERRY_ENV_WITH_ILLEGAL_CONSTRUCTOR)
-  private static final class TestAnnotatedWithModuleThatHAsWrongConstructor
+  private static final class TestWithGbeThatHasAnIllegalConstructor
     extends TearDownTestCase {
     
-    static TestAnnotatedWithModuleThatHAsWrongConstructor createInstance() {
-      TestAnnotatedWithModuleThatHAsWrongConstructor result = 
-        new TestAnnotatedWithModuleThatHAsWrongConstructor();
-      result.setName(TestAnnotatedWithModuleThatHAsWrongConstructor
+    static TestWithGbeThatHasAnIllegalConstructor createInstance() {
+      TestWithGbeThatHasAnIllegalConstructor result = 
+        new TestWithGbeThatHasAnIllegalConstructor();
+      result.setName(TestWithGbeThatHasAnIllegalConstructor
           .class.getCanonicalName());
       return result;
     }  
   }
 
   @GuiceBerryEnv(GuiceBerryEnvWithNoTestScopeListener.GUICE_BERRY_ENV_WITH_NO_TEST_SCOPE_LISTENER)
-  private static final class TestAnnotatedWithModuleThatProvidedNoTestScopeListener 
+  private static final class TestWithGbeThatDoesNotBindATestScopeListener 
       extends TearDownTestCase {
     
-    static TestAnnotatedWithModuleThatProvidedNoTestScopeListener createInstance() {
-      TestAnnotatedWithModuleThatProvidedNoTestScopeListener result = 
-        new TestAnnotatedWithModuleThatProvidedNoTestScopeListener();
-      result.setName(TestAnnotatedWithModuleThatProvidedNoTestScopeListener
+    static TestWithGbeThatDoesNotBindATestScopeListener createInstance() {
+      TestWithGbeThatDoesNotBindATestScopeListener result = 
+        new TestWithGbeThatDoesNotBindATestScopeListener();
+      result.setName(TestWithGbeThatDoesNotBindATestScopeListener
           .class.getCanonicalName());
       return result;
     }  
   }
 
   @GuiceBerryEnv(NOT_A_GUICE_BERRY_ENV_BECAUSE_IT_IS_ABSTRACT)
-  private static final class TestAnnotatedWithModuleThatIsAbstractClass 
+  private static final class TestWithGbeThatIsAnAbstractClass 
       extends TearDownTestCase {
     
-    static TestAnnotatedWithModuleThatIsAbstractClass createInstance() {
-      TestAnnotatedWithModuleThatIsAbstractClass result = 
-        new TestAnnotatedWithModuleThatIsAbstractClass();
-      result.setName(TestAnnotatedWithModuleThatIsAbstractClass
+    static TestWithGbeThatIsAnAbstractClass createInstance() {
+      TestWithGbeThatIsAnAbstractClass result = 
+        new TestWithGbeThatIsAnAbstractClass();
+      result.setName(TestWithGbeThatIsAnAbstractClass
           .class.getCanonicalName());
       return result;
     }  
   }
   
   @GuiceBerryEnv(GuiceBerryEnvWithNonTrivialTestScopeListener.MODULE_NAME_INJECTS_TEST_CASE_IN_TEST_SCOPE_LISTENER)
-  private static final class TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener
+  private static final class TestWithGbeThatInjectsATestCaseIntoTestScopeListener
       extends TestCase {
     
-    static TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener createInstance() {
-      TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener result = 
-        new TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener();
-      result.setName(TestAnnotatedWithModuleInjectsTestCaseInTestScopeListener.class
+    static TestWithGbeThatInjectsATestCaseIntoTestScopeListener createInstance() {
+      TestWithGbeThatInjectsATestCaseIntoTestScopeListener result = 
+        new TestWithGbeThatInjectsATestCaseIntoTestScopeListener();
+      result.setName(TestWithGbeThatInjectsATestCaseIntoTestScopeListener.class
           .getCanonicalName());
       return result;
     }  
   }
 
   @GuiceBerryEnv(GuiceBerryEnvThatFailsInjectorCreation.GUICE_BERRY_ENV_THAT_FAILS_INJECTOR_CREATION)
-  public static final class TestModuleThatFailsInjectorCreation
+  public static final class TestWithGbeThatFailsInjectorCreation
       extends TestCase {
-    static TestModuleThatFailsInjectorCreation createInstance() {
-      TestModuleThatFailsInjectorCreation result =
-          new TestModuleThatFailsInjectorCreation();
+    static TestWithGbeThatFailsInjectorCreation createInstance() {
+      TestWithGbeThatFailsInjectorCreation result =
+          new TestWithGbeThatFailsInjectorCreation();
       result.setName("testNothing");
       return result;
     }
@@ -1031,7 +1014,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   public static class GuiceBerryEnvOne extends AbstractModule {
     private static final String GUICE_BERRY_ENV_ONE = 
-    GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvOne";
+      GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvOne";
 
     @Override
     public void configure() {
@@ -1045,7 +1028,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
   public static class GuiceBerryEnvTwo extends AbstractModule {
     private static final String GUICE_BERRY_ENV_TWO = 
-    GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvTwo";
+      GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvTwo";
 
     @Override
     public void configure() {
@@ -1062,7 +1045,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   public static class GuiceBerryEnvWithoutBindingsForFooOrBar 
       extends AbstractModule  {
     private static final String GUICE_BERRY_ENV_WITHOUT_BINDINGS_FOR_FOO_OR_BAR =
-    GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvWithoutBindingsForFooOrBar";
+      GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvWithoutBindingsForFooOrBar";
 
     @Override
     public void configure() {
@@ -1074,7 +1057,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   public static class GuiceBerryEnvWithNonTrivialTestScopeListener 
       extends AbstractModule {
     private static final String MODULE_NAME_INJECTS_TEST_CASE_IN_TEST_SCOPE_LISTENER = 
-    GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvWithNonTrivialTestScopeListener";
+      GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvWithNonTrivialTestScopeListener";
 
     @Override
     public void configure() {
@@ -1087,7 +1070,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   public static class GuiceBerryEnvWithIllegalConstructor implements Module {    
     private static final String GUICE_BERRY_ENV_WITH_ILLEGAL_CONSTRUCTOR = 
-    GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvWithIllegalConstructor";
+      GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvWithIllegalConstructor";
 
     /**
      * Constructors should be no-args
@@ -1123,7 +1106,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   public static class GuiceBerryEnvThatFailsInjectorCreation
       extends AbstractModule  {
     private static final String GUICE_BERRY_ENV_THAT_FAILS_INJECTOR_CREATION =
-        GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvThatFailsInjectorCreation";
+      GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvThatFailsInjectorCreation";
 
     @Override
     public void configure() {
