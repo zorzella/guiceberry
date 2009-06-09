@@ -28,6 +28,7 @@ import com.google.inject.Module;
 import com.google.inject.Scopes;
 import com.google.inject.Singleton;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
+import com.google.inject.testing.guiceberry.GuiceBerryEnvMain;
 import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScopeListener;
@@ -55,8 +56,6 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   private static final String NOT_A_GUICE_BERRY_ENV_BECAUSE_IT_IS_ABSTRACT = 
     "com.google.inject.AbstractModule";
     
-  private static final String INJECTED_INFORMATION = "Injected information";  
-
   @Override
   protected void setUp() throws Exception {
     super.setUp();
@@ -290,14 +289,6 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     GuiceBerryJunit3.setUp(secondTest);
    
     assertEquals(2, GuiceBerryJunit3.numberOfInjectorsInUse());    
-   }
-  
-  public void testCreateingCascadingInjections() {
-    
-    TestWithGbeTwo testClass = 
-      TestWithGbeTwo.createInstance();
-    GuiceBerryJunit3.setUp(testClass);       
-    assertEquals(INJECTED_INFORMATION, testClass.fooService.get());
    }
   
   public void testRemapper() {
@@ -639,7 +630,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     assertTrue(scopeListener instanceof NoOpTestScopeListener);    
   }
   
-  public void testModuleThatBindsTestScopeListenerToSomeScopeListener() 
+  public void testGbeWithCustomTestScopeListener() 
       throws ClassNotFoundException {
     TestWithGbeTwo testClass1 = 
       TestWithGbeTwo.createInstance();
@@ -733,7 +724,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     assertEquals(1, GuiceBerryJunit3.numberOfInjectorsInUse());
   }  
 
-  public void testUseDifferentTestScopeByTwoTestsAnnotatedWithDifferentModule() 
+  public void testThatTestsWithDifferentGbesGetDifferentTestScopes() 
       throws ClassNotFoundException {
     TestWithGbeOne testClass = 
       TestWithGbeOne.createInstance();
@@ -882,8 +873,6 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   @GuiceBerryEnv(GuiceBerryEnvTwo.GUICE_BERRY_ENV_TWO)
   private static final class TestWithGbeTwo extends TearDownTestCase {
-    @Inject
-    private FooService fooService;
 
     @Inject
     private BarService barService;  
@@ -1029,19 +1018,31 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     }
   }
 
+  /**
+   * List GbeOne but binds a TestScopeListener and a GuiceBerryEnvMain
+   */
   public static class GuiceBerryEnvTwo extends AbstractModule {
     private static final String GUICE_BERRY_ENV_TWO = 
       GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$GuiceBerryEnvTwo";
 
+    private static final class MyGuiceBerryEnvMain implements GuiceBerryEnvMain {
+      
+      private int count = 0;
+      
+      public void main() {
+        count++;
+      }
+    }
+    
     @Override
     public void configure() {
       install(new BasicJunit3Module());
       bind(FooService.class).to(FooServiceTwo.class);
       bind(BarService.class).to(BarServiceTwo.class);      
-      bind(BazService.class).in(Singleton.class);
       bind(Integer.class).toInstance(NUMBER++);
-      bind(String.class).toInstance(INJECTED_INFORMATION);
+      bind(BazService.class).in(Singleton.class);
       bind(TestScopeListener.class).to(BazService.class).in(Scopes.SINGLETON);
+      bind(GuiceBerryEnvMain.class).to(MyGuiceBerryEnvMain.class);
     }
   }
 
@@ -1094,7 +1095,6 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       bind(FooService.class).to(FooServiceTwo.class);
       bind(BarService.class).to(BarServiceTwo.class);      
       bind(Integer.class).toInstance(NUMBER++);
-      bind(String.class).toInstance(INJECTED_INFORMATION);
     }
   }   
   
