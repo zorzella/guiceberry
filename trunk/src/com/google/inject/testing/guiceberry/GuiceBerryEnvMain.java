@@ -18,7 +18,7 @@ package com.google.inject.testing.guiceberry;
 
 /**
  * If a {@link GuiceBerryEnv} binds this interface, the implementing class's
- * {@link #main()} method will be called when the 
+ * {@link #run()} method will be called when the 
  * {@link com.google.inject.Injector} for that Env is first created, i.e. 
  * before running the first test that uses that Env -- or, more precisely,
  * even before the {@link TestScopeListener#enteringScope()} method is invoked.
@@ -28,10 +28,15 @@ package com.google.inject.testing.guiceberry;
  * <p>Note that the same thing can be accomplished through a 
  * {@link TestScopeListener}, but it's more verbose and less elegant.
  * 
+ * <p>The name of the class alludes to the fact this is analogous to the section
+ * of your production code's "main" method where, in a canonical Guice 
+ * application, you start the server right after creating an 
+ * {@link com.google.inject.Injector}.
+ * 
  * @author Luiz-Otavio Zorzella
  */
 public interface GuiceBerryEnvMain {
 
-  void main();
+  void run();
   
 }

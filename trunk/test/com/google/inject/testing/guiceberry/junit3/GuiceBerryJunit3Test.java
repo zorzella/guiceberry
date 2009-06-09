@@ -552,7 +552,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     assertTrue(test.testScopeListener instanceof BazService);    
   }
 
-  public void SUPPRESS_testGbeWithEnvMain() {
+  public void testGbeWithEnvMain() {
     TestWithGbeWithEnvMain test = TestWithGbeWithEnvMain.createInstance();
     assertEquals(0, GuiceBerryEnvWithEnvMain.MyGuiceBerryEnvMain.count);
     GuiceBerryJunit3.setUp(test);
@@ -931,7 +931,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       
       private static int count = 0;
       
-      public void main() {
+      public void run() {
         count++;
       }
     }
