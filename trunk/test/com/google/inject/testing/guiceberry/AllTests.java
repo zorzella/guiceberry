@@ -16,11 +16,11 @@
 
 package com.google.inject.testing.guiceberry;
 
-import com.google.inject.testing.guiceberry.controllable.InjectionControllerProviderTest;
-import com.google.inject.testing.guiceberry.controllable.InjectionControllerTest;
 import com.google.inject.testing.guiceberry.controllable.InterceptingBindingsBuilderTest;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test;
 import com.google.inject.testing.guiceberry.junit3.MutableSingletonScopeTest;
+import com.google.inject.testing.guiceberry.tokill.InjectionControllerProviderTest;
+import com.google.inject.testing.guiceberry.tokill.InjectionControllerTest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

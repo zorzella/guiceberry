@@ -26,42 +26,48 @@ import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.internal.Maps;
 
+//TODO: document
+/**
+ * @author Luiz-Otavio Zorzella
+ * @author Jesse Wilson
+ */
 public final class IcMaster {
   
-  private final Map<Key<?>, IcStrategyCouple> controlledKeysToStrategy = Maps.newHashMap();
+  private final Map<Key<?>, IcStrategyCouple> controlledKeyToStrategyMap = 
+    Maps.newHashMap();
   
   public IcMaster thatControls(IcStrategyCouple support, 
       Class<?>... classes) {
     for (Class<?> clazz : classes) {
       Key<?> key = Key.get(clazz);
-      if (controlledKeysToStrategy.containsKey(key)) {
+      if (controlledKeyToStrategyMap.containsKey(key)) {
         throw new IllegalArgumentException();
       }
-      controlledKeysToStrategy.put(key, support);
+      controlledKeyToStrategyMap.put(key, support);
     }
     return this;
   }
 
-  public IcMaster thatControlsrewrite(IcStrategyCouple support, 
+  public IcMaster thatControls(IcStrategyCouple support, 
       Key<?>... keys) {
     for (Key<?> key : keys) {
-      if (controlledKeysToStrategy.containsKey(key)) {
+      if (controlledKeyToStrategyMap.containsKey(key)) {
         throw new IllegalArgumentException();
       }
-      controlledKeysToStrategy.put(key, support);
+      controlledKeyToStrategyMap.put(key, support);
     }
     return this;
   }
 
   public Module buildClientModule() {
-    return new ControllableInjectionClientModule(controlledKeysToStrategy);
+    return new ControllableInjectionClientModule(controlledKeyToStrategyMap);
   }
   
   private static class ProvisionInterceptorModule extends AbstractModule {
 
     @Override
     protected void configure() {
-      bind(ProvisionInterceptor.class).to(ProvisionInterceptorModule.MyProvisionInterceptor.class);
+      bind(ProvisionInterceptor.class).to(MyProvisionInterceptor.class);
     }
     
     private static class MyProvisionInterceptor implements ProvisionInterceptor {
@@ -80,8 +86,8 @@ public final class IcMaster {
     return new InterceptingBindingsBuilder()
       .install(modules)
       .install(new ProvisionInterceptorModule())
-      .install(new ControllableInjectionServerModule(controlledKeysToStrategy))
-      .intercept(controlledKeysToStrategy.keySet())
+      .install(new ControllableInjectionServerModule(controlledKeyToStrategyMap))
+      .intercept(controlledKeyToStrategyMap.keySet())
       .build();
   }
 }

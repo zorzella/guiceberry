@@ -15,8 +15,34 @@
  */
 package com.google.inject.testing.guiceberry.controllable;
 
+/**
+ * This is the most visible class of the Controllable Injections framework, and
+ * should be injected into any TestCase or test infrastructure where you want
+ * to control an injection.
+ * 
+ * <p>For example, say that {@code Foo} is a controlled injection. This is
+ * how you can control it from a test:
+ * 
+ * <pre>
+ *   {@code @}Inject
+ *   IcClient<Foo> fooIcClient;
+ *   
+ *   public void testSpecialPath() {
+ *     Foo someFoo = ...
+ *     fooIcClient.setOverride(someFoo);
+ *   }
+ * </pre>
+ * 
+ * <p>Note that, to control an annotated binding, simple annotate the injection
+ * of IcClient with the appropriate {@link com.google.inject.BindingAnnotation}.
+ * 
+ * @author Luiz-Otavio Zorzella
+ * @author Jesse Wilson
+ * 
+ * @param <T> the type of the class you want to control.
+ */
 public interface IcClient<T> {
-  //TODO: void setOverride(T override, TearDownAcceptor testCase);
   void setOverride(T override);
+  //TODO: kill this when we have TearDownAccepter always bound
   void resetOverride();
 }

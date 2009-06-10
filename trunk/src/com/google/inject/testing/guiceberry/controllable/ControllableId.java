@@ -19,7 +19,18 @@ import com.google.inject.Key;
 import com.google.inject.internal.Objects;
 import com.google.inject.testing.guiceberry.TestId;
 
+/**
+ * This is basically a pair of a controlled {@link Key} ({@link Class}) and a 
+ * {@link TestId} that is used as a {@link java.util.Map} key by the 
+ * controllable injection framework to identify during runtime the instance that
+ * is to be controlled.
+ * 
+ * @author Luiz-Otavio Zorzella
+ *
+ * @param <T> The type of {@link Key} in this class. 
+ */
 public class ControllableId<T> {
+  
   private final TestId testId;
   private final Key<T> key;
 

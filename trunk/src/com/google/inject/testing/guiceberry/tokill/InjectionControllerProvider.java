@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.inject.testing.guiceberry.controllable;
+package com.google.inject.testing.guiceberry.tokill;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -28,6 +28,10 @@ import com.google.inject.testing.guiceberry.TestId;
 import java.util.Map;
 
 /**
+ * @deprecated this form of injection controller is no longer supported and will 
+ * be killed in the future. Use the new 
+ * {@link com.google.inject.testing.guiceberry.controllable} paradigm.
+ *
  * This Guice Provider builds {@link InjectionController}s.
  *
  * <p>It also provides the static {@link #forTest(TestId, TearDownAccepter)}
@@ -58,6 +62,7 @@ import java.util.Map;
  *
  * @author Luiz-Otavio Zorzella
  */
+@Deprecated
 public class InjectionControllerProvider implements Provider<InjectionController> {
 
   private static final Map<TestId, InjectionController> MAP = Maps.newHashMap();

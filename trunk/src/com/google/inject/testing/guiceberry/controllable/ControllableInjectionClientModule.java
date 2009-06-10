@@ -23,6 +23,13 @@ import com.google.inject.Provider;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.controllable.IcStrategyCouple.IcClientStrategy;
 
+/**
+ * This internal class is basically what the {@link IcMaster} uses to fullfil
+ * its {@link IcMaster#buildClientModule()} method.
+ * 
+ * @author Luiz-Otavio Zorzella
+ * @author Jesse Wilson
+ */
 final class ControllableInjectionClientModule extends AbstractModule {
   
   private final Map<Key<?>, IcStrategyCouple> rewriter;

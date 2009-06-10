@@ -17,6 +17,12 @@ package com.google.inject.testing.guiceberry.controllable;
 
 import com.google.inject.Provider;
 
-public interface IcServer<T> {
+/**
+ * @author Luiz-Otavio Zorzella
+ * @author Jesse Wilson
+ *
+ * @param <T>
+ */
+interface IcServer<T> {
   T getOverride(Provider<? extends T> delegate);
 }

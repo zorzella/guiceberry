@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.google.inject.testing.guiceberry.controllable;
+package com.google.inject.testing.guiceberry.tokill;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.testing.TearDownStack;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.testing.guiceberry.TestId;
-import com.google.inject.testing.guiceberry.controllable.InjectionController;
-import com.google.inject.testing.guiceberry.controllable.InjectionControllerProvider;
 import com.google.inject.util.Providers;
 
 import junit.framework.TestCase;
@@ -47,7 +45,7 @@ public class InjectionControllerProviderTest extends TestCase {
   }
 
   public void testSimpleSunnyCaseSemantics() throws Exception {
-    TestId test1Id = new TestId("test1","test1", 1);
+    TestId test1Id = new TestId("test1","test1");
 
     Provider<TestId> testIdProvider = Providers.of(test1Id);
 

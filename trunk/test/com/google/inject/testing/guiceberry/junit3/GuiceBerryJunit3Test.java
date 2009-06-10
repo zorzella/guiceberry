@@ -383,9 +383,13 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     GuiceBerryJunit3.setUp(test);
     assertNotNull(test.testId);
 
-    TestId expectedTestId = new TestId(test, test.testId.random);
+    String expectedTestIdPrefix = 
+      test.getName() + ":" + test.getClass().getName() + ":";
 
-    assertEquals(expectedTestId, test.testId);
+    // This will break if TestId.toString() changes format
+    assertTrue(String.format(
+        "'%s' should start with '%s'", test.testId.toString(), expectedTestIdPrefix),
+        test.testId.toString().startsWith(expectedTestIdPrefix));
   } 
   
   public void testDifferentTestsGetInjectedWithDifferentTestIds() {

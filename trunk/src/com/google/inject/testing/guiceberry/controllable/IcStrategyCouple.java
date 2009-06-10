@@ -22,8 +22,8 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.util.Types;
 
+//TODO:document One such class per injection controlling "strategy"
 /**
- * One such class per injection controlling "strategy"
  * 
  * @author Luiz-Otavio Zorzella
  */
@@ -37,26 +37,27 @@ public class IcStrategyCouple {
     <T> void setOverride(ControllableId<T> pair, T override);
   }
   
-  private final Class<? extends IcClientStrategy> clientControllerSupport;
-  private final Class<? extends IcServerStrategy> serverControllerSupport;
+  private final Class<? extends IcClientStrategy> icClientStrategyClass;
+  private final Class<? extends IcServerStrategy> icServerStrategyClass;
 
   public IcStrategyCouple(
-      Class<? extends IcClientStrategy> clientControllerSupport,
-      Class<? extends IcServerStrategy> serverControllerSupport
+      Class<? extends IcClientStrategy> icClientStrategyClass,
+      Class<? extends IcServerStrategy> icServerStrategyClass
       ) {
-    this.clientControllerSupport = clientControllerSupport;
-    this.serverControllerSupport = serverControllerSupport;
+    this.icClientStrategyClass = icClientStrategyClass;
+    this.icServerStrategyClass = icServerStrategyClass;
   }
   
   public Class<? extends IcClientStrategy> clientControllerClass() {
-    return clientControllerSupport;
+    return icClientStrategyClass;
   }
   public Class<? extends IcServerStrategy> serverControllerClass() {
-    return serverControllerSupport;
+    return icServerStrategyClass;
   }
 
   public static Key<?> wrap(Type raw, Key<?> annotationHolder) {
-    Type type = Types.newParameterizedType(raw, annotationHolder.getTypeLiteral().getType());
+    Type type = Types.newParameterizedType(
+        raw, annotationHolder.getTypeLiteral().getType());
     if (annotationHolder.getAnnotation() != null) {
       return Key.get(type, annotationHolder.getAnnotation());
     } else if (annotationHolder.getAnnotationType() != null) {
