@@ -82,6 +82,15 @@ public final class IcMaster {
     }
   }
 
+  public Module buildServerModule(final Module... modules) {
+    return new InterceptingBindingsBuilder()
+      .install(modules)
+      .install(new ProvisionInterceptorModule())
+      .install(new ControllableInjectionServerModule(controlledKeyToStrategyMap))
+      .intercept(controlledKeyToStrategyMap.keySet())
+      .build();
+  }
+
   public Module buildServerModule(final Collection<? extends Module> modules) {
     return new InterceptingBindingsBuilder()
       .install(modules)

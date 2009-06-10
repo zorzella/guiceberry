@@ -1,6 +1,5 @@
 package tutorial_1_server.prod;
 
-import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -13,9 +12,7 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
 
-import java.util.List;
 import java.util.Random;
-
 
 public class MyPetStoreServer {
   
@@ -48,13 +45,17 @@ public class MyPetStoreServer {
   }
 
   private Injector getInjector() {
-    return Guice.createInjector(getModules());
+    return Guice.createInjector(getApplicationModule());
   }
 
-  protected List<? extends Module> getModules() {
-    return Lists.newArrayList(
-        new PetStoreModule(),
-        new ServletModule());
+  protected Module getApplicationModule() {
+    return new AbstractModule() {
+      @Override
+      protected void configure() {
+        install(new PetStoreModule());
+        install(new ServletModule());
+      }
+    };
   }
 
   private final static class PetStoreModule extends AbstractModule {

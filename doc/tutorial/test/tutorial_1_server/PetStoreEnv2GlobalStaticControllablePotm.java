@@ -1,6 +1,5 @@
 package tutorial_1_server;
 
-import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.Provides;
@@ -15,7 +14,6 @@ import tutorial_1_server.prod.MyPetStoreServer;
 import tutorial_1_server.prod.PetOfTheMonth;
 import tutorial_1_server.prod.PortNumber;
 
-import java.util.List;
 import java.util.Random;
 
 public final class PetStoreEnv2GlobalStaticControllablePotm extends GuiceBerryJunit3Env {
@@ -37,10 +35,14 @@ public final class PetStoreEnv2GlobalStaticControllablePotm extends GuiceBerryJu
   protected MyPetStoreServer startServer() {
     MyPetStoreServer result = new MyPetStoreServer(8080) {
       @Override
-      protected List<? extends Module> getModules() {
-        return Lists.newArrayList(
-            new PetStoreModuleWithGlobalStaticOverride(),
-            new ServletModule());
+      protected Module getApplicationModule() {
+        return new AbstractModule() {
+          @Override
+          protected void configure() {
+            install(new PetStoreModuleWithGlobalStaticOverride());
+            install(new ServletModule());
+          }
+        };
       }
     };
     result.start();
