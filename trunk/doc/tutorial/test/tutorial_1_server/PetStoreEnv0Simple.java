@@ -1,7 +1,9 @@
 package tutorial_1_server;
 
+import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.testing.guiceberry.GuiceBerryEnvMain;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 
 import org.openqa.selenium.WebDriver;
@@ -27,10 +29,23 @@ public class PetStoreEnv0Simple extends GuiceBerryJunit3Env {
   @Provides
   @Singleton
   protected MyPetStoreServer startServer() {
-    MyPetStoreServer result = new MyPetStoreServer(8080);
-    // It's always sane to separate the "start"ing of a server from the
-    // constructor.
-    result.start();
-    return result;
+    return new MyPetStoreServer(8080);
+  }
+  
+  @Override
+  protected void configure() {
+    super.configure();
+    bind(GuiceBerryEnvMain.class).to(PetStoreServerStarter.class);
+  }
+  
+  private static final class PetStoreServerStarter implements GuiceBerryEnvMain {
+    
+    @Inject
+    private MyPetStoreServer myPetStoreServer;
+    
+    public void run() {
+    // Starting a server should never be done in a @Provides (or Provider) method.
+      myPetStoreServer.start();
+    }
   }
 }
