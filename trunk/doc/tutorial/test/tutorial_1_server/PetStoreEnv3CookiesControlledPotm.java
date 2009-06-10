@@ -1,6 +1,5 @@
 package tutorial_1_server;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
@@ -19,7 +18,6 @@ import tutorial_1_server.prod.MyPetStoreServer;
 import tutorial_1_server.prod.PetOfTheMonth;
 import tutorial_1_server.prod.PortNumber;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -46,11 +44,15 @@ public final class PetStoreEnv3CookiesControlledPotm extends GuiceBerryJunit3Env
   MyPetStoreServer startServer() {
     MyPetStoreServer result = new MyPetStoreServer(8080) {
       @Override
-      protected List<? extends Module> getModules() {
-        return Lists.newArrayList(
-            new PetStoreModuleWithTestIdBasedOverride(),
-            new ServletModule(),
-            new TestIdServerModule());
+      protected Module getApplicationModule() {
+        return new AbstractModule() {
+          @Override
+          protected void configure() {
+            install(new PetStoreModuleWithTestIdBasedOverride());
+            install(new ServletModule());
+            install(new TestIdServerModule());
+          }
+        };
       }
     };
     result.start();
