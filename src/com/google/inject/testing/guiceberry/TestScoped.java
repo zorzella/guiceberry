@@ -28,11 +28,14 @@ import com.google.inject.ScopeAnnotation;
  * This defines a {@link Scope} that lasts for a single test.
  * 
  * <p>A test conceptually comes in scope when it starts and goes out of scope
- * when it finishes its execution (e.g., on JUnit lingo, roughly at the moment 
- * of {@link junit.framework.TestCase#setUp()} and 
+ * when it finishes its execution.
+ * 
+ * <p>On JUnit 3, this happens roughly at the moment of 
+ * {@link junit.framework.TestCase#setUp()} and 
  * {@link junit.framework.TestCase#tearDown()}). 
  *  
- * @see com.google.inject.testing.guiceberry.junit3.JunitTestScope for the JUnit-specific implementation of this scope
+ * @see com.google.inject.testing.guiceberry.junit3.JunitTestScope for the 
+ * JUnit3-specific implementation of this scope
  * 
  * @author Luiz-Otavio Zorzella
  * @author Danka Karwanska

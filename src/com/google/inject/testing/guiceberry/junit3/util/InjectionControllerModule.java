@@ -22,18 +22,23 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.TestId;
-import com.google.inject.testing.guiceberry.controllable.InjectionController;
-import com.google.inject.testing.guiceberry.controllable.InjectionControllerProvider;
+import com.google.inject.testing.guiceberry.tokill.InjectionController;
+import com.google.inject.testing.guiceberry.tokill.InjectionControllerProvider;
 
 import junit.framework.TestCase;
 
 /**
+ * @deprecated this form of injection controller is no longer supported and will 
+ * be killed in the future. Use the new 
+ * {@link com.google.inject.testing.guiceberry.controllable} paradigm.
+ *
  * A Guice {@link com.google.inject.Module} that can be installed in a 
  * {@link GuiceBerryEnv} that makes {@link InjectionController}s available to be 
  * injected in tests.
  * 
  * @author zorzella
  */
+@Deprecated
 public class InjectionControllerModule extends AbstractModule {
 
   private static class InjectionControllerGuiceBerryProvider 

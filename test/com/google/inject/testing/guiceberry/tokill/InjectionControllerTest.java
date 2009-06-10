@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.inject.testing.guiceberry.controllable;
+package com.google.inject.testing.guiceberry.tokill;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
@@ -24,7 +24,6 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
-import com.google.inject.testing.guiceberry.controllable.InjectionController;
 import com.google.inject.testing.guiceberry.controllable.InterceptingBindingsBuilder;
 
 import junit.framework.TestCase;

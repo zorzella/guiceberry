@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.google.inject.testing.guiceberry.controllable;
+package com.google.inject.testing.guiceberry.tokill;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.Sets;
 import com.google.inject.*;
 import com.google.inject.name.Named;
+import com.google.inject.testing.guiceberry.controllable.ProvisionInterceptor;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,6 +29,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * @deprecated this form of injection controller is no longer supported and will 
+ * be killed in the future. Use the new 
+ * {@link com.google.inject.testing.guiceberry.controllable} paradigm.
+ * 
  * Allows bound objects to be substituted at runtime. To use:
  *
  * <ol><li>Create a module that binds {@link ProvisionInterceptor} to the
@@ -60,6 +65,7 @@ import java.util.Set;
  * @author Jesse Wilson
  * @author Jerome Mourits
  */
+@Deprecated
 public class InjectionController {
   private final Set<Key<?>> interceptableKeys = Sets.newHashSet();
   private final Map<Key<?>, Object> mapWritable = new HashMap<Key<?>, Object>();

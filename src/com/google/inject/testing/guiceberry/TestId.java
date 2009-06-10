@@ -18,10 +18,6 @@ package com.google.inject.testing.guiceberry;
 
 import com.google.common.base.Preconditions;
 
-import junit.framework.TestCase;
-
-//import net.jcip.annotations.Immutable;
-
 import java.util.Random;
 
 import javax.servlet.http.Cookie;
@@ -42,24 +38,14 @@ public final class TestId implements Comparable<TestId>, CharSequence {
   
   private final String testCaseName;
   private final String testMethodName;
-  // @VisibleForTesting
-  public final long random;
+  private final long random;
   private final String asString;
   
-  // @VisibleForTesting
-  public TestId(TestCase testCase) {
-    this(testCase, new Random().nextInt(1000));
+  public TestId(String testCaseName, String testMethodName) {
+    this(testCaseName, testMethodName, new Random().nextInt(1000));
   }
 
-  // @VisibleForTesting
-  public TestId(TestCase testCase, long random) {
-    this(testCase.getClass().getName(), 
-        testCase.getName(), 
-        random);
-  }
-  
-  // @VisibleForTesting
-  public TestId(String testCaseName, String testMethodName, long random) {
+  private TestId(String testCaseName, String testMethodName, long random) {
     this.testCaseName = testCaseName; 
     this.testMethodName = testMethodName;
     this.random = random;

@@ -22,6 +22,10 @@ import com.google.inject.internal.Maps;
 import com.google.inject.testing.guiceberry.controllable.IcStrategyCouple.IcClientStrategy;
 import com.google.inject.testing.guiceberry.controllable.IcStrategyCouple.IcServerStrategy;
 
+//TODO: document
+/**
+ * @author Luiz-Otavio Zorzella
+ */
 public final class SharedStaticVarIcStrategy {
 
   private static final Map<ControllableId<?>,Object> map = Maps.newHashMap();
