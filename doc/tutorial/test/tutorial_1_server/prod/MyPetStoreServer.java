@@ -18,22 +18,22 @@ public class MyPetStoreServer {
   
   private final Server server;
   private final int portNumber;
+  private final WelcomePageServlet myServlet;
   
   public MyPetStoreServer(int portNumber) {
     this.portNumber = portNumber;
     server = new Server(portNumber);    
     Context root = new Context(server, "/", Context.SESSIONS);
     
-    WelcomePageServlet myServlet = new WelcomePageServlet();
+    myServlet = new WelcomePageServlet();
     root.addServlet(new ServletHolder(myServlet), "/*");
     root.addFilter(GuiceFilter.class, "/*", 0);
-
-    Injector injector = getInjector();
-    injector.injectMembers(myServlet);
   }
   
   public void start() {
     try {
+      Injector injector = getInjector();
+      injector.injectMembers(myServlet);
       server.start();
     } catch (Exception e) {
       throw new RuntimeException(e);

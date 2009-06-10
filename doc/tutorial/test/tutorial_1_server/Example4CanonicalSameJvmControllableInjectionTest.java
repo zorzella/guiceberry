@@ -28,7 +28,7 @@ public class Example4CanonicalSameJvmControllableInjectionTest extends GuiceBerr
   public void testCatAsPotm() {
     PetOfTheMonth expected = PetOfTheMonth.CAT;
     clientController.setOverride(expected);
-  welcomeTestPage.goTo();
-  welcomeTestPage.assertPetOfTheMonth(expected);
+    welcomeTestPage.goTo();
+    welcomeTestPage.assertPetOfTheMonth(expected);
   }
 }

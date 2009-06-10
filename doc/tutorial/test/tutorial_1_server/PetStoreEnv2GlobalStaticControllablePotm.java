@@ -32,7 +32,7 @@ public final class PetStoreEnv2GlobalStaticControllablePotm extends GuiceBerryJu
 
   @Provides
   @Singleton
-  protected MyPetStoreServer startServer() {
+  protected MyPetStoreServer buildPetStoreServer() {
     MyPetStoreServer result = new MyPetStoreServer(8080) {
       @Override
       protected Module getApplicationModule() {
