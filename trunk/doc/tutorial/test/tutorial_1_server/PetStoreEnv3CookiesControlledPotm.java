@@ -41,7 +41,7 @@ public final class PetStoreEnv3CookiesControlledPotm extends GuiceBerryJunit3Env
   
   @Provides
   @Singleton
-  MyPetStoreServer startServer() {
+  MyPetStoreServer buildPetStoreServer() {
     MyPetStoreServer result = new MyPetStoreServer(8080) {
       @Override
       protected Module getApplicationModule() {

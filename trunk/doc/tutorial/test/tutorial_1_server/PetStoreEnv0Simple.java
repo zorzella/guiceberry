@@ -28,7 +28,7 @@ public class PetStoreEnv0Simple extends GuiceBerryJunit3Env {
   
   @Provides
   @Singleton
-  protected MyPetStoreServer startServer() {
+  protected MyPetStoreServer buildPetStoreServer() {
     return new MyPetStoreServer(8080);
   }
   
@@ -44,7 +44,8 @@ public class PetStoreEnv0Simple extends GuiceBerryJunit3Env {
     private MyPetStoreServer myPetStoreServer;
     
     public void run() {
-    // Starting a server should never be done in a @Provides (or Provider) method.
+      // Starting a server should never be done in a @Provides method 
+      // (or inside Provider's get).
       myPetStoreServer.start();
     }
   }

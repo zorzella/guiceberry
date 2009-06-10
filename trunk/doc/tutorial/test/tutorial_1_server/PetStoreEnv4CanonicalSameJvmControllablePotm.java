@@ -1,10 +1,8 @@
 package tutorial_1_server;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.servlet.ServletModule;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.controllable.IcMaster;
 import com.google.inject.testing.guiceberry.controllable.SharedStaticVarIcStrategy;
@@ -38,21 +36,14 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
   
   @Provides
   @Singleton
-  MyPetStoreServer startServer() {
+  MyPetStoreServer buildPetStoreServer() {
     MyPetStoreServer result = new MyPetStoreServer(8080) {
       @Override
       protected Module getApplicationModule() {
-        final Module superModules = super.getApplicationModule();
         // !!! HERE !!!
-        Module temp = new AbstractModule() {
-          @Override
-          protected void configure() {
-            install(superModules);
-            install(new ServletModule());
-            install(new TestIdServerModule());
-          }
-        };
-        return icMaster.buildServerModule(temp);
+        return icMaster.buildServerModule(
+            new TestIdServerModule(),
+            super.getApplicationModule());
       }
     };
     result.start();
