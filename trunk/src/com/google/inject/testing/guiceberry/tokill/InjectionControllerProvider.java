@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.testing.guiceberry.TestId;
+import com.google.inject.testing.guiceberry.InjectionController;
 
 import java.util.Map;
 
