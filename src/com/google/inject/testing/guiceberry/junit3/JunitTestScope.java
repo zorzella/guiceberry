@@ -21,6 +21,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
+import com.google.inject.Singleton;
 import com.google.inject.testing.guiceberry.TestScoped;
 
 import junit.framework.TestCase;
@@ -38,6 +39,7 @@ import java.util.Map;
  * @author Luiz-Otavio Zorzella
  * @author Danka Karwanska
  */
+@Singleton
 class JunitTestScope implements Scope {
 
   private final Map<TestCase, Map<Key<?>, Object>> testMap =

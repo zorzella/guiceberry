@@ -68,25 +68,12 @@ public class GuiceBerryJunit3 {
   /**
    * If something goes wrong trying to get a valid instance of an Injector
    * for some GuiceBerryEnv name, this instance is stored in the 
-   * {@link #moduleClassToGuiceBerryStuffMap}, to allow for graceful error handling.
+   * {@link #moduleClassToInjectorMap}, to allow for graceful error handling.
    */
-  private static final GuiceBerryStuff BOGUS_GUICE_BERRY_STUFF = 
-    new GuiceBerryStuff(null, null);
+  private static final Injector BOGUS_INJECTOR = Guice.createInjector();
   
-  //TODO(zorzella): think about not needing the testScope and killing this
-  private static final class GuiceBerryStuff {
-    
-    private final Injector injector;
-    private final JunitTestScope testScope;
-
-    public GuiceBerryStuff(Injector injector, JunitTestScope testScope) {
-      this.injector = injector;
-      this.testScope = testScope;
-    }
-  }
- 
-  private static Map<Class<? extends Module>, GuiceBerryStuff> 
-      moduleClassToGuiceBerryStuffMap = Maps.newHashMap();
+  static Map<Class<? extends Module>, Injector> 
+      moduleClassToInjectorMap = Maps.newHashMap();
 
   private static InheritableThreadLocal<TestCase> testCurrentlyRunningOnThisThread  = 
     new InheritableThreadLocal<TestCase>();
@@ -216,8 +203,8 @@ public class GuiceBerryJunit3 {
    * @see JunitTestScope
    */
   public synchronized static void tearDown(TestCase testCase) {
-    //TODO(zorzella): fix tests to enable this
-    if (false) {
+    //TODO(zorzella): kill this
+    if (!Boolean.getBoolean("LENIENT_TEARDOWN")) {
       if (testCase instanceof TearDownAccepter) {
         throw new UnsupportedOperationException("You must not call " +
         		"GuiceBerryJunit3.tearDown (it's only needed for tests that do " +
@@ -234,9 +221,9 @@ public class GuiceBerryJunit3 {
   private void goTearDown() {
     Class<? extends Module> guiceBerryEnvClass = getGuiceBerryEnvClassForTest();
     
-    GuiceBerryStuff guiceBerryStuff = 
-      moduleClassToGuiceBerryStuffMap.get(guiceBerryEnvClass);
-    if (guiceBerryStuff == BOGUS_GUICE_BERRY_STUFF) {
+    Injector injector = 
+      moduleClassToInjectorMap.get(guiceBerryEnvClass);
+    if (injector == BOGUS_INJECTOR) {
       // We failed to get a valid injector for this module in the setUp method,
       // so we just gracefully return, after cleaning up the threadlocal (which
       // normally would happen in the doTearDown method).
@@ -244,16 +231,15 @@ public class GuiceBerryJunit3 {
       return;
     }
     
-    notifyTestScopeListenerOfOutScope(guiceBerryStuff);
+    notifyTestScopeListenerOfOutScope(injector);
     // TODO: this line used to be before the notifyTestScopeListenerOfOutScope
     // causing a bug -- e.d. a Provider<TestId> could not be used in the 
     // exitingScope method of the TestScopeListener. I haven't yet found a
     // good way to test this change.
-    doTearDown(guiceBerryStuff);
+    doTearDown(injector);
   }
   
   private void doSetUp() {
-      
     final Class<? extends Module> guiceBerryEnvClass = 
       getGuiceBerryEnvClassForTest();
     testCurrentlyRunningOnThisThread.set(testCase);
@@ -271,23 +257,23 @@ public class GuiceBerryJunit3 {
     } catch (RuntimeException e) {  
       String msg = String.format("Binding error in the module '%s': '%s'.", 
           moduleClass.toString(), e.getMessage());
-      notifyTestScopeListenerOfOutScope(moduleClassToGuiceBerryStuffMap.get(moduleClass));
+      notifyTestScopeListenerOfOutScope(moduleClassToInjectorMap.get(moduleClass));
       throw new RuntimeException(msg, e);
     }
   }
 
   private Injector getInjector(final Class<? extends Module> guiceBerryEnvClass) {
-    if (!moduleClassToGuiceBerryStuffMap.containsKey(guiceBerryEnvClass)) {    
+    if (!moduleClassToInjectorMap.containsKey(guiceBerryEnvClass)) {    
       return foundModuleForTheFirstTime(guiceBerryEnvClass);  
     } else {
-      GuiceBerryStuff guiceBerryStuff = 
-        moduleClassToGuiceBerryStuffMap.get(guiceBerryEnvClass);
-      if (guiceBerryStuff == BOGUS_GUICE_BERRY_STUFF) {
+      Injector injector = 
+        moduleClassToInjectorMap.get(guiceBerryEnvClass);
+      if (injector == BOGUS_INJECTOR) {
         throw new RuntimeException(String.format(
             "Skipping '%s' GuiceBerryEnv which failed previously during injector creation.",
             guiceBerryEnvClass.getName()));
       }
-      return guiceBerryStuff.injector; 
+      return injector; 
     }
   }
 
@@ -394,11 +380,11 @@ public class GuiceBerryJunit3 {
   private Injector foundModuleForTheFirstTime(
       final Class<? extends Module> guiceBerryEnvClass) {
     
-    GuiceBerryStuff guiceBerryStuff = BOGUS_GUICE_BERRY_STUFF;
+    Injector injector = BOGUS_INJECTOR;
     
     try {
       Module guiceBerryEnvInstance = createGuiceBerryInstanceFromClass(guiceBerryEnvClass);
-      Injector injector = Guice.createInjector(guiceBerryEnvInstance);
+      injector = Guice.createInjector(guiceBerryEnvInstance);
       callGuiceBerryEnvMainIfBound(injector);
       try {
         if (injector.getBindings().get(Key.get(TestScopeListener.class)) == null) {
@@ -417,12 +403,11 @@ public class GuiceBerryJunit3 {
       }
 
       JunitTestScope testScope = injector.getInstance(JunitTestScope.class);
-      guiceBerryStuff = new GuiceBerryStuff(injector, testScope);
       return injector;
     } finally {
-      // This is in the finally block to ensure that BOGUS_GUICE_BERRY_STUFF 
+      // This is in the finally block to ensure that BOGUS_INJECTOR
       // is put in the map if things go bad.
-      moduleClassToGuiceBerryStuffMap.put(guiceBerryEnvClass, guiceBerryStuff);
+      moduleClassToInjectorMap.put(guiceBerryEnvClass, injector);
     }
   }
 
@@ -453,13 +438,11 @@ public class GuiceBerryJunit3 {
     return result;
   }
 
-  private static void notifyTestScopeListenerOfOutScope(
-      GuiceBerryStuff guiceBerryStuff) {
-    Injector injector = guiceBerryStuff.injector;
+  private static void notifyTestScopeListenerOfOutScope(Injector injector) {
     injector.getInstance(TestScopeListener.class).exitingScope();
   }
 
-  private void doTearDown(GuiceBerryStuff guiceBerryStuff) {
+  private void doTearDown(Injector injector) {
   
     if (testCurrentlyRunningOnThisThread.get() != testCase) {
       String msg = String.format( GuiceBerryJunit3.class.toString() 
@@ -471,7 +454,7 @@ public class GuiceBerryJunit3 {
       throw new RuntimeException(msg); 
     }
     testCurrentlyRunningOnThisThread.set(null);
-    guiceBerryStuff.testScope.finishScope(testCase);    
+    injector.getInstance(JunitTestScope.class).finishScope(testCase);    
   }  
   
   private void addGuiceBerryTearDown(final TestCase testCase) {
@@ -491,28 +474,20 @@ public class GuiceBerryJunit3 {
   
   // METHODS BELOW ARE USED ONLY FOR TESTS  
   static void clear() {
-    moduleClassToGuiceBerryStuffMap = Maps.newHashMap();
+    moduleClassToInjectorMap = Maps.newHashMap();
     testCurrentlyRunningOnThisThread.set(null);
   }
   
   static int numberOfInjectorsInUse(){
-    return moduleClassToGuiceBerryStuffMap.size();
+    return moduleClassToInjectorMap.size();
   }
   
-  static Injector getInjectorFromGB(Class<?> key){
-    GuiceBerryStuff guiceBerryStuff = moduleClassToGuiceBerryStuffMap.get(key);
-    if (guiceBerryStuff == null) {
+  static JunitTestScope getTestScopeForGbe(Class<?> key){
+    Injector injector = moduleClassToInjectorMap.get(key);
+    if (injector == null) {
       return null;
     }
-    return guiceBerryStuff.injector;
-  }
-  
-  static JunitTestScope getTestScopeFromGB(Class<?> key){
-    GuiceBerryStuff guiceBerryStuff = moduleClassToGuiceBerryStuffMap.get(key);
-    if (guiceBerryStuff == null) {
-      return null;
-    }
-    return guiceBerryStuff.testScope;
+    return injector.getInstance(JunitTestScope.class);
   }
  
   /**
