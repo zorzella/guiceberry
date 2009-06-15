@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.inject.testing.guiceberry.controllable;
+package com.google.inject.commands.intercepting;
 
 import com.google.inject.Key;
 import com.google.inject.Provider;
 
 /**
- * <p>Intercepts object provision.
- *
- * @author Jesse Wilson
- * @author Jerome Mourits
+ * @deprecated this interface is going away. Use 
+ * {@link com.google.inject.testing.guiceberry.controllable.ProvisionInterceptor}
  */
-public interface ProvisionInterceptor extends com.google.inject.commands.intercepting.ProvisionInterceptor {
+@Deprecated
+public interface ProvisionInterceptor {
   <T> T intercept(Key<T> key, Provider<? extends T> delegate);
 }

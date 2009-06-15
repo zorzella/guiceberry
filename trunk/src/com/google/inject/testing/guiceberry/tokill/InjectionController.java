@@ -21,7 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.Sets;
 import com.google.inject.*;
 import com.google.inject.name.Named;
-import com.google.inject.testing.guiceberry.controllable.ProvisionInterceptor;
+import com.google.inject.commands.intercepting.ProvisionInterceptor;
 
 import java.util.Collections;
 import java.util.HashMap;

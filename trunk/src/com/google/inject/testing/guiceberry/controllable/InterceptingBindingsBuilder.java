@@ -200,7 +200,7 @@ public final class InterceptingBindingsBuilder {
    */
   private static class InterceptingProvider<T> implements Provider<T> {
     private final Key<T> key;
-    private Provider<ProvisionInterceptor> injectionInterceptorProvider;
+    private Provider<ProvisionInterceptor> provisionInterceptorProvider;
     private Provider<? extends T> delegateProvider;
 
     public InterceptingProvider(Key<T> key, Provider<T> delegateProvider) {
@@ -209,12 +209,12 @@ public final class InterceptingBindingsBuilder {
     }
 
     @Inject void initialize(Provider<ProvisionInterceptor> injectionInterceptorProvider) {
-      this.injectionInterceptorProvider = injectionInterceptorProvider;
+      this.provisionInterceptorProvider = injectionInterceptorProvider;
     }
 
     public T get() {
-      checkNotNull(injectionInterceptorProvider, "injectionInterceptorProvider");
-      return injectionInterceptorProvider.get().intercept(key, delegateProvider);
+      checkNotNull(provisionInterceptorProvider, "injectionInterceptorProvider");
+      return provisionInterceptorProvider.get().intercept(key, delegateProvider);
     }
   }
 }
