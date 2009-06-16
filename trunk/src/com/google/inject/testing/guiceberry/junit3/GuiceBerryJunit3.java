@@ -31,6 +31,7 @@ import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.TestScoped;
+import com.google.inject.testing.guiceberry.junit3.BasicJunit3Module.ToTearDown;
 
 import junit.framework.TestCase;
 
@@ -230,6 +231,9 @@ public class GuiceBerryJunit3 {
       testCurrentlyRunningOnThisThread.set(null);
       return;
     }
+    
+    ToTearDown toTearDown = injector.getInstance(ToTearDown.class);
+    toTearDown.runTearDown();
     
     notifyTestScopeListenerOfOutScope(injector);
     // TODO: this line used to be before the notifyTestScopeListenerOfOutScope
