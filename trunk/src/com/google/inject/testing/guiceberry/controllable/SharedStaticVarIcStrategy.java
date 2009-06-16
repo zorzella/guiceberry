@@ -38,6 +38,10 @@ public final class SharedStaticVarIcStrategy {
     public <T> void setOverride(ControllableId<T> pair, T override) {
       map.put(pair, override);
     }
+
+    public <T> void resetOverride(ControllableId<T> controllableId) {
+      map.remove(controllableId);
+    }
   }
   
   private static final class MyServerController implements IcServerStrategy {

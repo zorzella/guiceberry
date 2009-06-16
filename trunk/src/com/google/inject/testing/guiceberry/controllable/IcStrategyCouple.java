@@ -34,7 +34,8 @@ public class IcStrategyCouple {
   }
   
   public interface IcClientStrategy {
-    <T> void setOverride(ControllableId<T> pair, T override);
+    <T> void setOverride(ControllableId<T> controllableId, T override);
+    <T> void resetOverride(ControllableId<T> controllableId);
   }
   
   private final Class<? extends IcClientStrategy> icClientStrategyClass;

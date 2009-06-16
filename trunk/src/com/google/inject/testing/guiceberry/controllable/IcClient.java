@@ -43,6 +43,4 @@ package com.google.inject.testing.guiceberry.controllable;
  */
 public interface IcClient<T> {
   void setOverride(T override);
-  //TODO: kill this when we have TearDownAccepter always bound
-  void resetOverride();
 }
