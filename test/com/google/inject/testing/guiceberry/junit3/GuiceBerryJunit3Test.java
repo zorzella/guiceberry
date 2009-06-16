@@ -17,6 +17,7 @@
 package com.google.inject.testing.guiceberry.junit3;
 
 import com.google.common.testing.TearDown;
+import com.google.common.testing.TearDownAccepter;
 import com.google.common.testing.junit3.JUnitAsserts;
 import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.inject.AbstractModule;
@@ -697,6 +698,17 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
           expected.getMessage());
     }
   }
+  
+  public void testTearDownAccepter() throws Exception {
+    NonTdtcWithTearDownAccepter test = 
+      NonTdtcWithTearDownAccepter.createInstance();
+    
+    GuiceBerryJunit3.setUp(test);
+    test.foo();
+    GuiceBerryJunit3.tearDown(test);
+    
+    assertEquals("ab", test.ordered.toString());
+  }
 
 //THE BELOW CLASSES ARE USED ONLY FOR TESTING GuiceBerry
   
@@ -725,6 +737,29 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
   private static final class MyNonGuiceBerryEnvRemapper {}
   
+  @GuiceBerryEnv(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)
+  private static final class NonTdtcWithTearDownAccepter extends TestCase {
+    
+    private StringBuilder ordered = new StringBuilder();
+    
+    @Inject
+    private TearDownAccepter tearDownAccepter;
+
+    public void foo() {
+      ordered.append("a");
+      tearDownAccepter.addTearDown(new TearDown() {
+      
+        public void tearDown() throws Exception {
+          ordered.append("b");
+        }
+      });
+    }
+    
+    static NonTdtcWithTearDownAccepter createInstance() {
+      return namedTest(new NonTdtcWithTearDownAccepter());
+    }    
+  }
+
   @GuiceBerryEnv(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)
   private static final class TestWithGbeOne extends TearDownTestCase {
     

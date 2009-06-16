@@ -16,6 +16,9 @@
 
 package com.google.inject.testing.guiceberry.junit3;
 
+import com.google.common.testing.TearDown;
+import com.google.common.testing.TearDownAccepter;
+import com.google.common.testing.TearDownStack;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
@@ -47,6 +50,23 @@ public class BasicJunit3Module extends AbstractModule {
   public void configure() {
     final JunitTestScope testScope = new JunitTestScope();
     bindScope(TestScoped.class, testScope);
+    bind(TearDownAccepter.class).to(ToTearDown.class);
+  }
+
+  @Provides
+  @TestScoped
+  ToTearDown getToTearDown(TestCase testCase) {
+    return new ToTearDown() {
+      TearDownStack delegate = new TearDownStack();
+      
+      public void addTearDown(TearDown tearDown) {
+        delegate.addTearDown(tearDown);
+      }
+    
+      public void runTearDown() {
+        delegate.runTearDown();
+      }
+    };
   }
   
   @Provides
@@ -59,5 +79,9 @@ public class BasicJunit3Module extends AbstractModule {
   @TestScoped
   TestCase getTestCase() {
     return GuiceBerryJunit3.getActualTestCase();
+  }
+  
+  interface ToTearDown extends TearDownAccepter {
+    void runTearDown();
   }
 }
