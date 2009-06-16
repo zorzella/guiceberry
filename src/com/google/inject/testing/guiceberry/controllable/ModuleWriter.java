@@ -37,7 +37,7 @@ import java.lang.annotation.Annotation;
  * @author Luiz-Otavio Zorzella
  */
 //TODO: document and move to guice?
-public class ModuleWriter extends DefaultElementVisitor<Void> {
+class ModuleWriter extends DefaultElementVisitor<Void> {
   protected final Binder binder;
 
   ModuleWriter(Binder binder) {
