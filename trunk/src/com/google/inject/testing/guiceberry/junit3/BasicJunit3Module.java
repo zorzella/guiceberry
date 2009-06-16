@@ -43,20 +43,20 @@ import junit.framework.TestCase;
  */
 public class BasicJunit3Module extends AbstractModule {
     
-      @Override
-      public void configure() {
-        final JunitTestScope testScope = new JunitTestScope();
-        bindScope(TestScoped.class, testScope);
-        bind(TestId.class).toProvider(new Provider<TestId>() {
-          public TestId get() {
-            TestCase testCase = GuiceBerryJunit3.getActualTestCase(); 
-            return new TestId(testCase.getClass().getName(), testCase.getName());
-          } 
-        }).in(TestScoped.class);
-        bind(TestCase.class).toProvider(new Provider<TestCase>() {
-          public TestCase get() {
-            return GuiceBerryJunit3.getActualTestCase();
-          }
-        }).in(TestScoped.class);
+  @Override
+  public void configure() {
+    final JunitTestScope testScope = new JunitTestScope();
+    bindScope(TestScoped.class, testScope);
+    bind(TestId.class).toProvider(new Provider<TestId>() {
+      public TestId get() {
+        TestCase testCase = GuiceBerryJunit3.getActualTestCase(); 
+        return new TestId(testCase.getClass().getName(), testCase.getName());
+      } 
+    }).in(TestScoped.class);
+    bind(TestCase.class).toProvider(new Provider<TestCase>() {
+      public TestCase get() {
+        return GuiceBerryJunit3.getActualTestCase();
       }
+    }).in(TestScoped.class);
+  }
 }
