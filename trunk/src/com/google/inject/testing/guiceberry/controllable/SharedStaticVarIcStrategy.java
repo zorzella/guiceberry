@@ -30,11 +30,11 @@ public final class SharedStaticVarIcStrategy {
 
   private static final Map<ControllableId<?>,Object> map = Maps.newHashMap();
 
-  public IcStrategyCouple getControllerSupport() {
-    return new IcStrategyCouple(MyClientController.class, MyServerController.class);
+  public IcStrategyCouple getStrategyCouple() {
+    return new IcStrategyCouple(IcClientStrategyImpl.class, IcServerStrategyImpl.class);
   }
   
-  private static final class MyClientController implements IcClientStrategy {
+  private static final class IcClientStrategyImpl implements IcClientStrategy {
     public <T> void setOverride(ControllableId<T> pair, T override) {
       map.put(pair, override);
     }
@@ -44,7 +44,7 @@ public final class SharedStaticVarIcStrategy {
     }
   }
   
-  private static final class MyServerController implements IcServerStrategy {
+  private static final class IcServerStrategyImpl implements IcServerStrategy {
     @SuppressWarnings("unchecked")
     public <T> T getOverride(ControllableId<T> pair, Provider<? extends T> delegate) {
       if (!map.containsKey(pair)) {
