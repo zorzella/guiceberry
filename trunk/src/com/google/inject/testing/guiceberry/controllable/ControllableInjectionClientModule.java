@@ -15,15 +15,14 @@
  */
 package com.google.inject.testing.guiceberry.controllable;
 
-import java.util.Map;
-
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.testing.guiceberry.TestId;
-import com.google.inject.testing.guiceberry.controllable.IcStrategyCouple.IcClientStrategy;
+
+import java.util.Map;
 
 /**
  * This internal class is basically what the {@link IcMaster} uses to fullfil
@@ -34,34 +33,34 @@ import com.google.inject.testing.guiceberry.controllable.IcStrategyCouple.IcClie
  */
 final class ControllableInjectionClientModule extends AbstractModule {
   
-  private final Map<Key<?>, IcStrategyCouple> rewriter;
+  private final Map<Key<?>, IcStrategy> rewriter;
   
-  public ControllableInjectionClientModule(Map<Key<?>, IcStrategyCouple> rewriter) {
+  public ControllableInjectionClientModule(Map<Key<?>, IcStrategy> rewriter) {
     this.rewriter = rewriter;
   }
   
   @SuppressWarnings("unchecked")
   @Override
   protected void configure() {
-    for (Map.Entry<Key<?>, IcStrategyCouple> e : rewriter.entrySet()) {
-      bind(IcStrategyCouple.wrap(IcClient.class, e.getKey()))
+    for (Map.Entry<Key<?>, IcStrategy> e : rewriter.entrySet()) {
+      bind(IcStrategy.wrap(IcClient.class, e.getKey()))
          .toProvider(new MyClientProvider(
              e.getKey(), 
              getProvider(TestId.class), 
-             getProvider(e.getValue().clientControllerClass()),
+             getProvider(e.getValue().clientSupportClass()),
              getProvider(TearDownAccepter.class)));
     }
   }
 
   private static final class MyClientProvider<T> implements Provider<IcClient<T>> {
     private final Key<T> key;
-    private final Provider<IcClientStrategy> clientControllerSupportProvider;
+    private final Provider<IcStrategy.ClientSupport> clientControllerSupportProvider;
     private final Provider<TestId> testIdProvider;
     private final Provider<TearDownAccepter> tearDownAccepterProvider;
     
     public MyClientProvider(Key<T> key,  
         Provider<TestId> testIdProvider, 
-        Provider<IcClientStrategy> clientControllerSupportProvider,
+        Provider<IcStrategy.ClientSupport> clientControllerSupportProvider,
         Provider<TearDownAccepter> tearDownAccepterProvider) {
       this.key = key;
       this.testIdProvider = testIdProvider;
@@ -76,7 +75,7 @@ final class ControllableInjectionClientModule extends AbstractModule {
           if (override == null) {
             throw new NullPointerException();
           }
-          final IcClientStrategy icClientStrategy = 
+          final IcStrategy.ClientSupport icClientStrategy = 
             clientControllerSupportProvider.get();
           final ControllableId controllableId = 
             new ControllableId(testIdProvider.get(), key);

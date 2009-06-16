@@ -15,13 +15,12 @@
  */
 package com.google.inject.testing.guiceberry.controllable;
 
-import java.util.Map;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.testing.guiceberry.TestId;
-import com.google.inject.testing.guiceberry.controllable.IcStrategyCouple.IcServerStrategy;
+
+import java.util.Map;
 
 /**
  * This internal class is basically what the {@link IcMaster} uses to fullfil
@@ -32,29 +31,29 @@ import com.google.inject.testing.guiceberry.controllable.IcStrategyCouple.IcServ
  */
 final class ControllableInjectionServerModule extends AbstractModule {
   
-  private final Map<Key<?>, IcStrategyCouple> rewriter;
+  private final Map<Key<?>, IcStrategy> rewriter;
   
-  public ControllableInjectionServerModule(Map<Key<?>, IcStrategyCouple> rewriter) {
+  public ControllableInjectionServerModule(Map<Key<?>, IcStrategy> rewriter) {
     this.rewriter = rewriter;
   }
   
   @SuppressWarnings("unchecked")
   @Override
   protected void configure() {
-    for (Map.Entry<Key<?>, IcStrategyCouple> e : rewriter.entrySet()) {
-      bind(IcStrategyCouple.wrap(IcServer.class, e.getKey()))
+    for (Map.Entry<Key<?>, IcStrategy> e : rewriter.entrySet()) {
+      bind(IcStrategy.wrap(IcServer.class, e.getKey()))
            .toProvider(new MyServerProvider(e.getKey(), getProvider(TestId.class), 
-             getProvider(e.getValue().serverControllerClass())));
+             getProvider(e.getValue().serverSupportClass())));
     }
   }
 
   private static final class MyServerProvider<T> implements Provider<IcServer<T>> {
     private final Key<T> key;
-    private final Provider<IcServerStrategy> serControllerSupportProvider;
+    private final Provider<IcStrategy.ServerSupport> serControllerSupportProvider;
     private final Provider<TestId> testIdProvider;
     
     public MyServerProvider(Key<T> key,
-        Provider<TestId> testIdProvider, Provider<IcServerStrategy> serverControllerSupportProvider) {
+        Provider<TestId> testIdProvider, Provider<IcStrategy.ServerSupport> serverControllerSupportProvider) {
       this.key = key;
       this.testIdProvider = testIdProvider;
       this.serControllerSupportProvider = serverControllerSupportProvider;

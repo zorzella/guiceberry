@@ -15,12 +15,11 @@
  */
 package com.google.inject.testing.guiceberry.controllable;
 
-import java.util.Map;
-
 import com.google.inject.Provider;
 import com.google.inject.internal.Maps;
-import com.google.inject.testing.guiceberry.controllable.IcStrategyCouple.IcClientStrategy;
-import com.google.inject.testing.guiceberry.controllable.IcStrategyCouple.IcServerStrategy;
+import com.google.inject.testing.guiceberry.controllable.IcStrategy;
+
+import java.util.Map;
 
 //TODO: document
 /**
@@ -30,11 +29,11 @@ public final class SharedStaticVarIcStrategy {
 
   private static final Map<ControllableId<?>,Object> map = Maps.newHashMap();
 
-  public IcStrategyCouple getStrategyCouple() {
-    return new IcStrategyCouple(IcClientStrategyImpl.class, IcServerStrategyImpl.class);
+  public IcStrategy getStrategyCouple() {
+    return new IcStrategy(IcClientStrategyImpl.class, IcServerStrategyImpl.class);
   }
   
-  private static final class IcClientStrategyImpl implements IcClientStrategy {
+  private static final class IcClientStrategyImpl implements IcStrategy.ClientSupport {
     public <T> void setOverride(ControllableId<T> pair, T override) {
       map.put(pair, override);
     }
@@ -44,7 +43,7 @@ public final class SharedStaticVarIcStrategy {
     }
   }
   
-  private static final class IcServerStrategyImpl implements IcServerStrategy {
+  private static final class IcServerStrategyImpl implements IcStrategy.ServerSupport {
     @SuppressWarnings("unchecked")
     public <T> T getOverride(ControllableId<T> pair, Provider<? extends T> delegate) {
       if (!map.containsKey(pair)) {

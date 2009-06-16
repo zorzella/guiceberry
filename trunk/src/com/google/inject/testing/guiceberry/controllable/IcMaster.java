@@ -15,9 +15,6 @@
  */
 package com.google.inject.testing.guiceberry.controllable;
 
-import java.util.Collection;
-import java.util.Map;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -26,7 +23,9 @@ import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.internal.Maps;
 
-//TODO: document
+import java.util.Collection;
+import java.util.Map;
+
 /**
  * As documented at length in the tutorial for 
  * {@link tutorial_1_server.Example4CanonicalSameJvmControllableInjectionTest}
@@ -36,7 +35,7 @@ import com.google.inject.internal.Maps;
  * 
  * <p>Both Injectors need to basically agree on two different things: the list
  * of classes/keys that are subject to being controlled and, for each of these
- * classes/keys the strategy ({@link IcStrategyCouple}) that is to be used.
+ * classes/keys the {@link IcStrategy} that is to be used.
  * 
  * <p>Then, the client module (built through {@link #buildClientModule()} is to 
  * be added to the test Injector's list of modules; and, on the server side, the
@@ -47,18 +46,18 @@ import com.google.inject.internal.Maps;
  */
 public final class IcMaster {
   
-  private final Map<Key<?>, IcStrategyCouple> controlledKeyToStrategyMap = 
+  private final Map<Key<?>, IcStrategy> controlledKeyToStrategyMap = 
     Maps.newHashMap();
   
   /**
    * Declares the given (un-annotated) {@code classes} as being subject to 
    * Controllable Injection with the given {@code strategy}.
    * 
-   * @see #thatControls(IcStrategyCouple, Key...) 
+   * @see #thatControls(IcStrategy, Key...) 
    *  
    * @return itself, for method chaining
    */
-  public IcMaster thatControls(IcStrategyCouple strategy, 
+  public IcMaster thatControls(IcStrategy strategy, 
       Class<?>... classes) {
     for (Class<?> clazz : classes) {
       Key<?> key = Key.get(clazz);
@@ -74,11 +73,11 @@ public final class IcMaster {
    * Declares the given annotated classes (through they {@code keys}) as being 
    * subject to Controllable Injection with the given {@code strategy}.
    * 
-   * @see #thatControls(IcStrategyCouple, Class...)
+   * @see #thatControls(IcStrategy, Class...)
    * 
    * @return itself, for method chaining
    */
-  public IcMaster thatControls(IcStrategyCouple support, 
+  public IcMaster thatControls(IcStrategy support, 
       Key<?>... keys) {
     for (Key<?> key : keys) {
       if (controlledKeyToStrategyMap.containsKey(key)) {
@@ -124,7 +123,7 @@ public final class IcMaster {
       
       @SuppressWarnings("unchecked")
       public <T> T intercept(Key<T> key, Provider<? extends T> delegate) {
-        IcServer<T> instance = (IcServer<T>) injector.getInstance(IcStrategyCouple.wrap(IcServer.class, key));
+        IcServer<T> instance = (IcServer<T>) injector.getInstance(IcStrategy.wrap(IcServer.class, key));
         return instance.getOverride(delegate);
       }
     }
