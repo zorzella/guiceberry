@@ -48,11 +48,11 @@ public interface IcClient<T> {
    * value.
    * 
    * <p>Setting an override here will cause the appropriate implementation of
-   * {@link IcStrategyCouple.IcClientStrategy#setOverride(ControllableId, Object)}
+   * {@link IcStrategy.ClientSupport#setOverride(ControllableId, Object)}
    * to be called.
    * 
    * <p>Note that an override will clean itself up upon teardown. See 
-   * {@link IcStrategyCouple.IcClientStrategy#resetOverride(ControllableId)}.
+   * {@link IcStrategy.ClientSupport#resetOverride(ControllableId)}.
    * 
    * <p>The usage of Controllable Injections is documented at lenght in the 
    * tutorial for 
