@@ -18,8 +18,6 @@ package com.google.inject.testing.guiceberry;
 
 import com.google.common.base.Preconditions;
 
-import junit.framework.TestCase;
-
 import java.util.Random;
 
 import javax.servlet.http.Cookie;
@@ -43,14 +41,6 @@ public final class TestId implements Comparable<TestId>, CharSequence {
   private final long random;
   private final String asString;
 
-  /**
-   * @deprecated This method is going away soon. Inline it!
-   */
-  @Deprecated
-  public TestId(TestCase testCase) {
-    this(testCase.getClass().getName(), testCase.getName());
-  }
-  
   public TestId(String testCaseName, String testMethodName) {
     this(testCaseName, testMethodName, new Random().nextInt(1000));
   }
