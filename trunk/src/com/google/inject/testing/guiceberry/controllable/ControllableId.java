@@ -20,10 +20,10 @@ import com.google.inject.internal.Objects;
 import com.google.inject.testing.guiceberry.TestId;
 
 /**
- * This is basically a pair of a controlled {@link Key} ({@link Class}) and a 
- * {@link TestId} that is used as a {@link java.util.Map} key by the 
- * controllable injection framework to identify during runtime the instance that
- * is to be controlled.
+ * This is basically a pair of a controlled {@link Key} (i.e. a possible 
+ * annotated {@link Class}) and a {@link TestId}. This is used as a 
+ * {@link java.util.Map} key by the Controllable Injection framework to identify 
+ * during runtime the instance that is being controlled.
  * 
  * @author Luiz-Otavio Zorzella
  *

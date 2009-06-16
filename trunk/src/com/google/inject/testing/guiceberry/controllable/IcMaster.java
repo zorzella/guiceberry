@@ -77,21 +77,35 @@ public final class IcMaster {
    * 
    * @return itself, for method chaining
    */
-  public IcMaster thatControls(IcStrategy support, 
+  public IcMaster thatControls(IcStrategy strategy, 
       Key<?>... keys) {
     for (Key<?> key : keys) {
       if (controlledKeyToStrategyMap.containsKey(key)) {
         throw new IllegalArgumentException();
       }
-      controlledKeyToStrategyMap.put(key, support);
+      controlledKeyToStrategyMap.put(key, strategy);
     }
     return this;
   }
 
+  /**
+   * Use the {@link Module} returned from this method when constructing your
+   * test {@link Injector}.
+   */
   public Module buildClientModule() {
     return new ControllableInjectionClientModule(controlledKeyToStrategyMap);
   }
-  
+
+  /**
+   * Use the {@link Module} returned from this method <em>instead</em> of the
+   * {@code modules} passes as argument to create your server {@link Injector}
+   * so it honors the declared Controllable Injections.
+   * 
+   * <p>The returned {@link Module} is equivalent to the given {@code modules},
+   * except that the bindings to the classes/keys declared to be subject to 
+   * be controlled (through {@link #thatControls(IcStrategy, Class...)}) will
+   * be rewritten to honor this. 
+   */
   public Module buildServerModule(final Module... modules) {
     return new InterceptingBindingsBuilder()
       .install(modules)
@@ -101,6 +115,9 @@ public final class IcMaster {
       .build();
   }
 
+  /**
+   * @see #buildServerModule(Module...)
+   */
   public Module buildServerModule(final Collection<? extends Module> modules) {
     return new InterceptingBindingsBuilder()
       .install(modules)
