@@ -17,6 +17,8 @@ package com.google.inject.testing.guiceberry.controllable;
 
 import java.util.Map;
 
+import com.google.common.testing.TearDown;
+import com.google.common.testing.TearDownAccepter;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -43,8 +45,11 @@ final class ControllableInjectionClientModule extends AbstractModule {
   protected void configure() {
     for (Map.Entry<Key<?>, IcStrategyCouple> e : rewriter.entrySet()) {
       bind(IcStrategyCouple.wrap(IcClient.class, e.getKey()))
-         .toProvider(new MyClientProvider(e.getKey(), getProvider(TestId.class), 
-             getProvider(e.getValue().clientControllerClass())));
+         .toProvider(new MyClientProvider(
+             e.getKey(), 
+             getProvider(TestId.class), 
+             getProvider(e.getValue().clientControllerClass()),
+             getProvider(TearDownAccepter.class)));
     }
   }
 
@@ -52,12 +57,16 @@ final class ControllableInjectionClientModule extends AbstractModule {
     private final Key<T> key;
     private final Provider<IcClientStrategy> clientControllerSupportProvider;
     private final Provider<TestId> testIdProvider;
+    private final Provider<TearDownAccepter> tearDownAccepterProvider;
     
     public MyClientProvider(Key<T> key,  
-        Provider<TestId> testIdProvider, Provider<IcClientStrategy> clientControllerSupportProvider) {
+        Provider<TestId> testIdProvider, 
+        Provider<IcClientStrategy> clientControllerSupportProvider,
+        Provider<TearDownAccepter> tearDownAccepterProvider) {
       this.key = key;
       this.testIdProvider = testIdProvider;
       this.clientControllerSupportProvider = clientControllerSupportProvider;
+      this.tearDownAccepterProvider = tearDownAccepterProvider;
     }
 
     public IcClient<T> get() {
@@ -67,14 +76,16 @@ final class ControllableInjectionClientModule extends AbstractModule {
           if (override == null) {
             throw new NullPointerException();
           }
-          clientControllerSupportProvider.get().setOverride(
-              new ControllableId(testIdProvider.get(), key), override);
-        }
-
-        @SuppressWarnings("unchecked")
-        public void resetOverride() {
-          clientControllerSupportProvider.get().setOverride(
-              new ControllableId(testIdProvider.get(), key), null);
+          final IcClientStrategy icClientStrategy = 
+            clientControllerSupportProvider.get();
+          final ControllableId controllableId = 
+            new ControllableId(testIdProvider.get(), key);
+          tearDownAccepterProvider.get().addTearDown(new TearDown() {
+            public void tearDown() throws Exception {
+              icClientStrategy.resetOverride(controllableId);
+            }
+          });
+          icClientStrategy.setOverride(controllableId, override);
         }
       };
     }
