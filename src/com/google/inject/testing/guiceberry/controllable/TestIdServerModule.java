@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Installing this {@link Module} in your server injector will give you the 
  * canonical implementation of a {@link TestId} {@link Provider}, one that
- * reads from the {@link HttpServletRequest}'s {@link Cookie} named
+ * builds it from the {@link HttpServletRequest}'s {@link Cookie} named
  * {@code TestId.COOKIE_NAME}.
  * 
  * @author Luiz-Otavio Zorzella

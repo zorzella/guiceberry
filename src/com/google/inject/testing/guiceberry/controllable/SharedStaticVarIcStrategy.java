@@ -21,15 +21,22 @@ import com.google.inject.testing.guiceberry.controllable.IcStrategy;
 
 import java.util.Map;
 
-//TODO: document
 /**
+ * The {@link #buildStrategyCouple()} static factory method gives forth the 
+ * canonical {@link IcStrategy}.
+ * 
+ * <p>This strategy is quite capable, and should likely always be used, as long
+ * as possible. The one and only constraint is that its internal {@link #map} 
+ * static var needs to be shared between test and server Injector, i.e. running
+ * in the same JVM and same (or child) ClassLoader. 
+ * 
  * @author Luiz-Otavio Zorzella
  */
 public final class SharedStaticVarIcStrategy {
 
   private static final Map<ControllableId<?>,Object> map = Maps.newHashMap();
 
-  public IcStrategy getStrategyCouple() {
+  public static IcStrategy buildStrategyCouple() {
     return new IcStrategy(IcClientStrategyImpl.class, IcServerStrategyImpl.class);
   }
   
