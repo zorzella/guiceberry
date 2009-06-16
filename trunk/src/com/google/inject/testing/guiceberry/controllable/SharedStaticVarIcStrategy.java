@@ -45,11 +45,19 @@ public final class SharedStaticVarIcStrategy {
   
   private static final class IcServerStrategyImpl implements IcStrategy.ServerSupport {
     @SuppressWarnings("unchecked")
-    public <T> T getOverride(ControllableId<T> pair, Provider<? extends T> delegate) {
-      if (!map.containsKey(pair)) {
-        return delegate.get();
+    public <T> T getOverride(
+        ControllableId<T> controllableId, 
+        Provider<? extends T> delegate) {
+      if (!map.containsKey(controllableId)) {
+        throw new IllegalArgumentException(String.format(
+            "The injection of '%s' is not currently being controlled.", 
+            controllableId.toString()));
       }
-      return (T) map.get(pair);
+      return (T) map.get(controllableId);
+    }
+
+    public <T> boolean isControlled(ControllableId<T> controllableId) {
+      return map.containsKey(controllableId);
     }
   }
 }

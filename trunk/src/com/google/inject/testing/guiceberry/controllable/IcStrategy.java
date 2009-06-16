@@ -67,9 +67,11 @@ public class IcStrategy {
      * Called every time a test controls an injection by calling 
      * {@link IcClient#setOverride(Object)}. 
      * 
-     * <p>From this moment on, a server injector's call to 
+     * <p>From this moment on, a server injector's call to
+     * {@link IcStrategy.ServerSupport#isControlled(ControllableId)} for this
+     * {@code controllableId} should return true and a call to 
      * {@link IcStrategy.ServerSupport#getOverride(ControllableId, Provider)}
-     * for this same {@code controllableId} should return {@code override}.
+     * for this {@code controllableId} should return {@code override}.
      * 
      * <p>It is considered ok for a test to call 
      * {@link IcClient#setOverride(Object)} multiple times, so this method
@@ -78,9 +80,9 @@ public class IcStrategy {
     <T> void setOverride(ControllableId<T> controllableId, T override);
     
     /**
-     * This method stops the controlling of an injection. I.e. a server's call
-     * to {@link IcStrategy.ServerSupport#getOverride(ControllableId, Provider)}
-     * will stop returning an override, and start returning the {@code delegate}.
+     * This method stops the controlling of an injection, i.e. it "undoes" 
+     * <em>all</em> the previous calls to 
+     * {@link #setOverride(ControllableId, Object)}.
      * 
      * <p>This method is called automatically by the framework when a test which 
      * has previously called {@link IcClient#setOverride(Object)} is torn down.
@@ -92,21 +94,33 @@ public class IcStrategy {
     <T> void resetOverride(ControllableId<T> controllableId);
   }
   
+  /**
+   * The "server side" implementation of a Controllable Injection 
+   * {@link IcStrategy}.
+   */
   public interface ServerSupport {
-    //TODO: rename to "getValue"?
-    //TODO: add "isControlled"?
+    
     /**
-     * Returns the current value for this Injection. The framework does not know
-     * if an injection is being controlled or not, and will call this method
-     * every time it needs to fullfil the injection. Therefore, this must return 
-     * the {@code delegate} whenever it's not controlling the injection.
+     * Returns true if the {@code controllableId} is currently being controlled.
+     * 
+     * <p>When this returns true, the framework will call 
+     * {@link #getOverride(ControllableId, Provider)} to fullfil an injection, 
+     * otherwise it will bypass it.
+     */
+    <T> boolean isControlled(ControllableId<T> controllableId);
+
+    /**
+     * Returns the current override for this Injection. The framework will 
+     * never call this method unless {@link #isControlled(ControllableId)} 
+     * returns true, so calling this method while not controlling an injection
+     * is illegal and the outcode is unspecified (though it's conceivably 
+     * possible to subvert the system with a race condition).
      * 
      * @param delegate what the server would return in absence of this injection 
-     * being controlled. The delegate <em>must</em> be returned when we are not
-     * currently controlling the injection, but may also be used by the 
-     * controlled instance.
+     * being controlled. This param is expected to be ignored by most of the 
+     * {@link IcStrategy}s, but might be useful for certain advanced purposes.
      */
-    <T> T getOverride(ControllableId<T> pair, Provider<? extends T> delegate);
+    <T> T getOverride(ControllableId<T> controllableId, Provider<? extends T> delegate);
   }
   
   private final Class<? extends IcStrategy.ClientSupport> clientSupportClass;

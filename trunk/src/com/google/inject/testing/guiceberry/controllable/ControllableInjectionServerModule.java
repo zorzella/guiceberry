@@ -19,6 +19,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.testing.guiceberry.TestId;
+import com.google.inject.testing.guiceberry.controllable.IcStrategy.ServerSupport;
 
 import java.util.Map;
 
@@ -49,21 +50,26 @@ final class ControllableInjectionServerModule extends AbstractModule {
 
   private static final class MyServerProvider<T> implements Provider<IcServer<T>> {
     private final Key<T> key;
-    private final Provider<IcStrategy.ServerSupport> serControllerSupportProvider;
+    private final Provider<IcStrategy.ServerSupport> serverSupportProvider;
     private final Provider<TestId> testIdProvider;
     
     public MyServerProvider(Key<T> key,
         Provider<TestId> testIdProvider, Provider<IcStrategy.ServerSupport> serverControllerSupportProvider) {
       this.key = key;
       this.testIdProvider = testIdProvider;
-      this.serControllerSupportProvider = serverControllerSupportProvider;
+      this.serverSupportProvider = serverControllerSupportProvider;
     }
 
     public IcServer<T> get() {
       return new IcServer<T>() {     
         public T getOverride(Provider<? extends T> delegate) {
-          return serControllerSupportProvider.get().getOverride(
-              new ControllableId<T>(testIdProvider.get(), key), delegate);
+          ControllableId<T> controllableId = 
+            new ControllableId<T>(testIdProvider.get(), key);
+          ServerSupport serverSupport = serverSupportProvider.get();
+          if (!serverSupport.isControlled(controllableId)) {
+            return delegate.get();
+          }
+          return serverSupport.getOverride(controllableId, delegate);
         }
       };
     }

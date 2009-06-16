@@ -53,4 +53,9 @@ public class ControllableId<T> {
     }
     return false;
   }
+  
+  @Override
+  public String toString() {
+    return String.format("['%s','%s']", testId.toString(), key.toString());
+  }
 }
