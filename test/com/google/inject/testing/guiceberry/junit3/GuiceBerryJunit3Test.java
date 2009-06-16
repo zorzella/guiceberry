@@ -302,7 +302,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       assertEquals(
           "The installed GuiceBerryEnvRemapper " +
           "'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$MyGuiceBerryEnvRemapperThatReturnsNull' " +
-          "returned 'null' for the 'fooTest' test, " +
+          "returned 'null' for the 'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test.TestWithGbeOne' test, " +
           "which declares " +
           "'com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test$GuiceBerryEnvOne' " +
           "as its GuiceBerryEnv", 
@@ -779,9 +779,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     private TestCase testCase; 
   
     static TestWithGbeOne createInstance() {
-      TestWithGbeOne result = new TestWithGbeOne();
-      result.setName("fooTest");
-      return result;
+      return namedTest(new TestWithGbeOne());
     }    
   }
   
