@@ -73,7 +73,7 @@ import java.util.Set;
  * @author Jerome Mourits
  * @author Luiz-Otavio Zorzella
  */
-public final class InterceptingBindingsBuilder {
+final class InterceptingBindingsBuilder {
 
   private static final Key<ProvisionInterceptor> INJECTION_INTERCEPTOR_KEY
       = Key.get(ProvisionInterceptor.class);
