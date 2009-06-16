@@ -26,36 +26,36 @@ import com.google.inject.util.Types;
  * 
  * @author Luiz-Otavio Zorzella
  */
-public class IcStrategyCouple {
+public class IcStrategy {
   
-  public interface IcServerStrategy {
-    <T> T getOverride(ControllableId<T> pair, Provider<? extends T> delegate);
-  }
-  
-  public interface IcClientStrategy {
+  public interface ClientSupport {
     <T> void setOverride(ControllableId<T> controllableId, T override);
     <T> void resetOverride(ControllableId<T> controllableId);
   }
   
-  private final Class<? extends IcClientStrategy> icClientStrategyClass;
-  private final Class<? extends IcServerStrategy> icServerStrategyClass;
-
-  public IcStrategyCouple(
-      Class<? extends IcClientStrategy> icClientStrategyClass,
-      Class<? extends IcServerStrategy> icServerStrategyClass
-      ) {
-    this.icClientStrategyClass = icClientStrategyClass;
-    this.icServerStrategyClass = icServerStrategyClass;
+  public interface ServerSupport {
+    <T> T getOverride(ControllableId<T> pair, Provider<? extends T> delegate);
   }
   
-  public Class<? extends IcClientStrategy> clientControllerClass() {
-    return icClientStrategyClass;
+  private final Class<? extends IcStrategy.ClientSupport> clientSupportClass;
+  private final Class<? extends IcStrategy.ServerSupport> serverSupportClass;
+
+  public IcStrategy(
+      Class<? extends IcStrategy.ClientSupport> icStrategyClientSupportClass,
+      Class<? extends IcStrategy.ServerSupport> icStrategyServerSupportClass
+      ) {
+    this.clientSupportClass = icStrategyClientSupportClass;
+    this.serverSupportClass = icStrategyServerSupportClass;
   }
-  public Class<? extends IcServerStrategy> serverControllerClass() {
-    return icServerStrategyClass;
+  
+  public Class<? extends IcStrategy.ClientSupport> clientSupportClass() {
+    return clientSupportClass;
+  }
+  public Class<? extends IcStrategy.ServerSupport> serverSupportClass() {
+    return serverSupportClass;
   }
 
-  public static Key<?> wrap(Type raw, Key<?> annotationHolder) {
+  static Key<?> wrap(Type raw, Key<?> annotationHolder) {
     Type type = Types.newParameterizedType(
         raw, annotationHolder.getTypeLiteral().getType());
     if (annotationHolder.getAnnotation() != null) {
