@@ -68,26 +68,26 @@ public class GuiceBerryJunit3 {
   /**
    * If something goes wrong trying to get a valid instance of an Injector
    * for some GuiceBerryEnv name, this instance is stored in the 
-   * {@link #moduleClassToInjectorMap}, to allow for graceful error handling.
+   * {@link #gbeClassToInjectorMap}, to allow for graceful error handling.
    */
   private static final Injector BOGUS_INJECTOR = Guice.createInjector();
   
   static Map<Class<? extends Module>, Injector> 
-      moduleClassToInjectorMap = Maps.newHashMap();
+      gbeClassToInjectorMap = Maps.newHashMap();
 
   private static InheritableThreadLocal<TestCase> testCurrentlyRunningOnThisThread  = 
     new InheritableThreadLocal<TestCase>();
 
   private final TestCase testCase;
-  private final GuiceBerryEnv guiceBerryEnvAnnotation;
+  private final GuiceBerryEnv gbeAnnotation;
   private final GuiceBerryEnvRemapper remapper;
   
   private GuiceBerryJunit3(
       TestCase testCase,
-      GuiceBerryEnv guiceBerryEnvAnnotation,
+      GuiceBerryEnv gbeAnnotation,
       GuiceBerryEnvRemapper remapper) {
     this.testCase = testCase;
-    this.guiceBerryEnvAnnotation = guiceBerryEnvAnnotation;
+    this.gbeAnnotation = gbeAnnotation;
     this.remapper = remapper;
   }
   
@@ -151,12 +151,12 @@ public class GuiceBerryJunit3 {
   public synchronized static void setUp(final TestCase testCase) { 
     GuiceBerryEnvRemapper remapper = getRemapper();
     new GuiceBerryJunit3(testCase, 
-        getGuiceBerryEnvAnnotation(testCase), 
+        getGbeAnnotation(testCase), 
         remapper).goSetUp(testCase);
   }
   
   private synchronized void goSetUp(final TestCase testCase) {
-    if (guiceBerryEnvAnnotation == null) {
+    if (gbeAnnotation == null) {
       throw new IllegalArgumentException(String.format(
     		  "Test class '%s' must have an @%s annotation.",
     		  testCase.getClass().getName(), GuiceBerryEnv.class.getSimpleName()));   
@@ -214,15 +214,15 @@ public class GuiceBerryJunit3 {
     GuiceBerryEnvRemapper remapper = getRemapper();
     new GuiceBerryJunit3(
         testCase, 
-        getGuiceBerryEnvAnnotation(testCase),
+        getGbeAnnotation(testCase),
         remapper).goTearDown();
   }
   
   private void goTearDown() {
-    Class<? extends Module> guiceBerryEnvClass = getGuiceBerryEnvClassForTest();
+    Class<? extends Module> gbeClass = getGbeClassForTest();
     
     Injector injector = 
-      moduleClassToInjectorMap.get(guiceBerryEnvClass);
+      gbeClassToInjectorMap.get(gbeClass);
     if (injector == BOGUS_INJECTOR) {
       // We failed to get a valid injector for this module in the setUp method,
       // so we just gracefully return, after cleaning up the threadlocal (which
@@ -240,12 +240,12 @@ public class GuiceBerryJunit3 {
   }
   
   private void doSetUp() {
-    final Class<? extends Module> guiceBerryEnvClass = 
-      getGuiceBerryEnvClassForTest();
+    final Class<? extends Module> gbeClass = 
+      getGbeClassForTest();
     testCurrentlyRunningOnThisThread.set(testCase);
-    Injector injector = getInjector(guiceBerryEnvClass);
+    Injector injector = getInjector(gbeClass);
     injector.getInstance(TestScopeListener.class).enteringScope();
-    injectMembersIntoTest(guiceBerryEnvClass, injector); 
+    injectMembersIntoTest(gbeClass, injector); 
    
   }
 
@@ -257,21 +257,21 @@ public class GuiceBerryJunit3 {
     } catch (RuntimeException e) {  
       String msg = String.format("Binding error in the module '%s': '%s'.", 
           moduleClass.toString(), e.getMessage());
-      notifyTestScopeListenerOfOutScope(moduleClassToInjectorMap.get(moduleClass));
+      notifyTestScopeListenerOfOutScope(gbeClassToInjectorMap.get(moduleClass));
       throw new RuntimeException(msg, e);
     }
   }
 
-  private Injector getInjector(final Class<? extends Module> guiceBerryEnvClass) {
-    if (!moduleClassToInjectorMap.containsKey(guiceBerryEnvClass)) {    
-      return foundModuleForTheFirstTime(guiceBerryEnvClass);  
+  private Injector getInjector(final Class<? extends Module> gbeClass) {
+    if (!gbeClassToInjectorMap.containsKey(gbeClass)) {    
+      return foundGbeForTheFirstTime(gbeClass);  
     } else {
       Injector injector = 
-        moduleClassToInjectorMap.get(guiceBerryEnvClass);
+        gbeClassToInjectorMap.get(gbeClass);
       if (injector == BOGUS_INJECTOR) {
         throw new RuntimeException(String.format(
             "Skipping '%s' GuiceBerryEnv which failed previously during injector creation.",
-            guiceBerryEnvClass.getName()));
+            gbeClass.getName()));
       }
       return injector; 
     }
@@ -295,51 +295,51 @@ public class GuiceBerryJunit3 {
   }
   
   @SuppressWarnings("unchecked") 
-  private Class<? extends Module> getGuiceBerryEnvClassForTest() {
+  private Class<? extends Module> getGbeClassForTest() {
   
-    String guiceBerryEnvName = getGuiceBerryEnvName(testCase);
-    Class<? extends Module> moduleClass = 
-      (Class<? extends Module>) getClassFromClassName(guiceBerryEnvName);
-    if (!Module.class.isAssignableFrom(moduleClass)) {
+    String gbeName = getGbeName(testCase);
+    Class<? extends Module> gbeClass = 
+      (Class<? extends Module>) getGbeClassFromClassName(gbeName);
+    if (!Module.class.isAssignableFrom(gbeClass)) {
       String msg = String.format(
           "@%s class '%s' must be a Guice Module (i.e. implement com.google.inject.Module).", 
           GuiceBerryEnv.class.getSimpleName(),
-          moduleClass.getName()); 
+          gbeClass.getName()); 
       throw new IllegalArgumentException(msg);
     }
-    return moduleClass;
+    return gbeClass;
   }
 
-  private static Class<?> getClassFromClassName(
-      String guiceBerryModuleName) {
+  private static Class<?> getGbeClassFromClassName(
+      String gbeName) {
     Class<?> className;
     try {
-      className = GuiceBerryJunit3.class.getClassLoader().loadClass(guiceBerryModuleName);   
+      className = GuiceBerryJunit3.class.getClassLoader().loadClass(gbeName);   
     } catch (ClassNotFoundException e) {  
       String msg = String.format(
     		  "@%s class '%s' was not found.",
     		  GuiceBerryEnv.class.getSimpleName(),
-              guiceBerryModuleName.toString());
+              gbeName.toString());
       throw new IllegalArgumentException(msg, e);
     }
     return className;
   }
   
-  private static GuiceBerryEnv getGuiceBerryEnvAnnotation(TestCase testCase) { 
-    GuiceBerryEnv guiceBerryEnvAnnotation =
+  private static GuiceBerryEnv getGbeAnnotation(TestCase testCase) { 
+    GuiceBerryEnv gbeAnnotation =
       testCase.getClass().getAnnotation(GuiceBerryEnv.class);
-    return guiceBerryEnvAnnotation;
+    return gbeAnnotation;
   }  
   
-  private String getGuiceBerryEnvName(TestCase testCase) {
-    String declaredGuiceBerryEnv = this.guiceBerryEnvAnnotation.value();
-    String result = remapper.remap(testCase, declaredGuiceBerryEnv);
+  private String getGbeName(TestCase testCase) {
+    String declaredGbeName = this.gbeAnnotation.value();
+    String result = remapper.remap(testCase, declaredGbeName);
     if (result == null) {
       throw new IllegalArgumentException(String.format(
           "The installed GuiceBerryEnvRemapper '%s' returned 'null' for the " +
           "'%s' test, which declares '%s' as its GuiceBerryEnv", 
           remapper.getClass().getName(), 
-          testCase.getName(), declaredGuiceBerryEnv));
+          testCase.getName(), declaredGbeName));
     }
     return result;
   }
@@ -377,15 +377,15 @@ public class GuiceBerryJunit3 {
   }
 
   @SuppressWarnings("unchecked")
-  private Injector foundModuleForTheFirstTime(
-      final Class<? extends Module> guiceBerryEnvClass) {
+  private Injector foundGbeForTheFirstTime(
+      final Class<? extends Module> gbeClass) {
     
     Injector injector = BOGUS_INJECTOR;
     
     try {
-      Module guiceBerryEnvInstance = createGuiceBerryInstanceFromClass(guiceBerryEnvClass);
-      injector = Guice.createInjector(guiceBerryEnvInstance);
-      callGuiceBerryEnvMainIfBound(injector);
+      Module gbeInstance = createGbeInstanceFromClass(gbeClass);
+      injector = Guice.createInjector(gbeInstance);
+      callGbeMainIfBound(injector);
       try {
         if (injector.getBindings().get(Key.get(TestScopeListener.class)) == null) {
           String msg = "TestScopeListener must be bound in your GuiceBerryEnv.";
@@ -407,32 +407,32 @@ public class GuiceBerryJunit3 {
     } finally {
       // This is in the finally block to ensure that BOGUS_INJECTOR
       // is put in the map if things go bad.
-      moduleClassToInjectorMap.put(guiceBerryEnvClass, injector);
+      gbeClassToInjectorMap.put(gbeClass, injector);
     }
   }
 
-  private void callGuiceBerryEnvMainIfBound(Injector injector) {
+  private void callGbeMainIfBound(Injector injector) {
     if (injector.getBindings().get(Key.get(GuiceBerryEnvMain.class)) != null) {
       injector.getInstance(GuiceBerryEnvMain.class).run();
     }
   }
 
-  private Module createGuiceBerryInstanceFromClass(
-      final Class<? extends Module> guiceBerryEnvClass) {
+  private Module createGbeInstanceFromClass(
+      final Class<? extends Module> gbeClass) {
     Module result; 
     try {
-      result = guiceBerryEnvClass.getConstructor().newInstance(); 
+      result = gbeClass.getConstructor().newInstance(); 
     } catch (NoSuchMethodException e) {
       String msg = String.format(
     		  "@%s class '%s' must have a public zero-arguments constructor",
     		  GuiceBerryEnv.class.getSimpleName(),
-    		  guiceBerryEnvClass.getName()); 
+    		  gbeClass.getName()); 
       throw new IllegalArgumentException(msg, e); 
 	} catch (Exception e) {
 	      String msg = String.format(
 	    		  "Error creating instance of @%s '%s'",
 	    		  GuiceBerryEnv.class.getSimpleName(),
-	    		  guiceBerryEnvClass.getName()); 
+	    		  gbeClass.getName()); 
 	        throw new IllegalArgumentException(msg, e); 
 	}
     return result;
@@ -474,16 +474,16 @@ public class GuiceBerryJunit3 {
   
   // METHODS BELOW ARE USED ONLY FOR TESTS  
   static void clear() {
-    moduleClassToInjectorMap = Maps.newHashMap();
+    gbeClassToInjectorMap = Maps.newHashMap();
     testCurrentlyRunningOnThisThread.set(null);
   }
   
   static int numberOfInjectorsInUse(){
-    return moduleClassToInjectorMap.size();
+    return gbeClassToInjectorMap.size();
   }
   
   static JunitTestScope getTestScopeForGbe(Class<?> key){
-    Injector injector = moduleClassToInjectorMap.get(key);
+    Injector injector = gbeClassToInjectorMap.get(key);
     if (injector == null) {
       return null;
     }

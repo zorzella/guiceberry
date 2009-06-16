@@ -208,11 +208,11 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   public void testInjectorMapIsSetAfterATest() throws ClassNotFoundException {
     TestWithGbeOne test = TestWithGbeOne.createInstance();
-    Injector injector = GuiceBerryJunit3.moduleClassToInjectorMap.get(Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
+    Injector injector = GuiceBerryJunit3.gbeClassToInjectorMap.get(Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
     assertNull(injector);
     
     GuiceBerryJunit3.setUp(test);
-    injector = GuiceBerryJunit3.moduleClassToInjectorMap.get(Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
+    injector = GuiceBerryJunit3.gbeClassToInjectorMap.get(Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
     
     assertNotNull(injector);
   }
@@ -222,14 +222,14 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     NonTdtcForGbeOne testOne = NonTdtcForGbeOne.createInstance();
     GuiceBerryJunit3.setUp(testOne);
     
-    Injector injectorOne = GuiceBerryJunit3.moduleClassToInjectorMap.get(Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
+    Injector injectorOne = GuiceBerryJunit3.gbeClassToInjectorMap.get(Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
     GuiceBerryJunit3.tearDown(testOne);
 
     AnotherNonTdtcForGbeOne testTwo = AnotherNonTdtcForGbeOne.createInstance();
     GuiceBerryJunit3.setUp(testTwo);
     
     Injector injectorTwo = 
-      GuiceBerryJunit3.moduleClassToInjectorMap.get(Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
+      GuiceBerryJunit3.gbeClassToInjectorMap.get(Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
 
     // "number" is bound to a random, so this will only pass if the injector
     // used for both tests was the same
