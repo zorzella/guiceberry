@@ -17,7 +17,7 @@
 package com.google.inject.testing.guiceberry.junit3;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Provider;
+import com.google.inject.Provides;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScoped;
@@ -47,16 +47,17 @@ public class BasicJunit3Module extends AbstractModule {
   public void configure() {
     final JunitTestScope testScope = new JunitTestScope();
     bindScope(TestScoped.class, testScope);
-    bind(TestId.class).toProvider(new Provider<TestId>() {
-      public TestId get() {
-        TestCase testCase = GuiceBerryJunit3.getActualTestCase(); 
-        return new TestId(testCase.getClass().getName(), testCase.getName());
-      } 
-    }).in(TestScoped.class);
-    bind(TestCase.class).toProvider(new Provider<TestCase>() {
-      public TestCase get() {
-        return GuiceBerryJunit3.getActualTestCase();
-      }
-    }).in(TestScoped.class);
+  }
+  
+  @Provides
+  @TestScoped
+  TestId getTestId(TestCase testCase) {
+    return new TestId(testCase.getClass().getName(), testCase.getName());
+  }
+  
+  @Provides
+  @TestScoped
+  TestCase getTestCase() {
+    return GuiceBerryJunit3.getActualTestCase();
   }
 }
