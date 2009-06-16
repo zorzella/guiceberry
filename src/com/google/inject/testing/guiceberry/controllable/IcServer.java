@@ -18,10 +18,12 @@ package com.google.inject.testing.guiceberry.controllable;
 import com.google.inject.Provider;
 
 /**
+ * Internal class that provides the server-side equivalent of {@link IcClient}.
+ * 
  * @author Luiz-Otavio Zorzella
  * @author Jesse Wilson
  *
- * @param <T>
+ * @param <T> The type of the class being controlled.
  */
 interface IcServer<T> {
   T getOverride(Provider<? extends T> delegate);
