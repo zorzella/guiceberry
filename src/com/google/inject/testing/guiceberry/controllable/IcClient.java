@@ -25,7 +25,7 @@ package com.google.inject.testing.guiceberry.controllable;
  * 
  * <pre>
  *   {@code @}Inject
- *   IcClient<Foo> fooIcClient;
+ *   IcClient&lt;Foo&gt; fooIcClient;
  *   
  *   public void testSpecialPath() {
  *     Foo someFoo = ...
@@ -42,5 +42,21 @@ package com.google.inject.testing.guiceberry.controllable;
  * @param <T> the type of the class you want to control.
  */
 public interface IcClient<T> {
+  
+  /**
+   * Overrides the current test's injection of {@code T} to the {@code override}
+   * value.
+   * 
+   * <p>Setting an override here will cause the appropriate implementation of
+   * {@link IcStrategyCouple.IcClientStrategy#setOverride(ControllableId, Object)}
+   * to be called.
+   * 
+   * <p>Note that an override will clean itself up upon teardown. See 
+   * {@link IcStrategyCouple.IcClientStrategy#resetOverride(ControllableId)}.
+   * 
+   * <p>The usage of Controllable Injections is documented at lenght in the 
+   * tutorial for 
+   * {@link tutorial_1_server.Example4CanonicalSameJvmControllableInjectionTest}
+   */
   void setOverride(T override);
 }

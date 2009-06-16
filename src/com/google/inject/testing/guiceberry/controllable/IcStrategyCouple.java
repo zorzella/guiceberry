@@ -17,7 +17,6 @@ package com.google.inject.testing.guiceberry.controllable;
 
 import java.lang.reflect.Type;
 
-
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.util.Types;
