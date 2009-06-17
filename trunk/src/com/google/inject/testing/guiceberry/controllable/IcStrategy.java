@@ -21,7 +21,6 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.util.Types;
 
-//TODO:document One such class per injection controlling "strategy"
 /**
  * To implement controllable injections, what is fundamentally required is a way
  * for client (test) to send controllable-injection-related data to the server.
