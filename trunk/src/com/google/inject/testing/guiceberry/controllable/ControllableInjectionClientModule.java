@@ -70,21 +70,28 @@ final class ControllableInjectionClientModule extends AbstractModule {
 
     public IcClient<T> get() {
       return new IcClient<T>() {     
-        @SuppressWarnings("unchecked")
         public void setOverride(T override) {
           if (override == null) {
             throw new NullPointerException();
           }
           final IcStrategy.ClientSupport icClientStrategy = 
             clientControllerSupportProvider.get();
-          final ControllableId controllableId = 
-            new ControllableId(testIdProvider.get(), key);
+          final ControllableId<T> controllableId = 
+            new ControllableId<T>(testIdProvider.get(), key);
           tearDownAccepterProvider.get().addTearDown(new TearDown() {
             public void tearDown() throws Exception {
               icClientStrategy.resetOverride(controllableId);
             }
           });
           icClientStrategy.setOverride(controllableId, override);
+        }
+
+        public void resetOverride() {
+          final IcStrategy.ClientSupport icClientStrategy = 
+            clientControllerSupportProvider.get();
+          final ControllableId<T> controllableId = 
+            new ControllableId<T>(testIdProvider.get(), key);
+          icClientStrategy.resetOverride(controllableId);
         }
       };
     }

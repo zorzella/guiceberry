@@ -61,4 +61,17 @@ public interface IcClient<T> {
    * <p>It is ok for a test to call this method multiple times.
    */
   void setOverride(T override);
+  
+  /**
+   * "Undoes" all calls to {@link #setOverride(Object)}.
+   * 
+   * <p>The framework will always reset the overrides upon tearing down the 
+   * test, so you do not need to. This is only provided in case you need to 
+   * do so to complete the test altogether.
+   * 
+   * <p>It is ok for a test to call this method multiple times, even when
+   * the injection is not currently being controlled, in which case it will
+   * be a no-op.
+   */
+  void resetOverride();
 }
