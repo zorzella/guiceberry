@@ -43,9 +43,12 @@ import com.google.inject.util.Types;
  * 
  * <p>Also note that these implementations are not directly exposed to the 
  * end-user, but rather are a support for the Controllable Injection framework.
- * In fact, the only method indirectly exposed to the end-user is
- * {@link IcStrategy.ClientSupport#setOverride(ControllableId, Object)}, which
- * is a hop away from a call to {@link IcClient#setOverride(Object)}.
+ * Note that the 
+ * {@link IcStrategy.ClientSupport#setOverride(ControllableId, Object)} and
+ * {@link IcStrategy.ClientSupport#resetOverride(ControllableId)} methods are
+ * <em>indirectly</em> exposed to the end-user through 
+ * {@link IcClient#setOverride(Object)} and {@link IcClient#resetOverride()}
+ * respectivelly.
  * 
  * <p>Finally, note that some strategies might be fundamentally more "capable"
  * than others. E.g. a non-serializable class would pose a problem for a 
@@ -85,7 +88,8 @@ public class IcStrategy {
      * {@link #setOverride(ControllableId, Object)}.
      * 
      * <p>This method is called automatically by the framework when a test which 
-     * has previously called {@link IcClient#setOverride(Object)} is torn down.
+     * has previously called {@link IcClient#setOverride(Object)} is torn down,
+     * but may also be called indirectly through {@link IcClient#resetOverride()}.
      * 
      * <p>This method may be called multiple times in a row (i.e. you may be
      * asked to reset an override that is not currently being controlled), and
