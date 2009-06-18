@@ -14,20 +14,18 @@ public class Example4CanonicalSameJvmControllableInjectionTest extends GuiceBerr
   WelcomeTestPage welcomeTestPage;
   
   @Inject
-  private IcClient<PetOfTheMonth> clientController;
+  private IcClient<PetOfTheMonth> petOfTheMonthIc;
 
-  // TODO: tests are failing -- fix the Env to actually rewrite the bindings.
-  
   public void testDogAsPotm() {
     PetOfTheMonth expected = PetOfTheMonth.DOG;
-    clientController.setOverride(expected);
+    petOfTheMonthIc.setOverride(expected);
     welcomeTestPage.goTo();
     welcomeTestPage.assertPetOfTheMonth(expected);
   }
 
   public void testCatAsPotm() {
     PetOfTheMonth expected = PetOfTheMonth.CAT;
-    clientController.setOverride(expected);
+    petOfTheMonthIc.setOverride(expected);
     welcomeTestPage.goTo();
     welcomeTestPage.assertPetOfTheMonth(expected);
   }

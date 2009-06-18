@@ -15,13 +15,13 @@
  */
 package com.google.inject.testing.guiceberry.controllable;
 
+import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
-import com.google.inject.internal.Maps;
 
 import java.util.Collection;
 import java.util.Map;
@@ -62,7 +62,9 @@ public final class IcMaster {
     for (Class<?> clazz : classes) {
       Key<?> key = Key.get(clazz);
       if (controlledKeyToStrategyMap.containsKey(key)) {
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(String.format(
+            "The Key '%s' has already been declared as controlled. " +
+            "Remove the duplicate declaration.", key));
       }
       controlledKeyToStrategyMap.put(key, strategy);
     }
@@ -81,7 +83,9 @@ public final class IcMaster {
       Key<?>... keys) {
     for (Key<?> key : keys) {
       if (controlledKeyToStrategyMap.containsKey(key)) {
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(String.format(
+            "The Key '%s' has already been declared as controlled. " +
+            "Remove the duplicate declaration.", key));
       }
       controlledKeyToStrategyMap.put(key, strategy);
     }
