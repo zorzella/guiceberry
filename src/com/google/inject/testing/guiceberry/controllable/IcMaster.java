@@ -50,10 +50,23 @@ public final class IcMaster {
     Maps.newHashMap();
   
   /**
-   * Declares the given (un-annotated) {@code classes} as being subject to 
-   * Controllable Injection with the given {@code strategy}.
+   * Convenient wrapper to {@link #thatControls(IcStrategy, Key...)} for  
+   * un-annotated {@code classes}.
    * 
-   * @see #thatControls(IcStrategy, Key...) 
+   * <p>Note that these are totally equivalent statements:
+   * 
+   * <pre>
+   *   thatControls(someStrategy(),
+   *     MyClass.class)
+   * </pre>
+   * 
+   * and
+   * 
+   * <pre>
+   *   thatControls(someStrategy(),
+   *     Key.get(MyClass.class))
+   * </pre>
+   * 
    *  
    * @return itself, for method chaining
    */
@@ -72,10 +85,30 @@ public final class IcMaster {
   }
 
   /**
-   * Declares the given annotated classes (through they {@code keys}) as being 
+   * Declares the given annotated classes (through their {@code keys}) as being 
    * subject to Controllable Injection with the given {@code strategy}.
    * 
-   * @see #thatControls(IcStrategy, Class...)
+   * <p>For example, to control the statement 
+   * {@code @Inject @MyAnnotation MyClass myClass;} use the following:
+   * 
+   * <pre>
+   * IcMaster icMaster = new IcMaster()
+   *   .thatControls(someStrategy(),
+   *     Key.get(MyClass.class, MyAnnotation.class));
+   * </pre>
+   * 
+   * <p>Passing the same key twice to the same {@link IcMaster} results in an 
+   * {@link IllegalArgumentException}.
+   * 
+   * <p>To control generified classes, use the 
+   * {@link com.google.inject.TypeLiteral} anonymous inner class trick. 
+   * E.g. to control {@code @Inject MyClass<SomeType> myClass}}, use:
+   * 
+   * <pre>
+   * IcMaster icMaster = new IcMaster()
+   *   .thatControls(someStrategy(),
+   *     Key.get(new TypeLiteral<MyClass<SomeType>>(){}));
+   * </pre>
    * 
    * @return itself, for method chaining
    */
