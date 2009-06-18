@@ -22,7 +22,7 @@ import com.google.inject.testing.guiceberry.controllable.IcStrategy;
 import java.util.Map;
 
 /**
- * The {@link #buildStrategyCouple()} static factory method gives forth the 
+ * The {@link #strategy()} static factory method gives forth the 
  * canonical {@link IcStrategy}.
  * 
  * <p>This strategy is quite capable, and should likely always be used, as long
@@ -36,8 +36,13 @@ public final class SharedStaticVarIcStrategy {
 
   private static final Map<ControllableId<?>,Object> map = Maps.newHashMap();
 
-  public static IcStrategy buildStrategyCouple() {
+  public static IcStrategy strategy() {
     return new IcStrategy(IcClientStrategyImpl.class, IcServerStrategyImpl.class);
+  }
+
+  @Deprecated
+  public static IcStrategy buildStrategyCouple() {
+    return strategy();
   }
   
   private static final class IcClientStrategyImpl implements IcStrategy.ClientSupport {

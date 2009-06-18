@@ -57,7 +57,7 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
     super.configure();
     // !!!! HERE !!!!
     icMaster = new IcMaster()
-      .thatControls(SharedStaticVarIcStrategy.buildStrategyCouple(),
+      .thatControls(SharedStaticVarIcStrategy.strategy(),
          PetOfTheMonth.class);
     install(icMaster.buildClientModule());
   }
