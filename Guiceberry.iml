@@ -48,7 +48,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/google-collect-1.0-rc1.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/google-collect-1.0-rc2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

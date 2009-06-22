@@ -16,7 +16,7 @@
       <classpath>
         <pathelement location="${build.dir}/classes"/>
         <pathelement location="${lib.dir}/aopalliance.jar"/>
-        <pathelement location="${lib.dir}/google-collect-1.0-rc1.jar"/>
+        <pathelement location="${lib.dir}/google-collect-1.0-rc2.jar"/>
         <!-- guice-servlet is not really necessary -->
         <pathelement location="${lib.dir}/guice-2.0.jar"/>
         <pathelement location="${lib.dir}/guice-servlet-2.0.jar"/>
@@ -34,7 +34,7 @@
     <pathelement location="${build.dir}/classes"/>
     <pathelement location="${lib.dir}/aopalliance.jar"/>
     <pathelement location="${lib.dir}/easymock.jar"/>
-    <pathelement location="${lib.dir}/google-collect-1.0-rc1.jar"/>
+    <pathelement location="${lib.dir}/google-collect-1.0-rc2.jar"/>
     <pathelement location="${lib.dir}/guice-2.0.jar"/>
     <!-- guice-servlet is not really necessary -->
     <pathelement location="${lib.dir}/guice-servlet-2.0.jar"/>
