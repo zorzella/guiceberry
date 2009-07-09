@@ -32,11 +32,11 @@ $ zip -r guiceberry-release-x.y.z.zip guiceberry-release-x.y.z
 The URL is http://code.google.com/p/guiceberry/downloads/list > New Download. Upload these files, in this order:
 
 build/dist/guiceberry-release-x.y.z.zip
-Summary: Full source code
-Labels: Type-Source
+Summary: Full project tree zip
+Labels: Type-Source, OpSys-All
 
 build/dist/guiceberry-x.y.z/guiceberry-x.y.z-src.jar
-Summary: source
+Summary: source jar
 Labels: Type-Source, OpSys-All
 
 build/dist/guiceberry-x.y.z/guiceberry-x.y.z-tutorial.jar
