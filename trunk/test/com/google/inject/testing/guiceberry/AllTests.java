@@ -19,7 +19,7 @@ package com.google.inject.testing.guiceberry;
 import com.google.inject.testing.guiceberry.controllable.IcMasterTest;
 import com.google.inject.testing.guiceberry.controllable.InterceptingBindingsBuilderTest;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Test;
-import com.google.inject.testing.guiceberry.junit3.MutableSingletonScopeTest;
+import com.google.inject.testing.guiceberry.util.MutableSingletonScopeTest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
