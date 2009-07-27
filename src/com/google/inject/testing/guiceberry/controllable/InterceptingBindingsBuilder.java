@@ -208,6 +208,7 @@ final class InterceptingBindingsBuilder {
       this.delegateProvider = delegateProvider;
     }
 
+    @SuppressWarnings("unused")
     @Inject void initialize(Provider<ProvisionInterceptor> injectionInterceptorProvider) {
       this.provisionInterceptorProvider = injectionInterceptorProvider;
     }
