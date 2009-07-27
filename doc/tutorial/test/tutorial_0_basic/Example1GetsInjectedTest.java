@@ -31,8 +31,7 @@ public class Example1GetsInjectedTest extends GuiceBerryJunit3TestCase {
   }
 
   @Retention(RetentionPolicy.RUNTIME) 
-  @Target(ElementType.FIELD) 
+  @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER}) 
   @BindingAnnotation
-  private @interface NumberOneHundred {
-  }
+  private @interface NumberOneHundred {}
 }

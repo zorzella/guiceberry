@@ -149,7 +149,7 @@ final class InterceptingBindingsBuilder {
           keysNotIntercepted.addAll(keysToIntercept);
           keysNotIntercepted.removeAll(rewriter.keysIntercepted);
           binder.addError("An explicit binding is required for "
-              + "all intercepted keys, but was not found for " + keysNotIntercepted);
+              + "all intercepted keys, but was not found for '%s'", keysNotIntercepted);
         }
       }
     };
@@ -174,8 +174,8 @@ final class InterceptingBindingsBuilder {
       binding.acceptTargetVisitor(new DefaultBindingTargetVisitor<T, Void>() {
         @Override
         public Void visit(UntargettedBinding<? extends T> untargettedBinding) {
-          binder.addError(String.format("Cannot intercept bare binding of %s. " +
-              		"You may only intercept bindings that bind a class to something.", key));
+          binder.addError("Cannot intercept bare binding of %s. " +
+              		"You may only intercept bindings that bind a class to something.", key);
           return null;
         }
       });

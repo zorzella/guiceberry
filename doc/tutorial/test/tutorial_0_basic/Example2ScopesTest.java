@@ -88,17 +88,17 @@ public class Example2ScopesTest extends GuiceBerryJunit3TestCase {
   }
 
   @Retention(RetentionPolicy.RUNTIME) 
-  @Target(ElementType.FIELD) 
+  @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER}) 
   @BindingAnnotation
   private @interface UnscopedIncrementingNumber {}
 
   @Retention(RetentionPolicy.RUNTIME) 
-  @Target(ElementType.FIELD) 
+  @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER}) 
   @BindingAnnotation
   private @interface TestScopedIncrementingNumber {}
 
   @Retention(RetentionPolicy.RUNTIME) 
-  @Target(ElementType.FIELD) 
+  @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER}) 
   @BindingAnnotation
   private @interface SingletonScopedIncrementingNumber {}
 }
