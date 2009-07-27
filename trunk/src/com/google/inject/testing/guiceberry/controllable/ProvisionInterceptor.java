@@ -19,15 +19,11 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 
 /**
- * @deprecated this class will be made package-protected in the future, and 
- * should not be used externally.
- * 
  * <p>Intercepts object provision.
  *
  * @author Jesse Wilson
  * @author Jerome Mourits
  */
-@Deprecated
-public interface ProvisionInterceptor extends com.google.inject.commands.intercepting.ProvisionInterceptor {
+interface ProvisionInterceptor {
   <T> T intercept(Key<T> key, Provider<? extends T> delegate);
 }
