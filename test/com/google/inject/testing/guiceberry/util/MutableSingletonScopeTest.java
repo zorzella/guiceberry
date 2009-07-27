@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.inject.testing.guiceberry.junit3;
+package com.google.inject.testing.guiceberry.util;
 
 import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.inject.AbstractModule;
@@ -22,13 +22,11 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.ScopeAnnotation;
-import com.google.inject.testing.guiceberry.MutableSingletonScope;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 
 /**
  * Tests the {@link MutableSingletonScope} class.
