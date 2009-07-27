@@ -29,22 +29,22 @@ $ zip -r guiceberry-release-x.y.z.zip guiceberry-release-x.y.z
 
 5) Upload jars to GoogleCode
 
-The URL is http://code.google.com/p/guiceberry/downloads/list > New Download. Upload these files, in this order:
+The URL is http://code.google.com/p/guiceberry/downloads/list > New Download. Upload these files:
 
 build/dist/guiceberry-release-x.y.z.zip
 Summary: Full project tree zip
-Labels: Type-Source, OpSys-All
+Labels: Type-Source, OpSys-All, Order-3
 
 build/dist/guiceberry-x.y.z/guiceberry-x.y.z-src.jar
 Summary: source jar
-Labels: Type-Source, OpSys-All
+Labels: Type-Source, OpSys-All, Order-2
 
 build/dist/guiceberry-x.y.z/guiceberry-x.y.z-tutorial.jar
 Summary: Tutorial -- see the project home page for a link to the docs
-Labels: Type-Docs, OpSys-All
+Labels: Type-Docs, OpSys-All, Order-1
 
 build/dist/guiceberry-x.y.z/guiceberry-x.y.z.jar
 Summary: jar
-Labels: Featured, Type-Package, OpSys-All
+Labels: Featured, Type-Package, OpSys-All, Order-0
 
 Mark the older release as deprecated (which you'll find as an option under "Delete"), and also, make sure to check the installation instructions at http://docs.google.com/Doc?id=dddf9mmq_2sjv9nkk4 particularly if you changed the version of a dependent lib.
