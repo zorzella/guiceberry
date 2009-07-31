@@ -86,7 +86,7 @@ public class OrderPizzaTest extends GuiceBerryJunit3TestCase {
 }}}
 
 ==Executing the Guiceberry test==
-One nice aspect of Guiceberry tests is that they runs as regular JUnit test cases. You can run them from your build scripts, in your IDE, and in your continuous build without additional configuration. When executed, our Guiceberry test starts the database and webserver, and then fails as expected. 
+One nice aspect of Guiceberry tests is that they runs as regular JUnit test cases. You can run them from your build scripts, in your IDE, and in your continuous build without additional configuration. When executed, our test starts the database and webserver and then fails as expected. 
 {{{
 starting database on 3306
 starting pizza order app on 80
