@@ -1,4 +1,4 @@
-#summary What problem Guiceberry solves
+#summary What problem GuiceBerry solves
 
 =Motivation=
 
@@ -8,6 +8,6 @@ In Java land, there are well established tools for *unit testing*. [http://www.j
 
 Unit testing is necessary, but not sufficient for verifying the correctness of an application. In *functional testing*, complete groups of behaviour are tested in aggregate. These tests ensure that the composed units interact as designed and that the application functions as intended. Test structure for functional testing can be complicated: servers, databases, configuration and sample data may all be required for a single test.
 
-Guiceberry makes it easier to write functional tests by borrowing idioms from unit testing and dependency injection. Each Guiceberry test specifies the environment in which it runs: this is the application under test plus application dependencies and test infrastructure. Guiceberry tests gain access to their environment via [http://code.google.com/p/google-guice/ Guice injection].
+!GuiceBerry makes it easier to write functional tests by borrowing idioms from unit testing and dependency injection. Each !GuiceBerry test specifies the environment in which it runs: this is the application under test plus application dependencies and test infrastructure. !GuiceBerry tests gain access to their environment via [http://code.google.com/p/google-guice/ Guice injection].
 
-[GettingStarted Getting Started] will walk through writing a new Guiceberry test.
+[GettingStarted Getting Started] will walk through writing a new !GuiceBerry test.
