@@ -18,12 +18,12 @@ public class OrderPizzaTest extends TestCase {
   }
 }
 }}}
-As is traditional with functional tests, there are many moving parts in even the simplest of use-cases. Before we can start writing the test's code, we need to launch an instance of the app to test against. In GuiceBerry terms, this is called the GuiceBerry environment.
+As is traditional with functional tests, there are many moving parts in even the simplest of use-cases. Before we can start writing the test's code, we need to launch an instance of the app to test against. We'll use a !GuiceBerry environment to prepare our test's dependencies.
 
-==Creating a GuiceBerry Environment==
-The *GuiceBerry environment* is a Guice module that subclasses `GuiceBerryJunit3Env`. It prepares our application, its dependencies, and infrastructure for the test. In most applications, a single GuiceBerry environment is shared by all functional tests. 
+==Creating a !GuiceBerry Environment==
+The *!GuiceBerry environment* is a Guice module that subclasses `GuiceBerryJunit3Env`. It prepares our application, its dependencies, and infrastructure for the test. In most applications, a single !GuiceBerry environment is shared by all functional tests. 
 
-The primary job of the GuiceBerry environment is to bind an implementation for the `GuiceBerryEnvMain` interface. When this `Runnable`-like interface is bound, it will be executed before any tests.
+The primary job of the !GuiceBerry environment is to bind an implementation for the `GuiceBerryEnvMain` interface. When this `Runnable`-like interface is bound, it will be executed before any tests.
 {{{
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 import com.google.inject.testing.guiceberry.GuiceBerryEnvMain;
@@ -51,6 +51,40 @@ public class PizzaAppGuiceBerryEnv extends GuiceBerryJunit3Env {
 }
 }}}
 
-==Linking the test to its GuiceBerry Environment==
+==Linking the test to its !GuiceBerry Environment==
+Once we've created our !GuiceBerry environment, we need to configure our test to use it. This requires an annotation on the test, and calls to `GuiceBerryJunit3` in `setUp` and `tearDown` to manage the environment.
+{{{
+@GuiceBerryEnv("com.publicobject.pizza.PizzaAppGuiceBerryEnv")
+public class OrderPizzaTest extends TestCase {
+
+  @Override protected void setUp() throws Exception {
+    super.setUp();
+    GuiceBerryJunit3.setUp(this);
+  }
+
+  @Override protected void tearDown() throws Exception {
+    GuiceBerryJunit3.setUp(this);
+    super.tearDown();
+  }
+
+  public void testOrderPizza() {
+    ...
+    fail("this test still needs to be written!");
+  }
+}
+}}}
+If you'd prefer, !GuiceBerry includes a convenient test class `GuiceBerryJunit3TestCase` to eliminate most of the above boilerplate.
+{{{
+@GuiceBerryEnv("com.publicobject.pizza.PizzaAppGuiceBerryEnv")
+public class OrderPizzaTest extends GuiceBerryJunit3TestCase {
+
+  public void testOrderPizza() {
+    ...
+    fail("this test still needs to be written!");
+  }
+}
+}}}
+
+
 
 
