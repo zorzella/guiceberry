@@ -204,13 +204,10 @@ public class GuiceBerryJunit3 {
    * @see JunitTestScope
    */
   public synchronized static void tearDown(TestCase testCase) {
-    //TODO(zorzella): kill this
-    if (!Boolean.getBoolean("LENIENT_TEARDOWN")) {
-      if (testCase instanceof TearDownAccepter) {
-        throw new UnsupportedOperationException("You must not call " +
-        		"GuiceBerryJunit3.tearDown (it's only needed for tests that do " +
-        		"not implement TearDownAccepter).");
-      }
+    if (testCase instanceof TearDownAccepter) {
+      throw new UnsupportedOperationException("You must not call " +
+      		"GuiceBerryJunit3.tearDown (it's only needed for tests that do " +
+      		"not implement TearDownAccepter).");
     }
     GuiceBerryEnvRemapper remapper = getRemapper();
     new GuiceBerryJunit3(
