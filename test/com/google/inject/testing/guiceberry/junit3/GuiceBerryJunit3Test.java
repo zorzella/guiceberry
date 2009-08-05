@@ -728,6 +728,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
   private static final class MyGuiceBerryEnvRemapperWithInvalidConstructor 
       implements GuiceBerryEnvRemapper {
+    @SuppressWarnings("unused")
     public MyGuiceBerryEnvRemapperWithInvalidConstructor(int foo) {}
 
     public String remap(TestCase test, String guiceBerryEnv) {
@@ -1116,6 +1117,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
     
   private static class TestScopeListenerGetsInjectedWithTestCase implements TestScopeListener {
+    @SuppressWarnings("unused")
     @Inject
     TestCase testCase;
     
