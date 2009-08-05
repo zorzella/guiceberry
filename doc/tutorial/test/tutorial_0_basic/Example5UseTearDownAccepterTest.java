@@ -30,10 +30,10 @@ public class Example5UseTearDownAccepterTest extends TestCase {
     super.setUp();
     GuiceBerryJunit3.setUp(this);
     tearDownAccepter.addTearDown(new FirstItemResetter());
-    firstItem = new Integer(1);
+    firstItem = 1;
 
     tearDownAccepter.addTearDown(new SecondItemResetter());
-    secondItem = new Integer(2);
+    secondItem = 2;
   }
   
   @Override
