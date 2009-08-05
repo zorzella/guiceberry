@@ -481,8 +481,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
  
   public void testCallingTwoSetupWithNoTearDownBetween() {
     TestWithGbeOne test = TestWithGbeOne.createInstance();
+    GuiceBerryJunit3.setUp(test);
     try {
-      GuiceBerryJunit3.setUp(test);
       GuiceBerryJunit3.setUp(test);
       fail();
     } catch (RuntimeException expected) {}   
