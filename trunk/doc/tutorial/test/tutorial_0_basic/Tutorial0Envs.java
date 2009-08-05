@@ -12,4 +12,6 @@ public interface Tutorial0Envs {
   String EXAMPLE_3 = PACKAGE + "Example3TestScopeListenerTest" + SUFFIX;
   
   String EXAMPLE_4 = PACKAGE + "Example4VerboseHelloWorldTest" + SUFFIX;
+
+  String EXAMPLE_5 = PACKAGE + "Example5UseTearDownAccepterTest" + SUFFIX;
 }
