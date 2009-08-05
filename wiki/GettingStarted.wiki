@@ -63,7 +63,7 @@ public class OrderPizzaTest extends TestCase {
   }
 
   @Override protected void tearDown() throws Exception {
-    GuiceBerryJunit3.setUp(this);
+    GuiceBerryJunit3.tearDown(this);
     super.tearDown();
   }
 
