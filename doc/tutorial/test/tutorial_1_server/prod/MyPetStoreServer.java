@@ -10,7 +10,7 @@ import com.google.inject.servlet.ServletModule;
 
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.ServletHolder;
+import org.mortbay.jetty.servlet.DefaultServlet;
 
 import java.util.Random;
 
@@ -18,22 +18,19 @@ public class MyPetStoreServer {
   
   private final Server server;
   private final int portNumber;
-  private final WelcomePageServlet myServlet;
   
   public MyPetStoreServer(int portNumber) {
     this.portNumber = portNumber;
     server = new Server(portNumber);    
     Context root = new Context(server, "/", Context.SESSIONS);
     
-    myServlet = new WelcomePageServlet();
-    root.addServlet(new ServletHolder(myServlet), "/*");
     root.addFilter(GuiceFilter.class, "/*", 0);
+    root.addServlet(DefaultServlet.class, "/");
   }
   
   public void start() {
     try {
       Injector injector = getInjector();
-      injector.injectMembers(myServlet);
       server.start();
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -53,13 +50,21 @@ public class MyPetStoreServer {
       @Override
       protected void configure() {
         install(new PetStoreModule());
-        install(new ServletModule());
+        install(new MyServletModule());
       }
     };
   }
 
+  public final class MyServletModule extends ServletModule {
+    @Override
+    protected void configureServlets() {
+      serve("/*").with(WelcomePageServlet.class);
+    }
+  }
+
   private final static class PetStoreModule extends AbstractModule {
 
+    @SuppressWarnings("unused")
     @Provides
     PetOfTheMonth getPetOfTheMonth() {
       return somePetOfTheMonth();
