@@ -2,6 +2,7 @@ package tutorial_1_server.prod;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,10 +11,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Singleton
 public final class WelcomePageServlet extends HttpServlet {
 
-  @Inject
   private Provider<PetOfTheMonth> petOfTheMonth;
+
+  @Inject
+  public WelcomePageServlet(Provider<PetOfTheMonth> petOfTheMonth) {
+    this.petOfTheMonth = petOfTheMonth;
+  }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) 

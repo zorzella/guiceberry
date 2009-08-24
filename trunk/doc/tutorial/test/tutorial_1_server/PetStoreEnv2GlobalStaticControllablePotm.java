@@ -40,7 +40,7 @@ public final class PetStoreEnv2GlobalStaticControllablePotm extends GuiceBerryJu
           @Override
           protected void configure() {
             install(new PetStoreModuleWithGlobalStaticOverride());
-            install(new ServletModule());
+            install(new MyServletModule());
           }
         };
       }
