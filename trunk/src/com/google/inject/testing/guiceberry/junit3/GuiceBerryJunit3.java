@@ -17,21 +17,16 @@
 package com.google.inject.testing.guiceberry.junit3;
 
 import com.google.common.collect.Maps;
-import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
-import com.google.inject.ConfigurationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
-import com.google.inject.testing.guiceberry.GuiceBerryEnvMain;
 import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.TestScoped;
-import com.google.inject.testing.guiceberry.junit3.BasicJunit3Module.ToTearDown;
 
 import junit.framework.TestCase;
 
@@ -66,31 +61,15 @@ public class GuiceBerryJunit3 {
   private static final GuiceBerryEnvRemapper DEFAULT_GUICE_BERRY_ENV_REMAPPER = 
 	  new IdentityGuiceBerryEnvRemapper();
 
-  /**
-   * If something goes wrong trying to get a valid instance of an Injector
-   * for some GuiceBerryEnv name, this instance is stored in the 
-   * {@link #gbeClassToInjectorMap}, to allow for graceful error handling.
-   */
-  private static final Injector BOGUS_INJECTOR = Guice.createInjector();
-  
-  static Map<Class<? extends Module>, Injector> 
-      gbeClassToInjectorMap = Maps.newHashMap();
+  static class GuiceBerryUniverse {
 
-  private static InheritableThreadLocal<TestCase> testCurrentlyRunningOnThisThread  = 
-    new InheritableThreadLocal<TestCase>();
-
-  private final TestCase testCase;
-  private final GuiceBerryEnv gbeAnnotation;
-  private final GuiceBerryEnvRemapper remapper;
-  
-  private GuiceBerryJunit3(
-      TestCase testCase,
-      GuiceBerryEnv gbeAnnotation,
-      GuiceBerryEnvRemapper remapper) {
-    this.testCase = testCase;
-    this.gbeAnnotation = gbeAnnotation;
-    this.remapper = remapper;
+    Map<Class<? extends Module>, Injector> gbeClassToInjectorMap = Maps.newHashMap();
+    
+    InheritableThreadLocal<TestCase> testCurrentlyRunningOnThisThread  = 
+      new InheritableThreadLocal<TestCase>();
   }
+
+  static final GuiceBerryUniverse universe = new GuiceBerryUniverse();
   
   /**
    * Sets up the {@link TestCase} (given as the argument) to be ready to run. 
@@ -151,24 +130,15 @@ public class GuiceBerryJunit3 {
    */
   public synchronized static void setUp(final TestCase testCase) { 
     GuiceBerryEnvRemapper remapper = getRemapper();
-    new GuiceBerryJunit3(testCase, 
+//    new GuiceBerryJunit3(testCase, 
+//        getGbeAnnotation(testCase), 
+//        remapper).goSetUp(testCase);
+    new TestCaseScafolding(testCase, 
         getGbeAnnotation(testCase), 
-        remapper).goSetUp(testCase);
+        remapper, 
+        universe).goSetUp(testCase);
   }
   
-  private synchronized void goSetUp(final TestCase testCase) {
-    if (gbeAnnotation == null) {
-      throw new IllegalArgumentException(String.format(
-    		  "Test class '%s' must have an @%s annotation.",
-    		  testCase.getClass().getName(), GuiceBerryEnv.class.getSimpleName()));   
-    }
-    addGuiceBerryTearDown(testCase);
-    checkPreviousTestCalledTearDown(testCase);
-    //Setup after registering tearDown so that if an exception is thrown here,
-    //we still do a tearDown.
-    doSetUp();
-    
-  }
   
   /**   
    * You should only call this method if your test does <em>not</em> implement 
@@ -210,120 +180,11 @@ public class GuiceBerryJunit3 {
       		"not implement TearDownAccepter).");
     }
     GuiceBerryEnvRemapper remapper = getRemapper();
-    new GuiceBerryJunit3(
+    new TestCaseScafolding(
         testCase, 
         getGbeAnnotation(testCase),
-        remapper).goTearDown();
-  }
-  
-  private void goTearDown() {
-    Class<? extends Module> gbeClass = getGbeClassForTest();
-    
-    Injector injector = 
-      gbeClassToInjectorMap.get(gbeClass);
-    if (injector == BOGUS_INJECTOR) {
-      // We failed to get a valid injector for this module in the setUp method,
-      // so we just gracefully return, after cleaning up the threadlocal (which
-      // normally would happen in the doTearDown method).
-      testCurrentlyRunningOnThisThread.set(null);
-      return;
-    }
-    
-    ToTearDown toTearDown = injector.getInstance(ToTearDown.class);
-    toTearDown.runTearDown();
-    
-    notifyTestScopeListenerOfOutScope(injector);
-    // TODO: this line used to be before the notifyTestScopeListenerOfOutScope
-    // causing a bug -- e.d. a Provider<TestId> could not be used in the 
-    // exitingScope method of the TestScopeListener. I haven't yet found a
-    // good way to test this change.
-    doTearDown(injector);
-  }
-  
-  private void doSetUp() {
-    final Class<? extends Module> gbeClass = 
-      getGbeClassForTest();
-    testCurrentlyRunningOnThisThread.set(testCase);
-    Injector injector = getInjector(gbeClass);
-    injector.getInstance(TestScopeListener.class).enteringScope();
-    injectMembersIntoTest(gbeClass, injector); 
-   
-  }
-
-  private void injectMembersIntoTest(
-      final Class<? extends Module> moduleClass, Injector injector) {
-  
-    try {
-      injector.injectMembers(testCase);
-    } catch (RuntimeException e) {  
-      String msg = String.format("Binding error in the module '%s': '%s'.", 
-          moduleClass.toString(), e.getMessage());
-      notifyTestScopeListenerOfOutScope(gbeClassToInjectorMap.get(moduleClass));
-      throw new RuntimeException(msg, e);
-    }
-  }
-
-  private Injector getInjector(final Class<? extends Module> gbeClass) {
-    if (!gbeClassToInjectorMap.containsKey(gbeClass)) {    
-      return foundGbeForTheFirstTime(gbeClass);  
-    } else {
-      Injector injector = 
-        gbeClassToInjectorMap.get(gbeClass);
-      if (injector == BOGUS_INJECTOR) {
-        throw new RuntimeException(String.format(
-            "Skipping '%s' GuiceBerryEnv which failed previously during injector creation.",
-            gbeClass.getName()));
-      }
-      return injector; 
-    }
-  }
-
-  private static void checkPreviousTestCalledTearDown(TestCase testCase) {
-    TestCase previousTestCase = testCurrentlyRunningOnThisThread.get();
-    
-    if (previousTestCase != null) {  
-      String msg = String.format("Error while setting up a test: %s asked to " +
-      		"set up test: %s.%s, but previous test:%s.%s did not properly " +
-      		"call %s.tearDown().",
-          GuiceBerryJunit3.class.getCanonicalName(),
-          testCase.getClass().getCanonicalName(),
-          testCase.getName(), 
-          previousTestCase.getClass().getCanonicalName(),
-          previousTestCase.getName(),
-          GuiceBerryJunit3.class.getCanonicalName());
-      throw new RuntimeException(msg);
-    }
-  }
-  
-  @SuppressWarnings("unchecked") 
-  private Class<? extends Module> getGbeClassForTest() {
-  
-    String gbeName = getGbeName(testCase);
-    Class<? extends Module> gbeClass = 
-      (Class<? extends Module>) getGbeClassFromClassName(gbeName);
-    if (!Module.class.isAssignableFrom(gbeClass)) {
-      String msg = String.format(
-          "@%s class '%s' must be a Guice Module (i.e. implement com.google.inject.Module).", 
-          GuiceBerryEnv.class.getSimpleName(),
-          gbeClass.getName()); 
-      throw new IllegalArgumentException(msg);
-    }
-    return gbeClass;
-  }
-
-  private static Class<?> getGbeClassFromClassName(
-      String gbeName) {
-    Class<?> className;
-    try {
-      className = GuiceBerryJunit3.class.getClassLoader().loadClass(gbeName);   
-    } catch (ClassNotFoundException e) {  
-      String msg = String.format(
-    		  "@%s class '%s' was not found.",
-    		  GuiceBerryEnv.class.getSimpleName(),
-              gbeName.toString());
-      throw new IllegalArgumentException(msg, e);
-    }
-    return className;
+        remapper,
+        universe).goTearDown();
   }
   
   private static GuiceBerryEnv getGbeAnnotation(TestCase testCase) { 
@@ -332,19 +193,6 @@ public class GuiceBerryJunit3 {
     return gbeAnnotation;
   }  
   
-  private String getGbeName(TestCase testCase) {
-    String declaredGbeName = this.gbeAnnotation.value();
-    String result = remapper.remap(testCase, declaredGbeName);
-    if (result == null) {
-      throw new IllegalArgumentException(String.format(
-          "The installed GuiceBerryEnvRemapper '%s' returned 'null' for the " +
-          "'%s' test, which declares '%s' as its GuiceBerryEnv", 
-          remapper.getClass().getName(), 
-          testCase.getName(), declaredGbeName));
-    }
-    return result;
-  }
-
   @SuppressWarnings("unchecked")
   private static GuiceBerryEnvRemapper getRemapper() {
     String remapperName = System.getProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
@@ -377,114 +225,22 @@ public class GuiceBerryJunit3 {
     return DEFAULT_GUICE_BERRY_ENV_REMAPPER;
   }
 
-  @SuppressWarnings("unchecked")
-  private Injector foundGbeForTheFirstTime(
-      final Class<? extends Module> gbeClass) {
-    
-    Injector injector = BOGUS_INJECTOR;
-    
-    try {
-      Module gbeInstance = createGbeInstanceFromClass(gbeClass);
-      injector = Guice.createInjector(gbeInstance);
-      callGbeMainIfBound(injector);
-      try {
-        if (injector.getBindings().get(Key.get(TestScopeListener.class)) == null) {
-          String msg = "TestScopeListener must be bound in your GuiceBerryEnv.";
-          throw new RuntimeException(msg); 
-        }
-        // This is not actually used, but ensures at this point that the bound
-        // TestScopeListener can be created
-        @SuppressWarnings("unused")
-        TestScopeListener testScopeListener = 
-          injector.getInstance(TestScopeListener.class);
-      } catch (ConfigurationException e) {
-        String msg = String.format("Error while creating the instance of: " +
-            "'%s': '%s'.", TestScopeListener.class, e.getMessage());
-        throw new RuntimeException(msg, e); 
-      }
-
-      JunitTestScope testScope = injector.getInstance(JunitTestScope.class);
-      return injector;
-    } finally {
-      // This is in the finally block to ensure that BOGUS_INJECTOR
-      // is put in the map if things go bad.
-      gbeClassToInjectorMap.put(gbeClass, injector);
-    }
-  }
-
-  private void callGbeMainIfBound(Injector injector) {
-    if (injector.getBindings().get(Key.get(GuiceBerryEnvMain.class)) != null) {
-      injector.getInstance(GuiceBerryEnvMain.class).run();
-    }
-  }
-
-  private Module createGbeInstanceFromClass(
-      final Class<? extends Module> gbeClass) {
-    Module result; 
-    try {
-      result = gbeClass.getConstructor().newInstance(); 
-    } catch (NoSuchMethodException e) {
-      String msg = String.format(
-    		  "@%s class '%s' must have a public zero-arguments constructor",
-    		  GuiceBerryEnv.class.getSimpleName(),
-    		  gbeClass.getName()); 
-      throw new IllegalArgumentException(msg, e); 
-	} catch (Exception e) {
-	      String msg = String.format(
-	    		  "Error creating instance of @%s '%s'",
-	    		  GuiceBerryEnv.class.getSimpleName(),
-	    		  gbeClass.getName()); 
-	        throw new IllegalArgumentException(msg, e); 
-	}
-    return result;
-  }
-
-  private static void notifyTestScopeListenerOfOutScope(Injector injector) {
-    injector.getInstance(TestScopeListener.class).exitingScope();
-  }
-
-  private void doTearDown(Injector injector) {
-  
-    if (testCurrentlyRunningOnThisThread.get() != testCase) {
-      String msg = String.format( GuiceBerryJunit3.class.toString() 
-          + " cannot tear down "
-          + testCase.toString()
-          + " because that test never called "
-          + GuiceBerryJunit3.class.getCanonicalName()
-          + ".setUp()"); 
-      throw new RuntimeException(msg); 
-    }
-    testCurrentlyRunningOnThisThread.set(null);
-    injector.getInstance(JunitTestScope.class).finishScope(testCase);    
-  }  
-  
-  private void addGuiceBerryTearDown(final TestCase testCase) {
-    if (testCase instanceof TearDownAccepter) {
-      TearDownAccepter tdtc = (TearDownAccepter) testCase;
-      tdtc.addTearDown(new TearDown() {
-        public void tearDown() {
-          goTearDown();
-        }
-      });
-    }
-  }
-  
   static TestCase getActualTestCase() { 
-     return testCurrentlyRunningOnThisThread.get();
+     return universe.testCurrentlyRunningOnThisThread.get();
    }
   
   // METHODS BELOW ARE USED ONLY FOR TESTS  
   static void clear() {
-    gbeClassToInjectorMap = Maps.newHashMap();
-    testCurrentlyRunningOnThisThread.set(null);
+    universe.gbeClassToInjectorMap = Maps.newHashMap();
+    universe.testCurrentlyRunningOnThisThread.set(null);
   }
   
   static int numberOfInjectorsInUse(){
-    return gbeClassToInjectorMap.size();
+    return universe.gbeClassToInjectorMap.size();
   }
   
   static JunitTestScope getTestScopeForGbe(Class<?> key){
-    Injector injector = gbeClassToInjectorMap.get(key);
+    Injector injector = universe.gbeClassToInjectorMap.get(key);
     if (injector == null) {
       return null;
     }
