@@ -24,7 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /** 
- * Each "test case" that wants GooseBerry injection must be annotated with this.
+ * Each "test case" that wants GuiceBerry injection must be annotated with this.
  * In JUnit lingo, this is a {@link junit.framework.TestCase}.
  * 
  * <p>The given string parameter to this annotation is expected to be the 
