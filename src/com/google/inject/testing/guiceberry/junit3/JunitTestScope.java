@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-//move to junit subpackage
 package com.google.inject.testing.guiceberry.junit3;
 
-import com.google.common.collect.Maps;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
@@ -26,9 +23,9 @@ import com.google.inject.testing.guiceberry.TestScoped;
 
 import junit.framework.TestCase;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * The JUnit-specific implementation of the {@link TestScoped} annotation. 
@@ -42,11 +39,10 @@ import java.util.Map;
 @Singleton
 class JunitTestScope implements Scope {
 
-  private final Map<TestCase, Map<Key<?>, Object>> testMap =
-    Collections.synchronizedMap(new HashMap<TestCase, Map <Key<?>, Object> >());
+  private final ConcurrentMap<TestCase, Map<Key<?>, Object>> testMap =
+      new ConcurrentHashMap<TestCase, Map <Key<?>, Object>>();
 
-  JunitTestScope() {
-  }
+  JunitTestScope() {}
 
   void finishScope(TestCase testCase) {
     testMap.remove(testCase); 
@@ -69,17 +65,23 @@ class JunitTestScope implements Scope {
         }
         Map<Key<?>, Object> keyToInstanceProvider = testMap.get(actualTestCase);
         if (keyToInstanceProvider == null) {
-          keyToInstanceProvider = Maps.<Key<?>, Object> newHashMap();
-          testMap.put(actualTestCase, keyToInstanceProvider);
+          testMap.putIfAbsent(
+              actualTestCase, new ConcurrentHashMap<Key<?>, Object>());
+          keyToInstanceProvider = testMap.get(actualTestCase);
         }
         Object o = keyToInstanceProvider.get(key);
-
-        if (o == null) {
-          o = creator.get();
-          keyToInstanceProvider.put(key, o);
-         
+        if (o != null) {
+          return (T) o;
         }
-        return (T) o;
+        // double checked locking -- handle with extreme care!
+        synchronized(keyToInstanceProvider) {
+          o = keyToInstanceProvider.get(key);
+          if (o == null) {
+            o = creator.get();
+            keyToInstanceProvider.put(key, o);
+          }
+          return (T) o;
+        }
       }
     };
   }
