@@ -28,10 +28,11 @@ public class MyPetStoreServer {
     root.addServlet(DefaultServlet.class, "/");
   }
   
-  public void start() {
+  public Injector start() {
     try {
-      Injector injector = getInjector();
+      Injector result = Guice.createInjector(getPetStoreModule());
       server.start();
+      return result;
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -41,32 +42,21 @@ public class MyPetStoreServer {
     return portNumber;
   }
 
-  private Injector getInjector() {
-    return Guice.createInjector(getApplicationModule());
+  protected Module getPetStoreModule() {
+    return new PetStoreModule();
   }
-
-  protected Module getApplicationModule() {
-    return new AbstractModule() {
-      @Override
-      protected void configure() {
-        install(new PetStoreModule());
-        install(new MyServletModule());
-      }
-    };
-  }
-
-  public final class MyServletModule extends ServletModule {
+  
+  private static final class MyServletModule extends ServletModule {
     @Override
     protected void configureServlets() {
       serve("/*").with(WelcomePageServlet.class);
     }
   }
 
-  private final static class PetStoreModule extends AbstractModule {
+  public static class PetStoreModule extends AbstractModule {
 
-    @SuppressWarnings("unused")
     @Provides
-    PetOfTheMonth getPetOfTheMonth() {
+    protected PetOfTheMonth getPetOfTheMonth() {
       return somePetOfTheMonth();
     }
     
@@ -75,13 +65,15 @@ public class MyPetStoreServer {
     /** Simulates a call to a non-deterministic service -- maybe an external
      * server, maybe a DB call to a volatile entry, etc.
      */
-    private PetOfTheMonth somePetOfTheMonth() {
+    protected PetOfTheMonth somePetOfTheMonth() {
       PetOfTheMonth[] allPetsOfTheMonth = PetOfTheMonth.values();
       return allPetsOfTheMonth[(rand.nextInt(allPetsOfTheMonth.length))];
     }
 
     @Override
-    protected void configure() {}
+    protected void configure() {
+      install(new MyServletModule());
+    }
   }
 
   public static void main(String[] args) throws Exception {

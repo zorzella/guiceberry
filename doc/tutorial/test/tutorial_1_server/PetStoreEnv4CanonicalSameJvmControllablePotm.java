@@ -1,8 +1,10 @@
 package tutorial_1_server;
 
+import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.testing.guiceberry.GuiceBerryEnvMain;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.controllable.IcMaster;
 import com.google.inject.testing.guiceberry.controllable.SharedStaticVarIcStrategy;
@@ -39,14 +41,13 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
   MyPetStoreServer buildPetStoreServer() {
     MyPetStoreServer result = new MyPetStoreServer(8080) {
       @Override
-      protected Module getApplicationModule() {
+      protected Module getPetStoreModule() {
         // !!! HERE !!!
         return icMaster.buildServerModule(
             new TestIdServerModule(),
-            super.getApplicationModule());
+            super.getPetStoreModule());
       }
     };
-    result.start();
     return result;
   }
   
@@ -55,11 +56,24 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
   @Override
   protected void configure() {
     super.configure();
+    bind(GuiceBerryEnvMain.class).to(PetStoreServerStarter.class);
     // !!!! HERE !!!!
     icMaster = new IcMaster()
       .thatControls(SharedStaticVarIcStrategy.strategy(),
          PetOfTheMonth.class);
     install(icMaster.buildClientModule());
+  }
+  
+  private static final class PetStoreServerStarter implements GuiceBerryEnvMain {
+    
+    @Inject
+    private MyPetStoreServer myPetStoreServer;
+    
+    public void run() {
+      // Starting a server should never be done in a @Provides method 
+      // (or inside Provider's get).
+      myPetStoreServer.start();
+    }
   }
 }
 

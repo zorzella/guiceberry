@@ -1,10 +1,10 @@
 package tutorial_1_server;
 
-import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.servlet.ServletModule;
+import com.google.inject.testing.guiceberry.GuiceBerryEnvMain;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 
 import org.openqa.selenium.WebDriver;
@@ -13,8 +13,6 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import tutorial_1_server.prod.MyPetStoreServer;
 import tutorial_1_server.prod.PetOfTheMonth;
 import tutorial_1_server.prod.PortNumber;
-
-import java.util.Random;
 
 public final class PetStoreEnv2GlobalStaticControllablePotm extends GuiceBerryJunit3Env {
   
@@ -32,50 +30,47 @@ public final class PetStoreEnv2GlobalStaticControllablePotm extends GuiceBerryJu
 
   @Provides
   @Singleton
-  protected MyPetStoreServer buildPetStoreServer() {
+  MyPetStoreServer buildPetStoreServer() {
     MyPetStoreServer result = new MyPetStoreServer(8080) {
       @Override
-      protected Module getApplicationModule() {
-        return new AbstractModule() {
-          @Override
-          protected void configure() {
-            install(new PetStoreModuleWithGlobalStaticOverride());
-            install(new MyServletModule());
-          }
-        };
+      protected Module getPetStoreModule() {
+        return new PetStoreModuleWithGlobalStaticOverride();
       }
     };
-    result.start();
     return result;
   }
   
-  public static final class PetStoreModuleWithGlobalStaticOverride extends AbstractModule {
+  @Override
+  protected void configure() {
+    super.configure();
+    bind(GuiceBerryEnvMain.class).to(PetStoreServerStarter.class);
+  }
+  
+  private static final class PetStoreServerStarter implements GuiceBerryEnvMain {
+
+    @Inject
+    private MyPetStoreServer myPetStoreServer;
+    
+    public void run() {
+      // Starting a server should never be done in a @Provides method 
+      // (or inside Provider's get).
+      myPetStoreServer.start();
+    }
+  }
+
+  public static final class PetStoreModuleWithGlobalStaticOverride 
+      extends MyPetStoreServer.PetStoreModule {
 
     // !!!HERE!!!!
     public static PetOfTheMonth override;
     
-    @Provides
-    PetOfTheMonth getPetOfTheMonth() {
+    @Override
+    protected PetOfTheMonth somePetOfTheMonth() {
       // !!!HERE!!!!
       if (override != null) {
         return override;
       }
-      return somePetOfTheMonth();
-    }
-
-    private final Random rand = new Random();
-
-    /** Simulates a call to a non-deterministic service -- maybe an external
-     * server, maybe a DB call to a volatile entry, etc.
-     */
-    private PetOfTheMonth somePetOfTheMonth() {
-      PetOfTheMonth[] allPetsOfTheMonth = PetOfTheMonth.values();
-      return allPetsOfTheMonth[(rand.nextInt(allPetsOfTheMonth.length))];
-    }
-
-    @Override
-    protected void configure() {
-      install(new ServletModule());
+      return super.somePetOfTheMonth();
     }
   }
 }
