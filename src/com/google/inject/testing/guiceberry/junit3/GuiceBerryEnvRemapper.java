@@ -32,9 +32,12 @@ import junit.framework.TestCase;
  * {@link com.google.inject.testing.guiceberry.GuiceBerryEnv}s.
  * 
  * <p>See {@link #remap(TestCase, String)}
- * 
+ *
+ * @deprecated Use {@link com.google.inject.testing.guiceberry.GuiceBerryEnvRemapper}
+ *
  * @author Luiz-Otavio Zorzella
  */
+@Deprecated
 public interface GuiceBerryEnvRemapper {
 
     /**

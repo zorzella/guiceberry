@@ -46,6 +46,8 @@ class GuiceBerryEnvRemappersCoupler {
     if (newRemapper != null) {
       return newRemapper.remap(testCase.getClass().getName(), declaredGbeName);
     } else if (oldRemapper != null) {
+      System.err.println("You are using a deprecated GuiceBerryEnvRemapper interface. " +
+      		"Please upgrade.");
       return oldRemapper.remap(testCase, declaredGbeName);
     }
     throw new IllegalStateException();
