@@ -58,8 +58,9 @@ import java.util.Map;
  */
 public class GuiceBerryJunit3 { 
   
-  private static final GuiceBerryEnvRemapper DEFAULT_GUICE_BERRY_ENV_REMAPPER = 
-	  new IdentityGuiceBerryEnvRemapper();
+  private static final GuiceBerryEnvRemappersCoupler 
+      DEFAULT_GUICE_BERRY_ENV_REMAPPER = GuiceBerryEnvRemappersCoupler.forNewRemappper(
+        new IdentityGuiceBerryEnvRemapper());
 
   static class GuiceBerryUniverse {
 
@@ -129,16 +130,12 @@ public class GuiceBerryJunit3 {
    * @see GuiceBerryEnv                                      
    */
   public synchronized static void setUp(final TestCase testCase) { 
-    GuiceBerryEnvRemapper remapper = getRemapper();
-//    new GuiceBerryJunit3(testCase, 
-//        getGbeAnnotation(testCase), 
-//        remapper).goSetUp(testCase);
+    GuiceBerryEnvRemappersCoupler remapper = getRemapper();
     new TestCaseScafolding(testCase, 
         getGbeAnnotation(testCase), 
         remapper, 
         universe).goSetUp(testCase);
   }
-  
   
   /**   
    * You should only call this method if your test does <em>not</em> implement 
@@ -179,7 +176,7 @@ public class GuiceBerryJunit3 {
       		"GuiceBerryJunit3.tearDown (it's only needed for tests that do " +
       		"not implement TearDownAccepter).");
     }
-    GuiceBerryEnvRemapper remapper = getRemapper();
+    GuiceBerryEnvRemappersCoupler remapper = getRemapper();
     new TestCaseScafolding(
         testCase, 
         getGbeAnnotation(testCase),
@@ -194,37 +191,49 @@ public class GuiceBerryJunit3 {
   }  
   
   @SuppressWarnings("unchecked")
-  private static GuiceBerryEnvRemapper getRemapper() {
+  private static GuiceBerryEnvRemappersCoupler getRemapper() {
     String remapperName = System.getProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
     if (remapperName != null) {
-      Class<? extends GuiceBerryEnvRemapper> clazz;
+      Class clazz;
       try {
-        clazz = (Class<? extends GuiceBerryEnvRemapper>) 
-        GuiceBerryJunit3.class.getClassLoader().loadClass(remapperName);
+        clazz = GuiceBerryJunit3.class.getClassLoader().loadClass(remapperName);
         } catch (ClassNotFoundException e) {
           throw new IllegalArgumentException(String.format(
             "Class '%s', which is being declared as a GuiceBerryEnvRemapper, does not exist.", remapperName), e);
         }
-        if (!GuiceBerryEnvRemapper.class.isAssignableFrom(clazz)) {
-          throw new IllegalArgumentException(String.format(
-            "Class '%s' is being declared as a GuiceBerryEnvRemapper, but does not implement that interface", 
-            remapperName));
+        if (com.google.inject.testing.guiceberry.GuiceBerryEnvRemapper.class.isAssignableFrom(clazz)) {
+          return GuiceBerryEnvRemappersCoupler.forNewRemappper(
+            (com.google.inject.testing.guiceberry.GuiceBerryEnvRemapper) instantiateRemapper(
+              clazz, remapperName));
         }
-        try {
-          return clazz.getConstructor().newInstance();
-        } catch (NoSuchMethodException e) {
-          throw new IllegalArgumentException(String.format(
-            "GuiceBerryEnvRemapper '%s' must have public zero-arguments constructor", 
-            remapperName), e);
-        } catch (Exception e) {
-          throw new RuntimeException(String.format(
-            "There was a problem trying to instantiate your GuiceBerryEnvRemapper '%s'", remapperName), 
-            e);
+        
+        if (GuiceBerryEnvRemapper.class.isAssignableFrom(clazz)) {
+          return GuiceBerryEnvRemappersCoupler.forOldRemappper(
+            (GuiceBerryEnvRemapper) instantiateRemapper(
+              clazz, remapperName));
         }
+        throw new IllegalArgumentException(String.format(
+          "Class '%s' is being declared as a GuiceBerryEnvRemapper, but does not implement that interface", 
+          remapperName));
+        
     }
     return DEFAULT_GUICE_BERRY_ENV_REMAPPER;
   }
 
+  private static Object instantiateRemapper(Class<?> clazz, String remapperName) {
+    try {
+      return clazz.getConstructor().newInstance();
+    } catch (NoSuchMethodException e) {
+      throw new IllegalArgumentException(String.format(
+        "GuiceBerryEnvRemapper '%s' must have public zero-arguments constructor", 
+        remapperName), e);
+    } catch (Exception e) {
+      throw new RuntimeException(String.format(
+        "There was a problem trying to instantiate your GuiceBerryEnvRemapper '%s'", remapperName), 
+        e);
+    }
+  }
+  
   static TestCase getActualTestCase() { 
      return universe.testCurrentlyRunningOnThisThread.get();
    }
@@ -256,8 +265,9 @@ public class GuiceBerryJunit3 {
    * 
    * @author Luiz-Otavio Zorzella
    */
-  private static final class IdentityGuiceBerryEnvRemapper implements GuiceBerryEnvRemapper {
-    public String remap(TestCase test, String env) {
+  private static final class IdentityGuiceBerryEnvRemapper 
+      implements com.google.inject.testing.guiceberry.GuiceBerryEnvRemapper {
+    public String remap(String test, String env) {
       return env;
     }
   }
