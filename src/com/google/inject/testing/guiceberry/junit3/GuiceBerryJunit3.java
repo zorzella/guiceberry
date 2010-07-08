@@ -16,11 +16,16 @@
 
 package com.google.inject.testing.guiceberry.junit3;
 
-import com.google.common.collect.Maps;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
+import com.google.guiceberry.EnvChooser;
+import com.google.guiceberry.GuiceBerryUniverse;
+import com.google.guiceberry.TestScope;
+import com.google.guiceberry.TestDescription;
+import com.google.guiceberry.VersionTwoBackwardsCompatibleEnvChooser;
+import com.google.guiceberry.GuiceBerryUniverse.TestCaseScaffolding;
 import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
@@ -29,8 +34,6 @@ import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.TestScoped;
 
 import junit.framework.TestCase;
-
-import java.util.Map;
 
 /**
  * Provides the tools to manage the JUnit tests that use {@code Guice}.  
@@ -58,19 +61,23 @@ import java.util.Map;
  */
 public class GuiceBerryJunit3 { 
   
-  private static final GuiceBerryEnvRemappersCoupler 
-      DEFAULT_GUICE_BERRY_ENV_REMAPPER = GuiceBerryEnvRemappersCoupler.forNewRemappper(
-        new IdentityGuiceBerryEnvRemapper());
+  private static final EnvChooser ENV_CHOOSER = new VersionTwoBackwardsCompatibleEnvChooser();
 
-  static class GuiceBerryUniverse {
+  final GuiceBerryUniverse universe;
 
-    Map<Class<? extends Module>, Injector> gbeClassToInjectorMap = Maps.newHashMap();
-    
-    InheritableThreadLocal<TestCase> testCurrentlyRunningOnThisThread  = 
-      new InheritableThreadLocal<TestCase>();
+  @VisibleForTesting
+  public GuiceBerryJunit3(GuiceBerryUniverse universe) {
+    this.universe = universe;
   }
 
-  static final GuiceBerryUniverse universe = new GuiceBerryUniverse();
+  private static TestDescription buildDescription(TestCase testCase) {
+    return new TestDescription(testCase, testCase.getClass().getCanonicalName() + "." + testCase.getName());
+  }
+
+  private static final ThreadLocal<TestCaseScaffolding> scaffoldingThreadLocal = 
+    new ThreadLocal<TestCaseScaffolding>();
+  
+  private static final GuiceBerryJunit3 INSTANCE = new GuiceBerryJunit3(GuiceBerryUniverse.INSTANCE);
   
   /**
    * Sets up the {@link TestCase} (given as the argument) to be ready to run. 
@@ -129,12 +136,40 @@ public class GuiceBerryJunit3 {
    * @see TestScoped
    * @see GuiceBerryEnv                                      
    */
-  public synchronized static void setUp(final TestCase testCase) { 
-    GuiceBerryEnvRemappersCoupler remapper = getRemapper();
-    new TestCaseScafolding(testCase, 
-        getGbeAnnotation(testCase), 
-        remapper, 
-        universe).goSetUp(testCase);
+  public synchronized static void setUp(final TestCase testCase) {
+    INSTANCE.doSetUp(testCase);
+  }
+
+  public synchronized void doSetUp(final TestCase testCase) {
+    
+    TestDescription testDescription = buildDescription(testCase);
+
+    TestCaseScaffolding testCaseScaffolding = 
+      universe.new TestCaseScaffolding(
+        testDescription,
+        ENV_CHOOSER);
+
+    //Setup teard down before setup so that if an exception is thrown there,
+    //we still do a tearDown.
+    maybeAddGuiceBerryTearDown(testDescription, testCaseScaffolding);
+    
+    testCaseScaffolding.goSetUp();
+  }
+
+  private static void maybeAddGuiceBerryTearDown(
+      final TestDescription testDescription,
+      final TestCaseScaffolding scaffolding) {
+    Object testToTearDown = testDescription.getTestCase();
+    if (testToTearDown instanceof TearDownAccepter) {
+      TearDownAccepter tdtc = (TearDownAccepter) testToTearDown;
+      tdtc.addTearDown(new TearDown() {
+        public void tearDown() {
+          scaffolding.goTearDown();
+        }
+      });
+    } else {
+      scaffoldingThreadLocal.set(scaffolding);
+    }
   }
   
   /**   
@@ -168,7 +203,7 @@ public class GuiceBerryJunit3 {
    *     wasn't called before calling this method.                                 
    * 
    * @see TestScopeListener
-   * @see JunitTestScope
+   * @see TestScope
    */
   public synchronized static void tearDown(TestCase testCase) {
     if (testCase instanceof TearDownAccepter) {
@@ -176,99 +211,6 @@ public class GuiceBerryJunit3 {
       		"GuiceBerryJunit3.tearDown (it's only needed for tests that do " +
       		"not implement TearDownAccepter).");
     }
-    GuiceBerryEnvRemappersCoupler remapper = getRemapper();
-    new TestCaseScafolding(
-        testCase, 
-        getGbeAnnotation(testCase),
-        remapper,
-        universe).goTearDown();
-  }
-  
-  private static GuiceBerryEnv getGbeAnnotation(TestCase testCase) { 
-    GuiceBerryEnv gbeAnnotation =
-      testCase.getClass().getAnnotation(GuiceBerryEnv.class);
-    return gbeAnnotation;
-  }  
-  
-  @SuppressWarnings("unchecked")
-  private static GuiceBerryEnvRemappersCoupler getRemapper() {
-    String remapperName = System.getProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
-    if (remapperName != null) {
-      Class clazz;
-      try {
-        clazz = GuiceBerryJunit3.class.getClassLoader().loadClass(remapperName);
-        } catch (ClassNotFoundException e) {
-          throw new IllegalArgumentException(String.format(
-            "Class '%s', which is being declared as a GuiceBerryEnvRemapper, does not exist.", remapperName), e);
-        }
-        if (com.google.inject.testing.guiceberry.GuiceBerryEnvRemapper.class.isAssignableFrom(clazz)) {
-          return GuiceBerryEnvRemappersCoupler.forNewRemappper(
-            (com.google.inject.testing.guiceberry.GuiceBerryEnvRemapper) instantiateRemapper(
-              clazz, remapperName));
-        }
-        
-        if (GuiceBerryEnvRemapper.class.isAssignableFrom(clazz)) {
-          return GuiceBerryEnvRemappersCoupler.forOldRemappper(
-            (GuiceBerryEnvRemapper) instantiateRemapper(
-              clazz, remapperName));
-        }
-        throw new IllegalArgumentException(String.format(
-          "Class '%s' is being declared as a GuiceBerryEnvRemapper, but does not implement that interface", 
-          remapperName));
-        
-    }
-    return DEFAULT_GUICE_BERRY_ENV_REMAPPER;
-  }
-
-  private static Object instantiateRemapper(Class<?> clazz, String remapperName) {
-    try {
-      return clazz.getConstructor().newInstance();
-    } catch (NoSuchMethodException e) {
-      throw new IllegalArgumentException(String.format(
-        "GuiceBerryEnvRemapper '%s' must have public zero-arguments constructor", 
-        remapperName), e);
-    } catch (Exception e) {
-      throw new RuntimeException(String.format(
-        "There was a problem trying to instantiate your GuiceBerryEnvRemapper '%s'", remapperName), 
-        e);
-    }
-  }
-  
-  static TestCase getActualTestCase() { 
-     return universe.testCurrentlyRunningOnThisThread.get();
-   }
-  
-  // METHODS BELOW ARE USED ONLY FOR TESTS  
-  static void clear() {
-    universe.gbeClassToInjectorMap = Maps.newHashMap();
-    universe.testCurrentlyRunningOnThisThread.set(null);
-  }
-  
-  static int numberOfInjectorsInUse(){
-    return universe.gbeClassToInjectorMap.size();
-  }
-  
-  static JunitTestScope getTestScopeForGbe(Class<?> key){
-    Injector injector = universe.gbeClassToInjectorMap.get(key);
-    if (injector == null) {
-      return null;
-    }
-    return injector.getInstance(JunitTestScope.class);
-  }
- 
-  /**
-   * An "identity" remapper, that remaps a
-   * {@link com.google.inject.testing.guiceberry.GuiceBerryEnv} to itself.
-   * This remapper is installed by default.
-   * 
-   * {@inheritDoc}
-   * 
-   * @author Luiz-Otavio Zorzella
-   */
-  private static final class IdentityGuiceBerryEnvRemapper 
-      implements com.google.inject.testing.guiceberry.GuiceBerryEnvRemapper {
-    public String remap(String test, String env) {
-      return env;
-    }
+    scaffoldingThreadLocal.get().goTearDown();
   }
 }

@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.inject.testing.guiceberry.junit3;
+package com.google.guiceberry;
 
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
 import com.google.inject.Singleton;
 import com.google.inject.testing.guiceberry.TestScoped;
-
-import junit.framework.TestCase;
+import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * The JUnit-specific implementation of the {@link TestScoped} annotation. 
+ * Implementation of the {@link TestScoped} annotation.
  * 
  * @see GuiceBerryJunit3
  * @see Scope 
@@ -37,15 +36,19 @@ import java.util.concurrent.ConcurrentMap;
  * @author Danka Karwanska
  */
 @Singleton
-class JunitTestScope implements Scope {
+public class TestScope implements Scope {
 
-  private final ConcurrentMap<TestCase, Map<Key<?>, Object>> testMap =
-      new ConcurrentHashMap<TestCase, Map <Key<?>, Object>>();
+  private final GuiceBerryUniverse universe;
 
-  JunitTestScope() {}
+  private final ConcurrentMap<TestDescription, Map<Key<?>, Object>> testMap =
+      new ConcurrentHashMap<TestDescription, Map <Key<?>, Object>>();
 
-  void finishScope(TestCase testCase) {
-    testMap.remove(testCase); 
+  TestScope(GuiceBerryUniverse universe) {
+    this.universe = universe;
+  }
+
+  void finishScope(TestDescription testCase) {
+    testMap.remove(testCase);
   }
   
   @SuppressWarnings("unchecked")  
@@ -55,7 +58,7 @@ class JunitTestScope implements Scope {
     return new Provider<T>() {
       public T get() {
 
-        TestCase actualTestCase = GuiceBerryJunit3.getActualTestCase();
+        TestDescription actualTestCase = universe.currentTestDescriptionThreadLocal.get();
         if (actualTestCase == null) {
           throw new IllegalStateException(
               "GuiceBerry can't find out what is the currently-running test. " +

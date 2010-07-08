@@ -34,7 +34,7 @@ import com.google.inject.ScopeAnnotation;
  * {@link junit.framework.TestCase#setUp()} and 
  * {@link junit.framework.TestCase#tearDown()}). 
  *  
- * @see com.google.inject.testing.guiceberry.junit3.JunitTestScope for the 
+ * @see com.google.guiceberry.TestScope for the 
  * JUnit3-specific implementation of this scope
  * 
  * @author Luiz-Otavio Zorzella
