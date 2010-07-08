@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package com.google.inject.testing.guiceberry.junit3;
+package com.google.guiceberry;
 
-import com.google.guiceberry.GuiceBerryModule;
+import com.google.common.testing.TearDown;
+import com.google.common.testing.TearDownAccepter;
+import com.google.common.testing.TearDownStack;
 import com.google.guiceberry.GuiceBerryUniverse;
+import com.google.guiceberry.TestScope;
+import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScoped;
@@ -40,29 +45,50 @@ import junit.framework.TestCase;
  * @see GuiceBerryEnv
  * 
  * @author Luiz-Otavio Zorzella
- * @author Danka Karwanska
  */
-public class BasicJunit3Module extends GuiceBerryModule {
+public class GuiceBerryModule extends AbstractModule {
     
-  private final GuiceBerryUniverse universe;
-
-  public BasicJunit3Module() {
+  private final TestScope testScope;
+  
+  public GuiceBerryModule() {
     this(GuiceBerryUniverse.INSTANCE);
   }
   
-  public BasicJunit3Module(GuiceBerryUniverse universe) {
-    super(universe);
-    this.universe = universe;
+  protected GuiceBerryModule(GuiceBerryUniverse universe) {
+    this.testScope = new TestScope(universe);
   }
-
+  
   @Override
   public void configure() {
-    super.configure();
+    bind(TestScope.class).toInstance(testScope);
+    bindScope(TestScoped.class, testScope);
+    bind(TearDownAccepter.class).to(ToTearDown.class);
   }
 
+  
   @Provides
   @TestScoped
-  TestCase getTestCase() {
-    return (TestCase) universe.currentTestDescriptionThreadLocal.get().getTestCase();
+  ToTearDown getToTearDown(TestCase testCase) {
+    return new ToTearDown() {
+      TearDownStack delegate = new TearDownStack();
+      
+      public void addTearDown(TearDown tearDown) {
+        delegate.addTearDown(tearDown);
+      }
+    
+      public void runTearDown() {
+        delegate.runTearDown();
+      }
+    };
+  }
+  
+  @Provides
+  @TestScoped
+  TestId getTestId(TestCase testCase) {
+    return new TestId(testCase.getClass().getName(), testCase.getName());
+  }
+  
+  public interface ToTearDown extends TearDownAccepter {
+    void runTearDown();
   }
 }

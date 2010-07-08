@@ -33,7 +33,7 @@ import junit.framework.TestCase;
  * 
  * <p>See {@link #remap(TestCase, String)}
  *
- * @deprecated Use {@link com.google.inject.testing.guiceberry.GuiceBerryEnvRemapper}
+ * @deprecated
  *
  * @author Luiz-Otavio Zorzella
  */
