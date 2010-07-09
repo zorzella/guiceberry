@@ -1,20 +1,13 @@
 package junit4.tutorial_0_basic;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class AllTests {
-
-  public static Test suite() {
-    TestSuite suite = new TestSuite(
-      "Tests for junit4.tutorial_0_basic");
-    //$JUnit-BEGIN$
-//    suite.addTestSuite(Example0HelloWorldTest.class);
-//    suite.addTestSuite(Example1GetsInjectedTest.class);
-//    suite.addTestSuite(Example2ScopesTest.class);
-//    suite.addTestSuite(Example3TestScopeListenerTest.class);
-//    suite.addTestSuite(Example4VerboseHelloWorldTest.class);
-    //$JUnit-END$
-    return suite;
-  }
-}
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+Example0HelloWorldTest.class, 
+Example1GetsInjectedTest.class, 
+Example2ScopesTest.class, 
+Example3TestScopeListenerTest.class, 
+})
+public class AllTests {}
