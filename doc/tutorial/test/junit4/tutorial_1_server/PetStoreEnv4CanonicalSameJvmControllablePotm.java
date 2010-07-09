@@ -1,5 +1,6 @@
 package junit4.tutorial_1_server;
 
+import com.google.guiceberry.GuiceBerryEnvMain;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.TestId;
 import com.google.guiceberry.controllable.IcMaster;
@@ -9,7 +10,6 @@ import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.testing.guiceberry.GuiceBerryEnvMain;
 
 import junit4.tutorial_1_server.prod.MyPetStoreServer;
 import junit4.tutorial_1_server.prod.PetOfTheMonth;
