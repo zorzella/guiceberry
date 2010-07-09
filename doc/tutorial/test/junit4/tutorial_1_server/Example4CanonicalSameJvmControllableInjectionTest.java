@@ -2,7 +2,7 @@ package junit4.tutorial_1_server;
 
 import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
-import com.google.inject.testing.guiceberry.controllable.IcClient;
+import com.google.guiceberry.controllable.InjectionController;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class Example4CanonicalSameJvmControllableInjectionTest {
   WelcomeTestPage welcomeTestPage;
   
   @Inject
-  private IcClient<PetOfTheMonth> petOfTheMonthIc;
+  private InjectionController<PetOfTheMonth> petOfTheMonthIc;
 
   @Test
   public void testDogAsPotm() {

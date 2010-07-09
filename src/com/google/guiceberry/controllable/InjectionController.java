@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.inject.testing.guiceberry.controllable;
+package com.google.guiceberry.controllable;
 
 /**
  * This is the most visible class of the Controllable Injections framework, and
@@ -41,8 +41,7 @@ package com.google.inject.testing.guiceberry.controllable;
  * 
  * @param <T> the type of the class you want to control.
  */
-@Deprecated
-public interface IcClient<T> {
+public interface InjectionController<T> {
   
   /**
    * Overrides the current test's injection of {@code T} to the {@code override}

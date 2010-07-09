@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.inject.testing.guiceberry.controllable;
+package com.google.guiceberry.controllable;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -23,7 +23,7 @@ import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.servlet.RequestScoped;
-import com.google.inject.testing.guiceberry.TestId;
+import com.google.guiceberry.TestId;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -42,7 +42,6 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Luiz-Otavio Zorzella
  */
-@Deprecated
 public class TestIdServerModule extends AbstractModule {
 
   @Retention(RetentionPolicy.RUNTIME)

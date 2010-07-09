@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.inject.testing.guiceberry.controllable;
+package com.google.guiceberry.controllable;
 
 import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
@@ -44,7 +44,6 @@ import java.util.Map;
  * @author Luiz-Otavio Zorzella
  * @author Jesse Wilson
  */
-@Deprecated
 public final class IcMaster {
   
   private final Map<Key<?>, IcStrategy> controlledKeyToStrategyMap = 
