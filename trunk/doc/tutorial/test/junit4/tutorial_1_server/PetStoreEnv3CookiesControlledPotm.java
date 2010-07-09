@@ -2,14 +2,14 @@ package junit4.tutorial_1_server;
 
 import com.google.common.collect.Maps;
 import com.google.guiceberry.GuiceBerryEnvMain;
+import com.google.guiceberry.GuiceBerryModule;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.testing.guiceberry.TestId;
-import com.google.inject.testing.guiceberry.controllable.TestIdServerModule;
-import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
+import com.google.guiceberry.TestId;
+import com.google.guiceberry.controllable.TestIdServerModule;
 
 import junit4.tutorial_1_server.prod.MyPetStoreServer;
 import junit4.tutorial_1_server.prod.PetOfTheMonth;
@@ -21,7 +21,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import java.util.Map;
 
-public final class PetStoreEnv3CookiesControlledPotm extends GuiceBerryJunit3Env {
+public final class PetStoreEnv3CookiesControlledPotm extends GuiceBerryModule {
   
   @Provides
   @PortNumber

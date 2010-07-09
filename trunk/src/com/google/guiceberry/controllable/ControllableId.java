@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.inject.testing.guiceberry.controllable;
+package com.google.guiceberry.controllable;
 
 import com.google.inject.Key;
 import com.google.inject.internal.Objects;
-import com.google.inject.testing.guiceberry.TestId;
+import com.google.guiceberry.TestId;
 
 /**
  * This is basically a pair of a controlled {@link Key} (i.e. a possible 
@@ -29,7 +29,6 @@ import com.google.inject.testing.guiceberry.TestId;
  *
  * @param <T> The type of {@link Key} in this class. 
  */
-@Deprecated
 public class ControllableId<T> {
   
   private final TestId testId;

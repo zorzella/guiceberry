@@ -1,15 +1,15 @@
 package junit4.tutorial_1_server;
 
+import com.google.guiceberry.GuiceBerryModule;
+import com.google.guiceberry.TestId;
+import com.google.guiceberry.controllable.IcMaster;
+import com.google.guiceberry.controllable.SharedStaticVarIcStrategy;
+import com.google.guiceberry.controllable.TestIdServerModule;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.testing.guiceberry.GuiceBerryEnvMain;
-import com.google.inject.testing.guiceberry.TestId;
-import com.google.inject.testing.guiceberry.controllable.IcMaster;
-import com.google.inject.testing.guiceberry.controllable.SharedStaticVarIcStrategy;
-import com.google.inject.testing.guiceberry.controllable.TestIdServerModule;
-import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 
 import junit4.tutorial_1_server.prod.MyPetStoreServer;
 import junit4.tutorial_1_server.prod.PetOfTheMonth;
@@ -19,8 +19,7 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-
-public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBerryJunit3Env {
+public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBerryModule {
   
   @Provides
   @PortNumber
