@@ -1,10 +1,10 @@
 package junit4.tutorial_1_server;
 
+import com.google.guiceberry.GuiceBerryEnvMain;
+import com.google.guiceberry.GuiceBerryModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.testing.guiceberry.GuiceBerryEnvMain;
-import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
 
 import junit4.tutorial_1_server.prod.MyPetStoreServer;
 import junit4.tutorial_1_server.prod.PortNumber;
@@ -13,7 +13,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 
-public class PetStoreEnv0Simple extends GuiceBerryJunit3Env {
+public class PetStoreEnv0Simple extends GuiceBerryModule {
   
   @Provides
   @PortNumber
