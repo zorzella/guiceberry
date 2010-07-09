@@ -23,8 +23,6 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
-import com.google.inject.testing.guiceberry.GuiceBerryEnvMain;
-import com.google.inject.testing.guiceberry.TestScopeListener;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3;
 
 import java.util.Map;
@@ -49,7 +47,7 @@ public class GuiceBerryUniverse {
 
   public static final GuiceBerryUniverse INSTANCE = new GuiceBerryUniverse();
   
-  final Map<Class<? extends Module>, Injector> gbeClassToInjectorMap = Maps.newHashMap();
+  final Map<Class<? extends Module>, NonFinals> gbeClassToInjectorMap = Maps.newHashMap();
   
   public final InheritableThreadLocal<TestDescription> currentTestDescriptionThreadLocal =
     new InheritableThreadLocal<TestDescription>();
@@ -61,6 +59,8 @@ public class GuiceBerryUniverse {
    * error handling.
    */
   private static final Injector BOGUS_INJECTOR = Guice.createInjector();
+  private static final NonFinals BOGUS_NON_FINALS = 
+    new NonFinals(BOGUS_INJECTOR, NoOpTestScopeListener.INSTANCE);
   
   public class TestCaseScaffolding {
 
@@ -68,7 +68,9 @@ public class GuiceBerryUniverse {
     private final EnvChooser envChooser;
     private final GuiceBerryUniverse universe;
 
-    private Injector injector;
+    private NonFinals nonFinals;
+//    private Injector injector;
+//    private TestScopeListener testScopeListener;
     
     public TestCaseScaffolding(
         TestDescription testDescription,
@@ -83,7 +85,7 @@ public class GuiceBerryUniverse {
       // If anything should go wrong, we "tag" this scaffolding as having failed
       // to acquire an injector, so that the tear down knows to skip the
       // appropriate steps.
-      injector = BOGUS_INJECTOR;
+      nonFinals = BOGUS_NON_FINALS;
 
       checkPreviousTestCalledTearDown(testDescription);
       
@@ -91,17 +93,17 @@ public class GuiceBerryUniverse {
         envChooser.guiceBerryEnvToUse(testDescription);
       
       universe.currentTestDescriptionThreadLocal.set(testDescription);
-      injector = getInjector(gbeClass);
+      nonFinals = getInjector(gbeClass);
 
-      injector.getInstance(TestScopeListener.class).enteringScope();
-      injectMembersIntoTest(gbeClass, injector); 
+      nonFinals.testScopeListener.enteringScope();
+      injectMembersIntoTest(gbeClass, nonFinals.injector); 
     }
 
     private void injectMembersIntoTest(
         final Class<? extends Module> gbeClass, Injector injector) {
     
       try {
-        injector.injectMembers(testDescription.testCase);
+        injector.injectMembers(testDescription.getTestCase());
       } catch (ConfigurationException e) {
         String msg = String.format("Binding error in the GuiceBerry Env '%s': '%s'.",
             gbeClass.getName(), e.getMessage());
@@ -110,18 +112,18 @@ public class GuiceBerryUniverse {
       }
     }
 
-    private Injector getInjector(final Class<? extends Module> gbeClass) {
+    private NonFinals getInjector(final Class<? extends Module> gbeClass) {
       if (!universe.gbeClassToInjectorMap.containsKey(gbeClass)) {
         return foundGbeForTheFirstTime(gbeClass);  
       } else {
-        Injector injector = 
+        NonFinals result = 
           universe.gbeClassToInjectorMap.get(gbeClass);
-        if (injector == BOGUS_INJECTOR) {
+        if (result == BOGUS_NON_FINALS) {
           throw new RuntimeException(String.format(
               "Skipping '%s' GuiceBerryEnv which failed previously during injector creation.",
               gbeClass.getName()));
         }
-        return injector; 
+        return result; 
       }
     }
 
@@ -133,46 +135,85 @@ public class GuiceBerryUniverse {
             "Error while setting up a test: GuiceBerry was asked to " +
             "set up test '%s', but the previous test '%s' did not properly " +
             "call GuiceBerry's tear down.",
-            testCase.name,
-            previousTestCase.name);
+            testCase.getName(),
+            previousTestCase.getName());
         throw new RuntimeException(msg);
       }
     }
     
-    private Injector foundGbeForTheFirstTime(final Class<? extends Module> gbeClass) {
+    private NonFinals foundGbeForTheFirstTime(final Class<? extends Module> gbeClass) {
       
       Injector injector = BOGUS_INJECTOR;
+      TestScopeListener testScopeListener = NoOpTestScopeListener.INSTANCE;
+      
+      NonFinals result = BOGUS_NON_FINALS;
       
       try {
         Module gbeInstance = createGbeInstanceFromClass(gbeClass);
         injector = Guice.createInjector(gbeInstance);
         callGbeMainIfBound(injector);
         try {
-          if (injector.getBindings().get(Key.get(TestScopeListener.class)) == null) {
-            String msg = "TestScopeListener must be bound in your GuiceBerryEnv.";
-            throw new RuntimeException(msg); 
+          boolean hasTestScopeListenerBinding = hasTestScopeListenerBinding(injector);
+          boolean hasDeprecatedTestScopeListenerBinding = hasDeprecatedTestScopeListenerBinding(injector);
+          if (hasTestScopeListenerBinding && hasDeprecatedTestScopeListenerBinding) {
+            throw new RuntimeException(
+              "Your GuiceBerry Env has bindings for both the new TestScopeListener and the deprecated one. Please fix.");
+          } else if (hasTestScopeListenerBinding) {
+            testScopeListener = injector.getInstance(TestScopeListener.class);
+          } else if (hasDeprecatedTestScopeListenerBinding) {
+            testScopeListener = injector.getInstance(com.google.inject.testing.guiceberry.TestScopeListener.class);
           }
-          // This is not actually used, but ensures at this point that the bound
-          // TestScopeListener can be created
-          @SuppressWarnings("unused")
-          TestScopeListener testScopeListener = 
-            injector.getInstance(TestScopeListener.class);
         } catch (ConfigurationException e) {
           String msg = String.format("Error while creating a TestScopeListener: '%s'.",
             e.getMessage());
           throw new RuntimeException(msg, e); 
         }
-        return injector;
+        result = new NonFinals(injector, testScopeListener);
+        return result;
       } finally {
         // This is in the finally block to ensure that BOGUS_INJECTOR
         // is put in the map if things go bad.
-        universe.gbeClassToInjectorMap.put(gbeClass, injector);
+        universe.gbeClassToInjectorMap.put(gbeClass, result);
       }
     }
 
+    private boolean hasBinding(Injector injector, Class<?> clazz) {
+      return injector.getBindings().get(Key.get(clazz)) != null;
+    }
+
+    private <T> T getInstanceIfHasBinding(Injector injector, Class<T> clazz) {
+      if (hasBinding(injector, clazz)) {
+        return injector.getInstance(clazz);
+      }
+      return null;
+    }
+    
+    
+    private boolean hasDeprecatedTestScopeListenerBinding(Injector injector) {
+      return hasBinding(injector, com.google.inject.testing.guiceberry.TestScopeListener.class);
+    }
+
+    private boolean hasTestScopeListenerBinding(Injector injector) {
+      return hasBinding(injector, TestScopeListener.class);
+    }
+
     private void callGbeMainIfBound(Injector injector) {
-      if (injector.getBindings().get(Key.get(GuiceBerryEnvMain.class)) != null) {
-        injector.getInstance(GuiceBerryEnvMain.class).run();
+      com.google.inject.testing.guiceberry.GuiceBerryEnvMain foo = 
+        getInstanceIfHasBinding(injector, com.google.inject.testing.guiceberry.GuiceBerryEnvMain.class);
+
+      GuiceBerryEnvMain bar = 
+        getInstanceIfHasBinding(injector, GuiceBerryEnvMain.class);
+      
+      if ((foo != null) && (bar != null)) {
+        throw new RuntimeException();
+      }
+      
+      if (foo != null) {
+        foo.run();
+      }
+      
+      if (bar != null) {
+        bar.run();
       }
     }
 
@@ -198,6 +239,8 @@ public class GuiceBerryUniverse {
     
     public void goTearDown() {
       
+      Injector injector = this.nonFinals.injector;
+      
       if (injector == BOGUS_INJECTOR) {
         // We failed to get a valid injector for this module in the setUp method,
         // so we just gracefully return, after cleaning up the threadlocal (which
@@ -209,7 +252,7 @@ public class GuiceBerryUniverse {
       ToTearDown toTearDown = injector.getInstance(ToTearDown.class);
       toTearDown.runTearDown();
       
-      notifyTestScopeListenerOfOutScope(injector);
+      notifyTestScopeListenerOfOutScope(nonFinals);
       // TODO: this line used to be before the notifyTestScopeListenerOfOutScope
       // causing a bug -- e.d. a Provider<TestId> could not be used in the 
       // exitingScope method of the TestScopeListener. I haven't yet found a
@@ -217,8 +260,8 @@ public class GuiceBerryUniverse {
       doTearDown(injector);
     }
     
-    private void notifyTestScopeListenerOfOutScope(Injector injector) {
-      injector.getInstance(TestScopeListener.class).exitingScope();
+    private void notifyTestScopeListenerOfOutScope(NonFinals nonFinals) {
+      nonFinals.testScopeListener.exitingScope();
     }
 
     private void doTearDown(Injector injector) {
@@ -237,5 +280,25 @@ public class GuiceBerryUniverse {
     }
   }
 
+  private static final class NoOpTestScopeListener implements TestScopeListener {
+    
+    public static final TestScopeListener INSTANCE = new NoOpTestScopeListener();
+
+    public void enteringScope() {
+    }
+    
+    public void exitingScope() {
+    }
+  }
   
+  static final class NonFinals {
+
+    final Injector injector;
+    final TestScopeListener testScopeListener;
+
+    public NonFinals(Injector injector, TestScopeListener testScopeListener) {
+      this.injector = injector;
+      this.testScopeListener = testScopeListener;
+    }
+  }
 }

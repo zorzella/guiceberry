@@ -23,10 +23,7 @@ import com.google.guiceberry.GuiceBerryUniverse;
 import com.google.guiceberry.TestScope;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.google.inject.Singleton;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
-import com.google.inject.testing.guiceberry.TestId;
-import com.google.inject.testing.guiceberry.TestScoped;
 
 import junit.framework.TestCase;
 
@@ -48,6 +45,7 @@ import junit.framework.TestCase;
  */
 public class GuiceBerryModule extends AbstractModule {
     
+  protected final GuiceBerryUniverse universe;
   private final TestScope testScope;
   
   public GuiceBerryModule() {
@@ -55,6 +53,7 @@ public class GuiceBerryModule extends AbstractModule {
   }
   
   protected GuiceBerryModule(GuiceBerryUniverse universe) {
+    this.universe = universe;
     this.testScope = new TestScope(universe);
   }
   
@@ -62,13 +61,13 @@ public class GuiceBerryModule extends AbstractModule {
   public void configure() {
     bind(TestScope.class).toInstance(testScope);
     bindScope(TestScoped.class, testScope);
+    bindScope(com.google.inject.testing.guiceberry.TestScoped.class, testScope);
     bind(TearDownAccepter.class).to(ToTearDown.class);
   }
 
-  
   @Provides
   @TestScoped
-  ToTearDown getToTearDown(TestCase testCase) {
+  ToTearDown getToTearDown() {
     return new ToTearDown() {
       TearDownStack delegate = new TearDownStack();
       
@@ -84,8 +83,8 @@ public class GuiceBerryModule extends AbstractModule {
   
   @Provides
   @TestScoped
-  TestId getTestId(TestCase testCase) {
-    return new TestId(testCase.getClass().getName(), testCase.getName());
+  TestId getTestId() {
+    return universe.currentTestDescriptionThreadLocal.get().getTestId();
   }
   
   public interface ToTearDown extends TearDownAccepter {

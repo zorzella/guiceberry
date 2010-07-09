@@ -71,7 +71,10 @@ public class GuiceBerryJunit3 {
   }
 
   private static TestDescription buildDescription(TestCase testCase) {
-    return new TestDescription(testCase, testCase.getClass().getCanonicalName() + "." + testCase.getName());
+    return new TestDescription(
+      testCase, 
+      testCase.getClass().getCanonicalName() + "." + testCase.getName(),
+      new com.google.guiceberry.TestId(testCase.getClass().getName(), testCase.getName()));
   }
 
   private static final ThreadLocal<TestCaseScaffolding> scaffoldingThreadLocal = 
