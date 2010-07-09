@@ -16,7 +16,6 @@
 package com.google.guiceberry;
 
 import com.google.inject.Module;
-import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3;
 
 /**
  * {@inheritDoc}
@@ -63,7 +62,7 @@ public class DefaultEnvChooser implements EnvChooser {
     if (overrideName != null) {
       Class clazz;
       try {
-        clazz = GuiceBerryJunit3.class.getClassLoader().loadClass(overrideName);
+        clazz = DefaultEnvChooser.class.getClassLoader().loadClass(overrideName);
         } catch (ClassNotFoundException e) {
           throw new IllegalArgumentException(String.format(
             "Class '%s' does not exist, and it is being declared as a '%s' override (though the '%s' System Property).",
@@ -115,7 +114,7 @@ public class DefaultEnvChooser implements EnvChooser {
   static Class<?> getGbeClassFromClassName(String gbeName) {
     Class<?> className;
     try {
-      className = GuiceBerryJunit3.class.getClassLoader().loadClass(gbeName);   
+      className = DefaultEnvChooser.class.getClassLoader().loadClass(gbeName);   
     } catch (ClassNotFoundException e) {  
       String msg = String.format(
               "Class '%s' was not found.",

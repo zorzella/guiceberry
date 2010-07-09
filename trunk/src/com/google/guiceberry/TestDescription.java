@@ -52,7 +52,13 @@ public final class TestDescription {
     TestDescription that = (TestDescription)obj;
     return
       Objects.equal(this.testCase, that.testCase) &&
-      Objects.equal(this.name, that.name);
+      Objects.equal(this.name, that.name) &&
+      Objects.equal(this.testId, that.testId);
+  }
+ 
+  @Override
+  public int hashCode() {
+    return testId.hashCode();
   }
   
   @Override

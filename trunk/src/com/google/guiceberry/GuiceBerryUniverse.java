@@ -267,7 +267,7 @@ public class GuiceBerryUniverse {
     private void doTearDown(Injector injector) {
     
       if (!universe.currentTestDescriptionThreadLocal.get().equals(testDescription)) {
-        String msg = String.format( GuiceBerryJunit3.class.toString() 
+        String msg = String.format(GuiceBerryJunit3.class.toString() 
             + " cannot tear down "
             + testDescription.toString()
             + " because that test never called "

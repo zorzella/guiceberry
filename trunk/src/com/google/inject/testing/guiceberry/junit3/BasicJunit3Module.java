@@ -65,7 +65,7 @@ public class BasicJunit3Module extends GuiceBerryModule {
 
   @Provides
   @TestScoped
-  TestId getDeprecatedTestId(TestCase testCase) {
-    return new TestId(testCase.getClass().getName(), testCase.getName());
+  TestId getDeprecatedTestId() {
+    return universe.currentTestDescriptionThreadLocal.get().getTestId().toDeprecatedTestId();
   }
 }

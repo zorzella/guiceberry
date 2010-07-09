@@ -23,24 +23,17 @@ import com.google.guiceberry.GuiceBerryUniverse;
 import com.google.guiceberry.TestScope;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 
 import junit.framework.TestCase;
 
 /**
- * This Module provides the three basic bindings required by 
- * {@link GuiceBerryJunit3}, namely {@link TestId}, 
- * {@link TestCase} and the {@link TestScoped} scope. Without these three
- * bindinds, {@link GuiceBerryJunit3#setUp(TestCase)} will fail.
+ * This Module provides the basic bindings required by GuiceBerry, namely
+ * {@link TestId}, {@link TearDownAccepter} and the {@link TestScoped} scope.
+ * Without these bindinds, GuiceBerry will fail to setup.
 
- * <p>Thus, this module is all but required to be installed by all 
- * {@link GuiceBerryEnv}s using JUnit3. 
- * 
- * <p>The only alternative would be to provide the same bindings through some
- * other means.
- * 
- * @see GuiceBerryEnv
- * 
+ * <p>Therefore, this module is required to be installed by all
+ * GuiceBerry Envs.
+ *
  * @author Luiz-Otavio Zorzella
  */
 public class GuiceBerryModule extends AbstractModule {
@@ -58,7 +51,7 @@ public class GuiceBerryModule extends AbstractModule {
   }
   
   @Override
-  public void configure() {
+  protected void configure() {
     bind(TestScope.class).toInstance(testScope);
     bindScope(TestScoped.class, testScope);
     bindScope(com.google.inject.testing.guiceberry.TestScoped.class, testScope);
