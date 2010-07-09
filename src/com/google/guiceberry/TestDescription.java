@@ -6,16 +6,18 @@ import com.google.common.base.Objects;
 
 public final class TestDescription {
 
-  final Object testCase;
-  final String name;
+  private final Object testCase;
+  private final String name;
+  private final TestId testId;
 
   /**
    * @param testCase
    * @param name
    */
-  public TestDescription(Object testCase, String name) {
+  public TestDescription(Object testCase, String name, TestId testId) {
     this.testCase = testCase;
     this.name = name;
+    this.testId = testId;
   }
   
   /**
@@ -30,6 +32,13 @@ public final class TestDescription {
    */
   public String getName() {
     return name;
+  }
+ 
+  /**
+   * @return the testId
+   */
+  public TestId getTestId() {
+    return testId;
   }
   
   @Override

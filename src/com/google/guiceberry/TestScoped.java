@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package com.google.inject.testing.guiceberry;
+package com.google.guiceberry;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.google.inject.Scope;
 import com.google.inject.ScopeAnnotation;
 
 /**
- * @deprecated use {@link com.google.guiceberry.TestScoped}.
+ * This defines a {@link Scope} that begins during test "setup" and ends during
+ * test "tear down".
+ * 
+ * @see TestScope implementation details
+ * 
+ * @author Luiz-Otavio "Z" Zorzella
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @ScopeAnnotation
-@Deprecated
 public @interface TestScoped {}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.inject.testing.guiceberry;
+package com.google.guiceberry;
 
 import com.google.common.base.Preconditions;
 
@@ -32,7 +32,6 @@ import javax.servlet.http.Cookie;
  * @author zorzella
  */
 //@Immutable
-@Deprecated
 public final class TestId implements Comparable<TestId>, CharSequence {
 
   public static final String COOKIE_NAME = "testid";

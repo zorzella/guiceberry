@@ -43,18 +43,15 @@ import junit.framework.TestCase;
  * @author Danka Karwanska
  */
 public class BasicJunit3Module extends GuiceBerryModule {
-    
-  private final GuiceBerryUniverse universe;
 
   public BasicJunit3Module() {
-    this(GuiceBerryUniverse.INSTANCE);
+    super();
   }
   
   public BasicJunit3Module(GuiceBerryUniverse universe) {
     super(universe);
-    this.universe = universe;
   }
-
+  
   @Override
   public void configure() {
     super.configure();
@@ -64,5 +61,11 @@ public class BasicJunit3Module extends GuiceBerryModule {
   @TestScoped
   TestCase getTestCase() {
     return (TestCase) universe.currentTestDescriptionThreadLocal.get().getTestCase();
+  }
+
+  @Provides
+  @TestScoped
+  TestId getDeprecatedTestId(TestCase testCase) {
+    return new TestId(testCase.getClass().getName(), testCase.getName());
   }
 }
