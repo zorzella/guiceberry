@@ -56,7 +56,7 @@ public interface IcClient<T> {
    * 
    * <p>The usage of Controllable Injections is documented at lenght in the 
    * tutorial for 
-   * {@link tutorial_1_server.Example4CanonicalSameJvmControllableInjectionTest}
+   * {@link junit4.tutorial_1_server.Example4CanonicalSameJvmControllableInjectionTest}
    * 
    * <p>It is ok for a test to call this method multiple times.
    */

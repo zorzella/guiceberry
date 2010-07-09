@@ -46,7 +46,7 @@ public final class TestId implements Comparable<TestId>, CharSequence {
     this(testCaseName, testMethodName, new Random().nextInt(1000));
   }
 
-  private TestId(String testCaseName, String testMethodName, long random) {
+  public TestId(String testCaseName, String testMethodName, long random) {
     this.testCaseName = testCaseName; 
     this.testMethodName = testMethodName;
     this.random = random;

@@ -99,4 +99,8 @@ public final class TestId implements Comparable<TestId>, CharSequence {
   public CharSequence subSequence(int start, int end) {
     return asString.subSequence(start, end);
   }
+
+  public com.google.inject.testing.guiceberry.TestId toDeprecatedTestId() {
+    return new com.google.inject.testing.guiceberry.TestId(this.testCaseName, this.testMethodName, this.random);
+  }
 }
