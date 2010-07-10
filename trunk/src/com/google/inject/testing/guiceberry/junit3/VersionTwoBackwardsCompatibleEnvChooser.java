@@ -1,39 +1,32 @@
 // Copyright 2010 Google Inc. All Rights Reserved.
 
-package com.google.guiceberry;
+package com.google.inject.testing.guiceberry.junit3;
 
+import com.google.guiceberry.DefaultEnvChooser;
+import com.google.guiceberry.EnvChooser;
+import com.google.guiceberry.TestDescription;
 import com.google.inject.Module;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
-import com.google.inject.testing.guiceberry.junit3.GuiceBerryEnvRemapper;
-import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3;
 
 import junit.framework.TestCase;
 
-import java.lang.annotation.Annotation;
-
 /**
- * @author zorzella@google.com (Your Name Here)
+ * @author Luiz-Otavio "Z" Zorzella
  */
-public class VersionTwoBackwardsCompatibleEnvChooser implements EnvChooser {
+@Deprecated
+class VersionTwoBackwardsCompatibleEnvChooser implements EnvChooser {
 
   private static final GuiceBerryEnvRemapper
     DEFAULT_GUICE_BERRY_ENV_REMAPPER = new IdentityGuiceBerryEnvRemapper();
 
   public Class<? extends Module> guiceBerryEnvToUse(TestDescription testDescription) {
-    Object testCase = testDescription.getTestCase();
-    if (isInOldVersion(testDescription)) {
-      return oldGuiceBerryEnvToUse(testDescription);
-    } else {
-      return newGuiceBerryEnvToUse(testDescription);
-    }
-  }
-  
-  @Deprecated
-  public Class<? extends Module> oldGuiceBerryEnvToUse(TestDescription testDescription) {
     String gbeName = getGbeNameFromGbeAnnotation(testDescription);
-    @SuppressWarnings("unchecked")
-    Class<? extends Module> gbeClass = 
-      (Class<? extends Module>) DefaultEnvChooser.getGbeClassFromClassName(gbeName);
+    
+    if (System.getProperty(DefaultEnvChooser.OVERRIDE_SYSTEM_PROPERY_NAME) != null) {
+      return DefaultEnvChooser.of(gbeName).guiceBerryEnvToUse(testDescription);
+    }
+
+    Class<? extends Module> gbeClass = getGbeClassFromClassName(gbeName);
     if (!Module.class.isAssignableFrom(gbeClass)) {
       String msg = String.format(
           "@%s class '%s' must be a Guice Module (i.e. implement com.google.inject.Module).", 
@@ -41,62 +34,22 @@ public class VersionTwoBackwardsCompatibleEnvChooser implements EnvChooser {
           gbeClass.getName()); 
       throw new IllegalArgumentException(msg);
     }
-    
-    if (hasAnnotation(testDescription, GuiceBerryEnvChooser.class)) {
-      throw new RuntimeException();
-    }
-    
     return gbeClass;
   }
   
-  public Class<? extends Module> newGuiceBerryEnvToUse(TestDescription testDescription) {
-    Object testCase = testDescription.getTestCase();
-    
-    GuiceBerryEnvChooser gbeAnnotation =
-      testCase.getClass().getAnnotation(GuiceBerryEnvChooser.class);
-    
-    if (gbeAnnotation == null) {
-      throw new IllegalArgumentException(String.format(
-        "Test class '%s' must have an @%s annotation.",
-        testDescription.getTestCase().getClass().getName(), GuiceBerryEnvChooser.class.getSimpleName()));
-    }
-    
-    Class<? extends EnvChooser> chooserClass = gbeAnnotation.value();
-    
-    EnvChooser envChooser = instantiateEnvChooser(chooserClass);
-    Class<? extends Module> guiceBerryEnvToUse = envChooser.guiceBerryEnvToUse(testDescription);
-    
-    if (hasAnnotation(testDescription, GuiceBerryEnv.class)) {
-      throw new RuntimeException();
-    }
-    
-    return guiceBerryEnvToUse;
-  }
-
-  /**
-   */
-  private boolean isInOldVersion(TestDescription testDescription) {
-    return hasAnnotation(testDescription, GuiceBerryEnv.class);
-  }
-
-  /**
-   */
-  private boolean hasAnnotation(TestDescription testDescription, Class<? extends Annotation> clazz) {
-    return testDescription.getTestCase().getClass().getAnnotation(clazz) != null;
-  }
-
-  private EnvChooser instantiateEnvChooser(Class<? extends EnvChooser> chooserClass) {
-    try {
-      return chooserClass.newInstance();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  @Deprecated
   private static String getGbeNameFromGbeAnnotation(TestDescription testDescription) {
     Object testCase = testDescription.getTestCase();
-    String declaredGbeName = getGbeAnnotation(testCase).value();
+    GuiceBerryEnv gbeAnnotation = getGbeAnnotation(testCase);
+    if (gbeAnnotation == null) {
+      throw new IllegalArgumentException(String.format(
+          "In order to use the deprecated GuiceBerryJunit3, your test class "
+          + "must have a @GuiceBerryEnv annotation. Either add one, or, better "
+          + "yet, upgrade your code to make use of the GuiceBerry 3.0 adapters. "
+          + DefaultEnvChooser.LINK_TO_UPGRADING_DOC
+          ));
+    }
+    
+    String declaredGbeName = gbeAnnotation.value();
     GuiceBerryEnvRemapper remapper = getRemapper();
     String result = remapper.remap(null, declaredGbeName);
     if (result == null) {
@@ -120,6 +73,24 @@ public class VersionTwoBackwardsCompatibleEnvChooser implements EnvChooser {
   private static GuiceBerryEnvRemapper getRemapper() {
     String remapperName = System.getProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
     if (remapperName != null) {
+      
+      if (System.getProperty(DefaultEnvChooser.OVERRIDE_SYSTEM_PROPERY_NAME) != null) {
+        throw new IllegalArgumentException(String.format(
+            "Both the '%s' and the deprecated '%s' system properties are set. " +
+            "To fix this, stop using the deprecated system property. " +
+            DefaultEnvChooser.LINK_TO_UPGRADING_DOC,
+            DefaultEnvChooser.OVERRIDE_SYSTEM_PROPERY_NAME,
+            GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME));
+      } else {
+        System.out.println(String.format(
+            "********* ATTENTION ***********\n" +
+            "You are using the deprecated '%s' system property. This still "
+            + "works, but you are encouraged to upgrade from using the old "
+            + "Remapper paradigm to the new EnvChooser paradigm." +
+            DefaultEnvChooser.LINK_TO_UPGRADING_DOC,
+            GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME));
+      }
+      
       Class clazz;
       try {
         clazz = GuiceBerryJunit3.class.getClassLoader().loadClass(remapperName);
@@ -133,8 +104,8 @@ public class VersionTwoBackwardsCompatibleEnvChooser implements EnvChooser {
         throw new IllegalArgumentException(String.format(
           "Class '%s' is being declared as a GuiceBerryEnvRemapper, but does not implement that interface", 
           remapperName));
-        
     }
+    
     return DEFAULT_GUICE_BERRY_ENV_REMAPPER;
   }
 
@@ -169,4 +140,17 @@ public class VersionTwoBackwardsCompatibleEnvChooser implements EnvChooser {
     }
   }
 
+  @SuppressWarnings("unchecked")
+  private static Class<? extends Module> getGbeClassFromClassName(String gbeName) {
+    Class<?> className;
+    try {
+      className = DefaultEnvChooser.class.getClassLoader().loadClass(gbeName);   
+    } catch (ClassNotFoundException e) {  
+      String msg = String.format(
+              "Class '%s' was not found.",
+              gbeName.toString());
+      throw new IllegalArgumentException(msg, e);
+    }
+    return (Class<? extends Module>) className;
+  }
 }

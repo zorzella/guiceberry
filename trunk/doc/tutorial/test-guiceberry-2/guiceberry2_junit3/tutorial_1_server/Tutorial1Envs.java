@@ -2,7 +2,7 @@ package guiceberry2_junit3.tutorial_1_server;
 
 public interface Tutorial1Envs {
 
-  String PACKAGE = "tutorial_1_server.";
+  String PACKAGE = "guiceberry2_junit3.tutorial_1_server.";
 
   String PET_STORE_ENV_0_SIMPLE = PACKAGE + 
     "PetStoreEnv0Simple";
