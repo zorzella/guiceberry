@@ -2,8 +2,8 @@
 
 package com.google.inject.testing.guiceberry.junit3;
 
-import com.google.guiceberry.DefaultEnvChooser;
-import com.google.guiceberry.GuiceBerryEnvChooser;
+import com.google.guiceberry.DefaultEnvSelector;
+import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.TestDescription;
 import com.google.inject.Module;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
@@ -14,7 +14,7 @@ import junit.framework.TestCase;
  * @author Luiz-Otavio "Z" Zorzella
  */
 @Deprecated
-class VersionTwoBackwardsCompatibleEnvChooser implements GuiceBerryEnvChooser {
+class VersionTwoBackwardsCompatibleEnvChooser implements GuiceBerryEnvSelector {
 
   private final TestDescription testDescription;
 
@@ -28,8 +28,8 @@ class VersionTwoBackwardsCompatibleEnvChooser implements GuiceBerryEnvChooser {
   public Class<? extends Module> guiceBerryEnvToUse() {
     String gbeName = getGbeNameFromGbeAnnotation(testDescription);
     
-    if (System.getProperty(DefaultEnvChooser.OVERRIDE_SYSTEM_PROPERY_NAME) != null) {
-      return DefaultEnvChooser.of(gbeName).guiceBerryEnvToUse();
+    if (System.getProperty(DefaultEnvSelector.OVERRIDE_SYSTEM_PROPERY_NAME) != null) {
+      return DefaultEnvSelector.of(gbeName).guiceBerryEnvToUse();
     }
 
     Class<? extends Module> gbeClass = getGbeClassFromClassName(gbeName);
@@ -51,7 +51,7 @@ class VersionTwoBackwardsCompatibleEnvChooser implements GuiceBerryEnvChooser {
           "In order to use the deprecated GuiceBerryJunit3, your test class "
           + "must have a @GuiceBerryEnv annotation. Either add one, or, better "
           + "yet, upgrade your code to make use of the GuiceBerry 3.0 adapters. "
-          + DefaultEnvChooser.LINK_TO_UPGRADING_DOC
+          + DefaultEnvSelector.LINK_TO_UPGRADING_DOC
           ));
     }
     
@@ -80,12 +80,12 @@ class VersionTwoBackwardsCompatibleEnvChooser implements GuiceBerryEnvChooser {
     String remapperName = System.getProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
     if (remapperName != null) {
       
-      if (System.getProperty(DefaultEnvChooser.OVERRIDE_SYSTEM_PROPERY_NAME) != null) {
+      if (System.getProperty(DefaultEnvSelector.OVERRIDE_SYSTEM_PROPERY_NAME) != null) {
         throw new IllegalArgumentException(String.format(
             "Both the '%s' and the deprecated '%s' system properties are set. " +
             "To fix this, stop using the deprecated system property. " +
-            DefaultEnvChooser.LINK_TO_UPGRADING_DOC,
-            DefaultEnvChooser.OVERRIDE_SYSTEM_PROPERY_NAME,
+            DefaultEnvSelector.LINK_TO_UPGRADING_DOC,
+            DefaultEnvSelector.OVERRIDE_SYSTEM_PROPERY_NAME,
             GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME));
       } else {
         System.out.println(String.format(
@@ -93,7 +93,7 @@ class VersionTwoBackwardsCompatibleEnvChooser implements GuiceBerryEnvChooser {
             "You are using the deprecated '%s' system property. This still "
             + "works, but you are encouraged to upgrade from using the old "
             + "Remapper paradigm to the new EnvChooser paradigm." +
-            DefaultEnvChooser.LINK_TO_UPGRADING_DOC,
+            DefaultEnvSelector.LINK_TO_UPGRADING_DOC,
             GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME));
       }
       
@@ -150,7 +150,7 @@ class VersionTwoBackwardsCompatibleEnvChooser implements GuiceBerryEnvChooser {
   private static Class<? extends Module> getGbeClassFromClassName(String gbeName) {
     Class<?> className;
     try {
-      className = DefaultEnvChooser.class.getClassLoader().loadClass(gbeName);   
+      className = DefaultEnvSelector.class.getClassLoader().loadClass(gbeName);   
     } catch (ClassNotFoundException e) {  
       String msg = String.format(
               "Class '%s' was not found.",

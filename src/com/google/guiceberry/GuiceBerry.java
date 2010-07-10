@@ -50,8 +50,8 @@ public class GuiceBerry {
   /**
    * @see GuiceBerryWrapper
    */
-  public GuiceBerryWrapper buildWrapper(TestDescription testDescription, GuiceBerryEnvChooser envChooser) {
-    return new TestCaseScaffolding(testDescription, envChooser, universe);
+  public GuiceBerryWrapper buildWrapper(TestDescription testDescription, GuiceBerryEnvSelector guiceBerryEnvSelector) {
+    return new TestCaseScaffolding(testDescription, guiceBerryEnvSelector, universe);
   }
   
   /**
