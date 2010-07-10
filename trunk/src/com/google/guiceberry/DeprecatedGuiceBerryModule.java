@@ -22,6 +22,12 @@ public class DeprecatedGuiceBerryModule extends GuiceBerryModule {
     super(universe);
   }
 
+  @Override
+  protected void configure() {
+    super.configure();
+    bindScope(com.google.inject.testing.guiceberry.TestScoped.class, testScope);
+  }
+  
   @Provides
   @TestScoped
   TestCase getTestCase() {

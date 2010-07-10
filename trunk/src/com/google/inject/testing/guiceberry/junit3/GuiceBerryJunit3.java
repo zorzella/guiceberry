@@ -145,7 +145,7 @@ public class GuiceBerryJunit3 {
     
     TestDescription testDescription = buildDescription(testCase);
 
-    final GuiceBerryWrapper wrapper = guiceBerry.doSetup(testDescription, ENV_CHOOSER);
+    final GuiceBerryWrapper wrapper = guiceBerry.buildWrapper(testDescription, ENV_CHOOSER);
 
     //Setup teard down before setup so that if an exception is thrown there,
     //we still do a tearDown.

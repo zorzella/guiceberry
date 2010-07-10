@@ -17,9 +17,6 @@ package com.google.guiceberry;
 
 import com.google.common.collect.Maps;
 import com.google.guiceberry.GuiceBerryModule.ToTearDown;
-import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
-import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
-import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
