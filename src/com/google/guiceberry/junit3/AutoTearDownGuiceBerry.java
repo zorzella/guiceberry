@@ -28,7 +28,10 @@ import com.google.inject.Module;
 import junit.framework.TestCase;
 
 /**
- * 
+ * {@link GuiceBerry} adapter for JUnit3 {@link TearDownTestCase}s.
+ *
+ * @see ManualTearDownGuiceBerry
+ *
  * @author Luiz-Otavio "Z" Zorzella
  */
 public class AutoTearDownGuiceBerry {
@@ -39,7 +42,7 @@ public class AutoTearDownGuiceBerry {
   
   public static void setup(TearDownTestCase testCase, EnvChooser envChooser) {
     final GuiceBerryWrapper toTearDown = 
-      GuiceBerry.setup(buildTestDescription(testCase, testCase.getName()), envChooser);
+      GuiceBerry.INSTANCE.buildWrapper(buildTestDescription(testCase, testCase.getName()), envChooser);
     testCase.addTearDown(new TearDown() {
       
       public void tearDown() throws Exception {

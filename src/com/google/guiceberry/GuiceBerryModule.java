@@ -24,8 +24,6 @@ import com.google.guiceberry.TestScope;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
-import junit.framework.TestCase;
-
 /**
  * This Module provides the basic bindings required by GuiceBerry, namely
  * {@link TestId}, {@link TearDownAccepter} and the {@link TestScoped} scope.
@@ -39,7 +37,7 @@ import junit.framework.TestCase;
 public class GuiceBerryModule extends AbstractModule {
     
   protected final GuiceBerryUniverse universe;
-  private final TestScope testScope;
+  protected final TestScope testScope;
   
   public GuiceBerryModule() {
     this(GuiceBerryUniverse.INSTANCE);
@@ -54,7 +52,6 @@ public class GuiceBerryModule extends AbstractModule {
   protected void configure() {
     bind(TestScope.class).toInstance(testScope);
     bindScope(TestScoped.class, testScope);
-    bindScope(com.google.inject.testing.guiceberry.TestScoped.class, testScope);
     bind(TearDownAccepter.class).to(ToTearDown.class);
   }
 

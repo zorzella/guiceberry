@@ -28,6 +28,8 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
 /**
+ * {@link GuiceBerry} adapter for JUnit4 tests.
+ * 
  * @author Luiz-Otavio "Z" Zorzella
  */
 public class GuiceBerryRule implements MethodRule {
@@ -48,7 +50,7 @@ public class GuiceBerryRule implements MethodRule {
       @Override
       public void evaluate() throws Throwable {
         final GuiceBerryWrapper setupAndTearDown = 
-          GuiceBerry.setup(buildTestDescription(target, method.getName()), envChooser);
+          GuiceBerry.INSTANCE.buildWrapper(buildTestDescription(target, method.getName()), envChooser);
         try {
           setupAndTearDown.runBeforeTest();
           base.evaluate();

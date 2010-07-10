@@ -43,22 +43,14 @@ public class GuiceBerry {
   private final GuiceBerryUniverse universe;
   
   @VisibleForTesting
-  public GuiceBerry(GuiceBerryUniverse universe) {
+  GuiceBerry(GuiceBerryUniverse universe) {
     this.universe = universe;
   }
 
   /**
    * @see GuiceBerryWrapper
    */
-  public static GuiceBerryWrapper setup(TestDescription testDescription, EnvChooser envChooser) {
-    return INSTANCE.doSetup(testDescription, envChooser);
-  }
-  
-  /**
-   * @see GuiceBerryWrapper
-   */
-  @VisibleForTesting
-  public GuiceBerryWrapper doSetup(TestDescription testDescription, EnvChooser envChooser) {
+  public GuiceBerryWrapper buildWrapper(TestDescription testDescription, EnvChooser envChooser) {
     final TestCaseScaffolding scaffolding = 
       universe.new TestCaseScaffolding(testDescription, envChooser);
     
