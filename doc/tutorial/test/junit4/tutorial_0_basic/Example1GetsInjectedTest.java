@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 public class Example1GetsInjectedTest {
 
   @Rule
-  public GuiceBerryRule guiceBerry = new GuiceBerryRule(Env.class);
+  public final GuiceBerryRule guiceBerry = new GuiceBerryRule(Env.class);
 
   @Inject
   @NumberOneHundred

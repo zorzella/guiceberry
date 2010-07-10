@@ -11,7 +11,7 @@ import org.junit.Test;
 public class Example0HelloWorldTest {
 
   @Rule
-  public GuiceBerryRule guiceBerry = new GuiceBerryRule(Env.class);
+  public final GuiceBerryRule guiceBerry = new GuiceBerryRule(Env.class);
 
   @Test
   public void testNothing() throws Exception {

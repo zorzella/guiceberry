@@ -7,7 +7,7 @@ public class AllTests {
   
   public static Test suite() {
     TestSuite suite = new TestSuite(
-      "Test for com.google.inject.testing.guiceberry.tutorial_0_basic");
+      "Tests for junit3_tdtc.tutorial_0_basic");
     //$JUnit-BEGIN$
     suite.addTestSuite(Example0HelloWorldTest.class);
     suite.addTestSuite(Example1GetsInjectedTest.class);
