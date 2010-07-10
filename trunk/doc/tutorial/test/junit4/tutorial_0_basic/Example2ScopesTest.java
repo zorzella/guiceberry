@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 public class Example2ScopesTest {
 
   @Rule
-  public GuiceBerryRule guiceBerry = new GuiceBerryRule(Env.class);
+  public final GuiceBerryRule guiceBerry = new GuiceBerryRule(Env.class);
 
   @Inject
   @UnscopedIncrementingNumber

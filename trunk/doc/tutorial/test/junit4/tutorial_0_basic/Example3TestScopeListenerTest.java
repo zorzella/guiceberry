@@ -14,7 +14,7 @@ import org.junit.Test;
 public class Example3TestScopeListenerTest {
 
   @Rule
-  public GuiceBerryRule guiceBerry = new GuiceBerryRule(Env.class);
+  public final GuiceBerryRule guiceBerry = new GuiceBerryRule(Env.class);
 
   @Test
   public void testOne() throws Exception {

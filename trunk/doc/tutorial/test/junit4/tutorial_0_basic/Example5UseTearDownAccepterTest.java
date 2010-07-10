@@ -16,7 +16,7 @@ import org.junit.Test;
 public class Example5UseTearDownAccepterTest {
 
   @Rule
-  public GuiceBerryRule guiceBerry = new GuiceBerryRule(Env.class);
+  public final GuiceBerryRule guiceBerry = new GuiceBerryRule(Env.class);
 
   @Inject
   private TearDownAccepter tearDownAccepter;
