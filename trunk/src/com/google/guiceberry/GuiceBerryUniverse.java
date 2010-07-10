@@ -53,17 +53,17 @@ class GuiceBerryUniverse {
   static class TestCaseScaffolding implements GuiceBerryWrapper {
 
     private final TestDescription testDescription;
-    private final GuiceBerryEnvChooser envChooser;
+    private final GuiceBerryEnvSelector guiceBerryEnvSelector;
     private final GuiceBerryUniverse universe;
 
     private NonFinals nonFinals;
     
     public TestCaseScaffolding(
         TestDescription testDescription,
-        GuiceBerryEnvChooser envChooser,
+        GuiceBerryEnvSelector guiceBerryEnvSelector,
         GuiceBerryUniverse universe) {
       this.testDescription = testDescription;
-      this.envChooser = envChooser;
+      this.guiceBerryEnvSelector = guiceBerryEnvSelector;
       this.universe = universe;
     }
 
@@ -77,7 +77,7 @@ class GuiceBerryUniverse {
       checkPreviousTestCalledTearDown(testDescription);
       
       final Class<? extends Module> gbeClass =
-        envChooser.guiceBerryEnvToUse();
+        guiceBerryEnvSelector.guiceBerryEnvToUse();
       
       universe.currentTestDescriptionThreadLocal.set(testDescription);
       nonFinals = getInjector(gbeClass);

@@ -34,7 +34,7 @@ import com.google.inject.Module;
  *
  * @author Luiz-Otavio "Z" Zorzella
  */
-public interface GuiceBerryEnvChooser {
+public interface GuiceBerryEnvSelector {
 
   /**
    * Returns the Class of the GuiceBerry Env to use.

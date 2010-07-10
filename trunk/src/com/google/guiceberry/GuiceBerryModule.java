@@ -29,7 +29,7 @@ import com.google.inject.Provides;
  * {@link TestId}, {@link TearDownAccepter} and the {@link TestScoped} scope.
  * Without these bindinds, GuiceBerry will fail to set up. Therefore, this
  * module is required to be installed by all GuiceBerry Envs (see
- * {@link GuiceBerryEnvChooser}).
+ * {@link GuiceBerryEnvSelector}).
  *
  * @author Luiz-Otavio "Z" Zorzella
  */

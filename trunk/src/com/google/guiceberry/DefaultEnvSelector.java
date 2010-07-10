@@ -21,22 +21,22 @@ import com.google.inject.testing.guiceberry.junit3.GuiceBerryEnvRemapper;
 /**
  * {@inheritDoc}
  * 
- * This is the default implementation of {@link GuiceBerryEnvChooser}. The GuiceBerry Env
+ * This is the default implementation of {@link GuiceBerryEnvSelector}. The GuiceBerry Env
  * to use is the class (or its name) given as a parameter to one the {@link #of}
  * static factory methods, except when the {@link #override} feature is used.
  *
  * @author Luiz-Otavio "Z" Zorzella
  */
-public class DefaultEnvChooser implements GuiceBerryEnvChooser {
+public class DefaultEnvSelector implements GuiceBerryEnvSelector {
 
   public static final String LINK_TO_UPGRADING_DOC =
     "For more details, see http://guiceberry.googlecode.com, section 'Upgrading from 2.0 to 3.0'";
 
-  public static final String OVERRIDE_SYSTEM_PROPERY_NAME = "GuiceBerry.EnvChooserOverride";
+  public static final String OVERRIDE_SYSTEM_PROPERY_NAME = "GuiceBerryEnvSelectorOverride";
   
   private final String clazzName;
 
-  private DefaultEnvChooser(String clazzName) {
+  private DefaultEnvSelector(String clazzName) {
     this.clazzName = clazzName;
   }
 
@@ -46,7 +46,7 @@ public class DefaultEnvChooser implements GuiceBerryEnvChooser {
    *
    * @see #of(String)
    */
-  public static GuiceBerryEnvChooser of(Class<? extends Module> guiceBerryEnvClazz) {
+  public static GuiceBerryEnvSelector of(Class<? extends Module> guiceBerryEnvClazz) {
     return of(guiceBerryEnvClazz.getName());
   }
 
@@ -57,8 +57,8 @@ public class DefaultEnvChooser implements GuiceBerryEnvChooser {
    *
    * @see #of(Class)
    */
-  public synchronized static GuiceBerryEnvChooser of(String guiceBerryEnvClazzName) {
-    GuiceBerryEnvChooser override = getOverride();
+  public synchronized static GuiceBerryEnvSelector of(String guiceBerryEnvClazzName) {
+    GuiceBerryEnvSelector override = getOverride();
 
     if (System.getProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME) != null) {
       System.out.println(String.format(
@@ -72,12 +72,12 @@ public class DefaultEnvChooser implements GuiceBerryEnvChooser {
     if (override != null) {
       return override;
     } else {
-      return new DefaultEnvChooser(guiceBerryEnvClazzName);
+      return new DefaultEnvSelector(guiceBerryEnvClazzName);
     }
   }
   
   public Class<? extends Module> guiceBerryEnvToUse() {
-    GuiceBerryEnvChooser override = getOverride();
+    GuiceBerryEnvSelector override = getOverride();
     if (override != null) {
       return override.guiceBerryEnvToUse();
     } else {
@@ -86,8 +86,8 @@ public class DefaultEnvChooser implements GuiceBerryEnvChooser {
   }
   
   @SuppressWarnings("unchecked")
-  private static GuiceBerryEnvChooser getOverride() {
-    String overrideName = System.getProperty(DefaultEnvChooser.OVERRIDE_SYSTEM_PROPERY_NAME);
+  private static GuiceBerryEnvSelector getOverride() {
+    String overrideName = System.getProperty(DefaultEnvSelector.OVERRIDE_SYSTEM_PROPERY_NAME);
     if (overrideName != null) {
       
       if (System.getProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME) != null) {
@@ -101,17 +101,17 @@ public class DefaultEnvChooser implements GuiceBerryEnvChooser {
       
       Class clazz;
       try {
-        clazz = DefaultEnvChooser.class.getClassLoader().loadClass(overrideName);
+        clazz = DefaultEnvSelector.class.getClassLoader().loadClass(overrideName);
         } catch (ClassNotFoundException e) {
           throw new IllegalArgumentException(String.format(
             "Class '%s' does not exist, and it is being declared as a '%s' override (though the '%s' System Property).",
             overrideName,
-            DefaultEnvChooser.class.getName(),
+            DefaultEnvSelector.class.getName(),
             OVERRIDE_SYSTEM_PROPERY_NAME
             ), e);
         }
-        if (GuiceBerryEnvChooser.class.isAssignableFrom(clazz)) {
-          return instantiateEnvChooser(clazz, overrideName);
+        if (GuiceBerryEnvSelector.class.isAssignableFrom(clazz)) {
+          return instantiateGuiceBerryEnvSelector(clazz, overrideName);
         }
         throw new IllegalArgumentException(String.format(
           "Class '%s' is being declared as a GuiceBerryEnvRemapper, but does not implement that interface", 
@@ -121,8 +121,8 @@ public class DefaultEnvChooser implements GuiceBerryEnvChooser {
     return null;
   }
 
-  private static GuiceBerryEnvChooser instantiateEnvChooser(
-      Class<? extends GuiceBerryEnvChooser> clazz, String overrideName) {
+  private static GuiceBerryEnvSelector instantiateGuiceBerryEnvSelector(
+      Class<? extends GuiceBerryEnvSelector> clazz, String overrideName) {
     try {
       return clazz.getConstructor().newInstance();
     } catch (NoSuchMethodException e) {
@@ -153,7 +153,7 @@ public class DefaultEnvChooser implements GuiceBerryEnvChooser {
   static Class<?> getGbeClassFromClassName(String gbeName) {
     Class<?> className;
     try {
-      className = DefaultEnvChooser.class.getClassLoader().loadClass(gbeName);   
+      className = DefaultEnvSelector.class.getClassLoader().loadClass(gbeName);   
     } catch (ClassNotFoundException e) {  
       String msg = String.format(
               "Class '%s' was not found.",
@@ -164,11 +164,11 @@ public class DefaultEnvChooser implements GuiceBerryEnvChooser {
   }
   
   /**
-   * The {@link DefaultEnvChooser} provides a simple mechanism for overriding
-   * the {@link GuiceBerryEnvChooser} returned by its {@link #of} methods: if a 
+   * The {@link DefaultEnvSelector} provides a simple mechanism for overriding
+   * the {@link GuiceBerryEnvSelector} returned by its {@link #of} methods: if a 
    * {@link System} property named {@link #OVERRIDE_SYSTEM_PROPERY_NAME} is set,
    * class whose name is the value for that property is used instead of 
-   * {@link DefaultEnvChooser} (i.e. it is returned by the {@link #of} methods.
+   * {@link DefaultEnvSelector} (i.e. it is returned by the {@link #of} methods.
    *
    * <p>For details about this feature, see TODO
    *
@@ -183,10 +183,10 @@ public class DefaultEnvChooser implements GuiceBerryEnvChooser {
    *   method before, or otherwise set the {@link #OVERRIDE_SYSTEM_PROPERY_NAME}
    *   (say by passing a -D system property to the java runtime).
    */
-  public synchronized void override(Class<? extends GuiceBerryEnvChooser> envChooserOverride) {
-    if (System.getProperty(DefaultEnvChooser.OVERRIDE_SYSTEM_PROPERY_NAME) != null) {
+  public synchronized void override(Class<? extends GuiceBerryEnvSelector> guiceBerryEnvSelectorOverride) {
+    if (System.getProperty(DefaultEnvSelector.OVERRIDE_SYSTEM_PROPERY_NAME) != null) {
       throw new IllegalArgumentException();
     }
-    System.setProperty(OVERRIDE_SYSTEM_PROPERY_NAME, envChooserOverride.getClass().getName());
+    System.setProperty(OVERRIDE_SYSTEM_PROPERY_NAME, guiceBerryEnvSelectorOverride.getClass().getName());
   }
 }
