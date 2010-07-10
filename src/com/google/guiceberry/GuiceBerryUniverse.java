@@ -17,6 +17,9 @@ package com.google.guiceberry;
 
 import com.google.common.collect.Maps;
 import com.google.guiceberry.GuiceBerryModule.ToTearDown;
+import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
+import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
+import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -28,24 +31,11 @@ import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3;
 import java.util.Map;
 
 /**
- * Do <em>not</em> use this class, or any of its methods directly -- it is an
- * internal support class, and its methods are subject to change without notice!
- * 
- * <p>Instead, use one of these:
- * 
- * <ul>
- *   <li>For Junit4, {@link }
- *   <li>For Junit3 with TearDownTestCase, {@link }
- *   <li>For plain Junit3 {@link }
- * </ul>
- *
- * <p>
- * 
- * @author Luiz-Otavio Zorzella
+ * @author Luiz-Otavio "Z" Zorzella
  */
-public class GuiceBerryUniverse {
+class GuiceBerryUniverse {
 
-  public static final GuiceBerryUniverse INSTANCE = new GuiceBerryUniverse();
+  static final GuiceBerryUniverse INSTANCE = new GuiceBerryUniverse();
   
   final Map<Class<? extends Module>, NonFinals> gbeClassToInjectorMap = Maps.newHashMap();
   
@@ -62,15 +52,13 @@ public class GuiceBerryUniverse {
   private static final NonFinals BOGUS_NON_FINALS = 
     new NonFinals(BOGUS_INJECTOR, NoOpTestScopeListener.INSTANCE);
   
-  public class TestCaseScaffolding {
+  class TestCaseScaffolding {
 
     private final TestDescription testDescription;
     private final EnvChooser envChooser;
     private final GuiceBerryUniverse universe;
 
     private NonFinals nonFinals;
-//    private Injector injector;
-//    private TestScopeListener testScopeListener;
     
     public TestCaseScaffolding(
         TestDescription testDescription,

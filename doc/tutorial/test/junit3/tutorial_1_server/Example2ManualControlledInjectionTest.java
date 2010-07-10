@@ -1,22 +1,30 @@
-package junit3_tdtc.tutorial_1_server;
+package junit3.tutorial_1_server;
 
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
-import com.google.common.testing.junit3.TearDownTestCase;
-import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
+import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
 import com.google.inject.Inject;
 
-import junit3_tdtc.tutorial_1_server.PetStoreEnv2GlobalStaticControllablePotm.PetStoreModuleWithGlobalStaticOverride;
-import junit3_tdtc.tutorial_1_server.prod.PetOfTheMonth;
+import junit.framework.TestCase;
+import junit3.tutorial_1_server.PetStoreEnv2GlobalStaticControllablePotm.PetStoreModuleWithGlobalStaticOverride;
+import junit3.tutorial_1_server.prod.PetOfTheMonth;
 
-public class Example2ManualControlledInjectionTest extends TearDownTestCase {
+public class Example2ManualControlledInjectionTest extends TestCase {
 
+  private TearDown toTearDown;
+  
+  @Override
+  protected void tearDown() throws Exception {
+    toTearDown.tearDown();
+    super.tearDown();
+  }
+  
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    AutoTearDownGuiceBerry.setup(this, PetStoreEnv2GlobalStaticControllablePotm.class);
+    toTearDown = ManualTearDownGuiceBerry.setup(this, PetStoreEnv2GlobalStaticControllablePotm.class);
   }
-
+  
   @Inject
   TearDownAccepter tearDownAccepter;
   

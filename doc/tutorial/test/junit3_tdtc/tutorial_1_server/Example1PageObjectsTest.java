@@ -1,7 +1,7 @@
 package junit3_tdtc.tutorial_1_server;
 
 import com.google.common.testing.junit3.TearDownTestCase;
-import com.google.guiceberry.junit3.TearDownGuiceBerry;
+import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
 import com.google.inject.Inject;
 
 public class Example1PageObjectsTest extends TearDownTestCase {
@@ -9,7 +9,7 @@ public class Example1PageObjectsTest extends TearDownTestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    TearDownGuiceBerry.setup(this, PetStoreEnv2GlobalStaticControllablePotm.class);
+    AutoTearDownGuiceBerry.setup(this, PetStoreEnv2GlobalStaticControllablePotm.class);
   }
 
   @Inject

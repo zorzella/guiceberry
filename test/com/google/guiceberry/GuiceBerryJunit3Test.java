@@ -74,7 +74,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       }
     });
     currentUniverse = new GuiceBerryUniverse();
-    return new GuiceBerryJunit3(currentUniverse);
+    return new GuiceBerryJunit3(new GuiceBerry(currentUniverse));
   }
   
   public void testSelfCanonicalNameConstantIsCorrect() throws Exception {
@@ -1001,7 +1001,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
     @Override
     public void configure() {
-      install(new BasicJunit3Module(currentUniverse));
+      install(new DeprecatedGuiceBerryModule(currentUniverse));
       bind(BarService.class).to(BarServiceOne.class);
       bind(FooService.class).to(FooServiceOne.class);
       bind(Integer.class).toInstance(NUMBER++);
@@ -1016,7 +1016,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
     @Override
     public void configure() {
-      install(new BasicJunit3Module(currentUniverse));
+      install(new DeprecatedGuiceBerryModule(currentUniverse));
       bind(FooService.class).to(FooServiceTwo.class);
       bind(BarService.class).to(BarServiceTwo.class);      
       bind(Integer.class).toInstance(NUMBER++);
@@ -1070,7 +1070,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
     @Override
     public void configure() {
-      install(new BasicJunit3Module(currentUniverse));
+      install(new DeprecatedGuiceBerryModule(currentUniverse));
       bind(TestScopeListener.class)
         .toInstance(new TestScopeListenerGetsInjectedWithTestCase());     
     }

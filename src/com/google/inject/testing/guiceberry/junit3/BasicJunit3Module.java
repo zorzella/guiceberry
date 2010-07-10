@@ -16,9 +16,7 @@
 
 package com.google.inject.testing.guiceberry.junit3;
 
-import com.google.guiceberry.GuiceBerryModule;
-import com.google.guiceberry.GuiceBerryUniverse;
-import com.google.inject.Provides;
+import com.google.guiceberry.DeprecatedGuiceBerryModule;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScoped;
@@ -42,30 +40,5 @@ import junit.framework.TestCase;
  * @author Luiz-Otavio Zorzella
  * @author Danka Karwanska
  */
-public class BasicJunit3Module extends GuiceBerryModule {
-
-  public BasicJunit3Module() {
-    super();
-  }
-  
-  public BasicJunit3Module(GuiceBerryUniverse universe) {
-    super(universe);
-  }
-  
-  @Override
-  public void configure() {
-    super.configure();
-  }
-
-  @Provides
-  @TestScoped
-  TestCase getTestCase() {
-    return (TestCase) universe.currentTestDescriptionThreadLocal.get().getTestCase();
-  }
-
-  @Provides
-  @TestScoped
-  TestId getDeprecatedTestId() {
-    return universe.currentTestDescriptionThreadLocal.get().getTestId().toDeprecatedTestId();
-  }
+public class BasicJunit3Module extends DeprecatedGuiceBerryModule {
 }

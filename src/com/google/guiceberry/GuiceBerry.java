@@ -15,17 +15,84 @@
  */
 package com.google.guiceberry;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.guiceberry.GuiceBerryUniverse.TestCaseScaffolding;
+import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
+import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
+import com.google.guiceberry.junit4.GuiceBerryRule;
 
 /**
+ * You won't have to deal with this class directly unless you are writing a test
+ * framework adapter.
+ *
+ * <p>Instead, use one of these:
+ * 
+ * <ul>
+ *   <li>For Junit4, {@link GuiceBerryRule}
+ *   <li>For Junit3 with TearDownTestCase, {@link AutoTearDownGuiceBerry}
+ *   <li>For plain Junit3 {@link ManualTearDownGuiceBerry}
+ * </ul>
+ *
  * @author Luiz-Otavio "Z" Zorzella
  */
+@VisibleForTesting
 public class GuiceBerry {
 
-  public static TestCaseScaffolding setup(TestDescription testDescription, EnvChooser envChooser) {
-    TestCaseScaffolding scaffolding = 
-      GuiceBerryUniverse.INSTANCE.new TestCaseScaffolding(testDescription, envChooser);
-    scaffolding.goSetUp();
-    return scaffolding;
+  public static final GuiceBerry INSTANCE = new GuiceBerry(GuiceBerryUniverse.INSTANCE);
+  
+  private final GuiceBerryUniverse universe;
+  
+  @VisibleForTesting
+  public GuiceBerry(GuiceBerryUniverse universe) {
+    this.universe = universe;
+  }
+
+  /**
+   * @see GuiceBerryWrapper
+   */
+  public static GuiceBerryWrapper setup(TestDescription testDescription, EnvChooser envChooser) {
+    return INSTANCE.doSetup(testDescription, envChooser);
+  }
+  
+  /**
+   * @see GuiceBerryWrapper
+   */
+  @VisibleForTesting
+  public GuiceBerryWrapper doSetup(TestDescription testDescription, EnvChooser envChooser) {
+    final TestCaseScaffolding scaffolding = 
+      universe.new TestCaseScaffolding(testDescription, envChooser);
+    
+    return new GuiceBerryWrapper() {
+
+      public void runAfterTest() {
+        scaffolding.goTearDown();
+      }
+
+      public void runBeforeTest() {
+        scaffolding.goSetUp();
+      }
+    };
+  }
+  
+  /**
+   * You won't need to deal with this interface unless you are writting an
+   * adapter to a test framework. See {@link GuiceBerry}.
+   * 
+   * <p>The two methods in this interface should "wrap" a test execution. I.e.
+   * before the test's execution, the method {@link #runBeforeTest()} should be
+   * invoked; then, after the test's execution, the method
+   * {@link #runAfterTest()} should be invoked.
+   */
+  public interface GuiceBerryWrapper {
+    
+    /**
+     * @see GuiceBerryWrapper
+     */
+    void runBeforeTest();
+
+    /**
+     * @see GuiceBerryWrapper
+     */
+    void runAfterTest();
   }
 }
