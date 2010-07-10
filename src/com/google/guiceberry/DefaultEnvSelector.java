@@ -183,10 +183,14 @@ public class DefaultEnvSelector implements GuiceBerryEnvSelector {
    *   method before, or otherwise set the {@link #OVERRIDE_SYSTEM_PROPERY_NAME}
    *   (say by passing a -D system property to the java runtime).
    */
-  public synchronized void override(Class<? extends GuiceBerryEnvSelector> guiceBerryEnvSelectorOverride) {
-    if (System.getProperty(DefaultEnvSelector.OVERRIDE_SYSTEM_PROPERY_NAME) != null) {
+  public static synchronized void override(Class<? extends GuiceBerryEnvSelector> guiceBerryEnvSelectorOverride) {
+    if (isOverridden()) {
       throw new IllegalArgumentException();
     }
     System.setProperty(OVERRIDE_SYSTEM_PROPERY_NAME, guiceBerryEnvSelectorOverride.getClass().getName());
+  }
+  
+  public static synchronized boolean isOverridden() {
+    return System.getProperty(DefaultEnvSelector.OVERRIDE_SYSTEM_PROPERY_NAME) != null;
   }
 }
