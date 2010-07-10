@@ -8,7 +8,6 @@ import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 import guiceberry2_junit3.tutorial_1_server.PetStoreEnv2GlobalStaticControllablePotm.PetStoreModuleWithGlobalStaticOverride;
 import guiceberry2_junit3.tutorial_1_server.prod.PetOfTheMonth;
 
-
 @GuiceBerryEnv(Tutorial1Envs.PET_STORE_ENV_2_GLOBAL_STATIC_POTM)
 public class Example2ManualControlledInjectionTest extends GuiceBerryJunit3TestCase {
 

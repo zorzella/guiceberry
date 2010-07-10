@@ -10,7 +10,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-
 @GuiceBerryEnv(Tutorial1Envs.PET_STORE_ENV_0_SIMPLE)
 public class Example0HelloWorldTest extends GuiceBerryJunit3TestCase {
 

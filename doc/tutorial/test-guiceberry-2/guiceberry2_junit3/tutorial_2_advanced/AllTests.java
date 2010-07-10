@@ -7,7 +7,7 @@ public class AllTests {
 
   public static Test suite() {
     TestSuite suite = new TestSuite(
-      "Test for com.google.inject.testing.guiceberry.tutorial_0_basic");
+      "Tests for guiceberry2_junit3.tutorial_2_advanced");
     //$JUnit-BEGIN$
     suite.addTestSuite(Example5Remapper.class);
     //$JUnit-END$

@@ -2,7 +2,7 @@ package guiceberry2_junit3.tutorial_0_basic;
 
 public interface Tutorial0Envs {
 
-  String PACKAGE = "tutorial_0_basic.";
+  String PACKAGE = "guiceberry2_junit3.tutorial_0_basic.";
   String SUFFIX = "$Env";
   
   String EXAMPLE_1 = PACKAGE + "Example1GetsInjectedTest" + SUFFIX;

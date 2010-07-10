@@ -16,17 +16,26 @@
 package com.google.guiceberry;
 
 import com.google.inject.Module;
+import com.google.inject.testing.guiceberry.junit3.GuiceBerryEnvRemapper;
 
 /**
  * {@inheritDoc}
  * 
- * This is the default implementation of {@link EnvChooser}.
- * 
+ * This is the default implementation of {@link EnvChooser}. The GuiceBerry Env
+ * to use is the class (or its name) given as a parameter to one the {@link #of}
+ * static factory methods, except when the {@link #override} feature is used.
+ *
  * @author Luiz-Otavio "Z" Zorzella
  */
 public class DefaultEnvChooser implements EnvChooser {
 
-  private static final String OVERRIDE_SYSTEM_PROPERY_NAME = "EnvChooserOverride";
+  /**
+   * 
+   */
+  public static final String LINK_TO_UPGRADING_DOC =
+    "For more details, see http://guiceberry.googlecode.com, section 'Upgrading from 2.0 to 3.0'";
+
+  public static final String OVERRIDE_SYSTEM_PROPERY_NAME = "GuiceBerry.EnvChooserOverride";
   
   private final String clazzName;
 
@@ -34,16 +43,39 @@ public class DefaultEnvChooser implements EnvChooser {
     this.clazzName = clazzName;
   }
 
-  public static EnvChooser of(Class<? extends Module> clazz) {
-    return of(clazz.getName());
+  /**
+   * Specifies {@code clazz} as the GuiceBerry Env to use for a test, except
+   * when the {@link #override} feature is used.
+   *
+   * @see #of(String)
+   */
+  public static EnvChooser of(Class<? extends Module> guiceBerryEnvClazz) {
+    return of(guiceBerryEnvClazz.getName());
   }
-  
-  public static EnvChooser of(String clazzName) {
+
+  /**
+   * Use this version of the static factory method instead of {@link #of(Class)}
+   * if you wish to not have a compile-time dependency between your test and
+   * your GuiceBerry Env. See TODO for more details.
+   *
+   * @see #of(Class)
+   */
+  public synchronized static EnvChooser of(String guiceBerryEnvClazzName) {
     EnvChooser override = getOverride();
+
+    if (System.getProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME) != null) {
+      System.out.println(String.format(
+          "********* ATTENTION ***********\n" +
+          "I see you have the deprecated '%s' system property set, which is. " +
+          "honored anymore. " +
+          LINK_TO_UPGRADING_DOC,
+          GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME));
+    }
+
     if (override != null) {
       return override;
     } else {
-      return new DefaultEnvChooser(clazzName);
+      return new DefaultEnvChooser(guiceBerryEnvClazzName);
     }
   }
   
@@ -60,6 +92,16 @@ public class DefaultEnvChooser implements EnvChooser {
   private static EnvChooser getOverride() {
     String overrideName = System.getProperty(DefaultEnvChooser.OVERRIDE_SYSTEM_PROPERY_NAME);
     if (overrideName != null) {
+      
+      if (System.getProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME) != null) {
+        throw new IllegalArgumentException(String.format(
+            "Both the '%s' and the deprecated '%s' system properties are set. " +
+            "To fix this, stop using the deprecated system property. " +
+            LINK_TO_UPGRADING_DOC, 
+            OVERRIDE_SYSTEM_PROPERY_NAME, 
+            GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME));
+      }
+      
       Class clazz;
       try {
         clazz = DefaultEnvChooser.class.getClassLoader().loadClass(overrideName);
@@ -122,5 +164,32 @@ public class DefaultEnvChooser implements EnvChooser {
       throw new IllegalArgumentException(msg, e);
     }
     return className;
+  }
+  
+  /**
+   * The {@link DefaultEnvChooser} provides a simple mechanism for overriding
+   * the {@link EnvChooser} returned by its {@link #of} methods: if a 
+   * {@link System} property named {@link #OVERRIDE_SYSTEM_PROPERY_NAME} is set,
+   * class whose name is the value for that property is used instead of 
+   * {@link DefaultEnvChooser} (i.e. it is returned by the {@link #of} methods.
+   *
+   * <p>For details about this feature, see TODO
+   *
+   * <p>This method is a convenience method in case you wish to set that system
+   * property programatically.
+   *
+   * <p>Note that this override is honored by code inside the {@link #of}
+   * methods, so this {@link #override} method must be called <em>before</em>
+   * calling those.
+   * 
+   * @throws IllegalArgumentException if you have either already called this
+   *   method before, or otherwise set the {@link #OVERRIDE_SYSTEM_PROPERY_NAME}
+   *   (say by passing a -D system property to the java runtime).
+   */
+  public synchronized void override(Class<? extends EnvChooser> envChooserOverride) {
+    if (System.getProperty(DefaultEnvChooser.OVERRIDE_SYSTEM_PROPERY_NAME) != null) {
+      throw new IllegalArgumentException();
+    }
+    System.setProperty(OVERRIDE_SYSTEM_PROPERY_NAME, envChooserOverride.getClass().getName());
   }
 }

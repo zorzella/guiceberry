@@ -24,7 +24,6 @@ import com.google.guiceberry.GuiceBerry;
 import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
 import com.google.guiceberry.TestScope;
 import com.google.guiceberry.TestDescription;
-import com.google.guiceberry.VersionTwoBackwardsCompatibleEnvChooser;
 import com.google.inject.Guice;
 import com.google.inject.Provider;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;

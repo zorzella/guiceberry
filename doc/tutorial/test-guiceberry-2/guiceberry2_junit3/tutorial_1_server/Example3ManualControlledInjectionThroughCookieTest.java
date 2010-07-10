@@ -9,7 +9,6 @@ import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 import guiceberry2_junit3.tutorial_1_server.PetStoreEnv3CookiesControlledPotm.PetStoreModuleWithTestIdBasedOverride;
 import guiceberry2_junit3.tutorial_1_server.prod.PetOfTheMonth;
 
-
 @GuiceBerryEnv(Tutorial1Envs.PET_STORE_ENV_3_COOKIES_BASED_POTM)
 public class Example3ManualControlledInjectionThroughCookieTest extends GuiceBerryJunit3TestCase {
 

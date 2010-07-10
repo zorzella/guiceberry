@@ -99,10 +99,12 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       fail();
     } catch (IllegalArgumentException expected) {
       assertEquals(
-              "Test class " +
-              "'" + SELF_CANONICAL_NAME + "' " +
-              "must have an @GuiceBerryEnvChooser annotation.",
-              expected.getMessage());
+          "In order to use the deprecated GuiceBerryJunit3, your test class "
+          + "must have a @GuiceBerryEnv annotation. Either add one, or, better "
+          + "yet, upgrade your code to make use of the GuiceBerry 3.0 "
+          + "adapters. For more details, see http://guiceberry.googlecode.com, "
+          + "section 'Upgrading from 2.0 to 3.0'",
+          expected.getMessage());
     }
   }
   
