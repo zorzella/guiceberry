@@ -3,7 +3,7 @@ package junit3.tutorial_0_basic;
 import com.google.common.testing.TearDown;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.TestId;
-import com.google.guiceberry.TestScopeListener;
+import com.google.guiceberry.TestWrapper;
 import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -35,16 +35,16 @@ public class Example3TestScopeListenerTest extends TestCase {
     System.out.println("Inside testTwo");
   }
 
-  public static final class Example3TestScopeListener implements TestScopeListener {
+  public static final class Example3TestScopeListener implements TestWrapper {
 
     @Inject
     private Provider<TestId> testId;
 
-    public void enteringScope() {
+    public void toRunBeforeTest() {
       System.out.println("Entering scope of: " + testId.get());
     }
 
-    public void exitingScope() {
+    public void toRunAfterTest() {
       System.out.println("Exiting scope of: " + testId.get());
     }
   }
@@ -55,7 +55,7 @@ public class Example3TestScopeListenerTest extends TestCase {
     protected void configure() {
       // TODO Auto-generated method stub
       super.configure();
-      bind(TestScopeListener.class).to(Example3TestScopeListener.class).in(Scopes.SINGLETON);
+      bind(TestWrapper.class).to(Example3TestScopeListener.class).in(Scopes.SINGLETON);
     }
   }
 }

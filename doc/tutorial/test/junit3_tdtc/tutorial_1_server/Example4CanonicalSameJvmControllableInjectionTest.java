@@ -12,7 +12,7 @@ public class Example4CanonicalSameJvmControllableInjectionTest extends TearDownT
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    AutoTearDownGuiceBerry.setup(this, PetStoreEnv4CanonicalSameJvmControllablePotm.class);
+    AutoTearDownGuiceBerry.setUp(this, PetStoreEnv4CanonicalSameJvmControllablePotm.class);
   }
   
   @Inject

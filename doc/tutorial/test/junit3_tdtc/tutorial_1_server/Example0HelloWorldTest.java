@@ -15,7 +15,7 @@ public class Example0HelloWorldTest extends TearDownTestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    AutoTearDownGuiceBerry.setup(this, PetStoreEnv0Simple.class);
+    AutoTearDownGuiceBerry.setUp(this, PetStoreEnv0Simple.class);
   }
 
   @Inject

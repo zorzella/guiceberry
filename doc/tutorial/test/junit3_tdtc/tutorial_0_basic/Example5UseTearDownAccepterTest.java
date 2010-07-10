@@ -19,7 +19,7 @@ public class Example5UseTearDownAccepterTest extends TearDownTestCase {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    AutoTearDownGuiceBerry.setup(this, Env.class);
+    AutoTearDownGuiceBerry.setUp(this, Env.class);
     tearDownAccepter.addTearDown(new FirstItemResetter());
     firstItem = 1;
 

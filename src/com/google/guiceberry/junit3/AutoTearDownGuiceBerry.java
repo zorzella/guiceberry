@@ -18,7 +18,7 @@ package com.google.guiceberry.junit3;
 import com.google.common.testing.TearDown;
 import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.DefaultEnvChooser;
-import com.google.guiceberry.EnvChooser;
+import com.google.guiceberry.GuiceBerryEnvChooser;
 import com.google.guiceberry.GuiceBerry;
 import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
 import com.google.guiceberry.TestDescription;
@@ -36,13 +36,22 @@ import junit.framework.TestCase;
  */
 public class AutoTearDownGuiceBerry {
 
-  public static void setup(TearDownTestCase testCase, Class<? extends Module> envClass) {
-    setup(testCase, DefaultEnvChooser.of(envClass));
+  /**
+   * Sets up the test, by creating an injector for the given
+   * {@code guiceBerryEnvClass} and registering a {@link TearDown} against the
+   * given {@code testCase}.
+   */
+  public static void setUp(TearDownTestCase testCase, Class<? extends Module> guiceBerryEnvClass) {
+    setUp(testCase, DefaultEnvChooser.of(guiceBerryEnvClass));
   }
   
-  public static void setup(TearDownTestCase testCase, EnvChooser envChooser) {
+  /**
+   * Same as {@link #setUp(TearDownTestCase, Class)}, but with the given 
+   * {@code guiceBerryEnvChooser}.
+   */
+  public static void setUp(TearDownTestCase testCase, GuiceBerryEnvChooser guiceBerryEnvChooser) {
     final GuiceBerryWrapper toTearDown = 
-      GuiceBerry.INSTANCE.buildWrapper(buildTestDescription(testCase, testCase.getName()), envChooser);
+      GuiceBerry.INSTANCE.buildWrapper(buildTestDescription(testCase, testCase.getName()), guiceBerryEnvChooser);
     testCase.addTearDown(new TearDown() {
       
       public void tearDown() throws Exception {

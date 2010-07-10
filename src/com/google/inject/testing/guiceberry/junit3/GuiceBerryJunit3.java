@@ -19,10 +19,8 @@ package com.google.inject.testing.guiceberry.junit3;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
-import com.google.guiceberry.EnvChooser;
 import com.google.guiceberry.GuiceBerry;
 import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
-import com.google.guiceberry.TestScope;
 import com.google.guiceberry.TestDescription;
 import com.google.inject.Guice;
 import com.google.inject.Provider;
@@ -58,8 +56,6 @@ import junit.framework.TestCase;
  */
 public class GuiceBerryJunit3 { 
   
-  private static final EnvChooser ENV_CHOOSER = new VersionTwoBackwardsCompatibleEnvChooser();
-
   final GuiceBerry guiceBerry;
 
   @VisibleForTesting
@@ -144,7 +140,8 @@ public class GuiceBerryJunit3 {
     
     TestDescription testDescription = buildDescription(testCase);
 
-    final GuiceBerryWrapper wrapper = guiceBerry.buildWrapper(testDescription, ENV_CHOOSER);
+    final GuiceBerryWrapper wrapper = guiceBerry.buildWrapper(testDescription, 
+        new VersionTwoBackwardsCompatibleEnvChooser(testDescription));
 
     //Setup teard down before setup so that if an exception is thrown there,
     //we still do a tearDown.
@@ -201,7 +198,7 @@ public class GuiceBerryJunit3 {
    *     wasn't called before calling this method.                                 
    * 
    * @see TestScopeListener
-   * @see TestScope
+   * @see TestScoped
    */
   public synchronized static void tearDown(TestCase testCase) {
     if (testCase instanceof TearDownAccepter) {
