@@ -1,23 +1,32 @@
-package junit3_tdtc.tutorial_1_server;
+package junit3.tutorial_1_server;
 
-import com.google.common.testing.junit3.TearDownTestCase;
-import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
+import com.google.common.testing.TearDown;
+import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
 import com.google.inject.Inject;
 
-import junit3_tdtc.tutorial_1_server.prod.PortNumber;
+import junit.framework.TestCase;
+import junit3.tutorial_1_server.prod.PortNumber;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class Example0HelloWorldTest extends TearDownTestCase {
+public class Example0HelloWorldTest extends TestCase {
 
+  private TearDown toTearDown;
+  
+  @Override
+  protected void tearDown() throws Exception {
+    toTearDown.tearDown();
+    super.tearDown();
+  }
+  
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    AutoTearDownGuiceBerry.setup(this, PetStoreEnv0Simple.class);
+    toTearDown = ManualTearDownGuiceBerry.setup(this, PetStoreEnv0Simple.class);
   }
-
+  
   @Inject
   WebDriver driver;
   

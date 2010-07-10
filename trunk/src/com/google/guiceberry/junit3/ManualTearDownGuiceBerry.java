@@ -16,11 +16,10 @@
 package com.google.guiceberry.junit3;
 
 import com.google.common.testing.TearDown;
-import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.DefaultEnvChooser;
 import com.google.guiceberry.EnvChooser;
 import com.google.guiceberry.GuiceBerry;
-import com.google.guiceberry.GuiceBerryUniverse.TestCaseScaffolding;
+import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
 import com.google.guiceberry.TestDescription;
 import com.google.guiceberry.TestId;
 import com.google.inject.Module;
@@ -30,21 +29,22 @@ import junit.framework.TestCase;
 /**
  * @author Luiz-Otavio "Z" Zorzella
  */
-public class TearDownGuiceBerry {
+public class ManualTearDownGuiceBerry {
 
-  public static void setup(TearDownTestCase testCase, Class<? extends Module> envClass) {
-    setup(testCase, DefaultEnvChooser.of(envClass));
+  public static TearDown setup(TestCase testCase, Class<? extends Module> envClass) {
+    return setup(testCase, DefaultEnvChooser.of(envClass));
   }
   
-  public static void setup(TearDownTestCase testCase, EnvChooser envChooser) {
-    final TestCaseScaffolding scaffolding = 
+  public static TearDown setup(TestCase testCase, EnvChooser envChooser) {
+    final GuiceBerryWrapper setUpAndTearDown =
       GuiceBerry.setup(buildTestDescription(testCase, testCase.getName()), envChooser);
-    testCase.addTearDown(new TearDown() {
+    setUpAndTearDown.runBeforeTest();
+    return new TearDown() {
       
       public void tearDown() throws Exception {
-        scaffolding.goTearDown();
+        setUpAndTearDown.runAfterTest();
       }
-    });
+    };
   }
 
   private static TestDescription buildTestDescription(TestCase testCase, String methodName) {
@@ -52,6 +52,4 @@ public class TearDownGuiceBerry {
     return new TestDescription(testCase, testCaseName + "." + methodName,
       new TestId(testCaseName, methodName));
   }
-  
-  
 }

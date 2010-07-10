@@ -1,20 +1,30 @@
-package junit3_tdtc.tutorial_0_basic;
+package junit3.tutorial_0_basic;
 
-import com.google.common.testing.junit3.TearDownTestCase;
+import com.google.common.testing.TearDown;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.TestId;
 import com.google.guiceberry.TestScopeListener;
-import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
+import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Scopes;
 
-public class Example3TestScopeListenerTest extends TearDownTestCase {
+import junit.framework.TestCase;
+
+public class Example3TestScopeListenerTest extends TestCase {
+
+  private TearDown toTearDown;
+  
+  @Override
+  protected void tearDown() throws Exception {
+    toTearDown.tearDown();
+    super.tearDown();
+  }
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    AutoTearDownGuiceBerry.setup(this, Env.class);
+    toTearDown = ManualTearDownGuiceBerry.setup(this, Env.class);
   }
 
   public void testOne() throws Exception {

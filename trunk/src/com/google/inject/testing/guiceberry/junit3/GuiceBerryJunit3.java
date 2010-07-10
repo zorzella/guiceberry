@@ -20,18 +20,16 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
 import com.google.guiceberry.EnvChooser;
-import com.google.guiceberry.GuiceBerryUniverse;
+import com.google.guiceberry.GuiceBerry;
+import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
 import com.google.guiceberry.TestScope;
 import com.google.guiceberry.TestDescription;
 import com.google.guiceberry.VersionTwoBackwardsCompatibleEnvChooser;
-import com.google.guiceberry.GuiceBerryUniverse.TestCaseScaffolding;
 import com.google.inject.Guice;
 import com.google.inject.Provider;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
-import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScopeListener;
-import com.google.inject.testing.guiceberry.TestScoped;
 
 import junit.framework.TestCase;
 
@@ -63,11 +61,11 @@ public class GuiceBerryJunit3 {
   
   private static final EnvChooser ENV_CHOOSER = new VersionTwoBackwardsCompatibleEnvChooser();
 
-  final GuiceBerryUniverse universe;
+  final GuiceBerry guiceBerry;
 
   @VisibleForTesting
-  public GuiceBerryJunit3(GuiceBerryUniverse universe) {
-    this.universe = universe;
+  public GuiceBerryJunit3(GuiceBerry guiceBerry) {
+    this.guiceBerry = guiceBerry;
   }
 
   private static TestDescription buildDescription(TestCase testCase) {
@@ -77,10 +75,10 @@ public class GuiceBerryJunit3 {
       new com.google.guiceberry.TestId(testCase.getClass().getName(), testCase.getName()));
   }
 
-  private static final ThreadLocal<TestCaseScaffolding> scaffoldingThreadLocal = 
-    new ThreadLocal<TestCaseScaffolding>();
+  private static final ThreadLocal<TearDown> scaffoldingThreadLocal = 
+    new ThreadLocal<TearDown>();
   
-  private static final GuiceBerryJunit3 INSTANCE = new GuiceBerryJunit3(GuiceBerryUniverse.INSTANCE);
+  private static final GuiceBerryJunit3 INSTANCE = new GuiceBerryJunit3(GuiceBerry.INSTANCE);
   
   /**
    * Sets up the {@link TestCase} (given as the argument) to be ready to run. 
@@ -147,31 +145,29 @@ public class GuiceBerryJunit3 {
     
     TestDescription testDescription = buildDescription(testCase);
 
-    TestCaseScaffolding testCaseScaffolding = 
-      universe.new TestCaseScaffolding(
-        testDescription,
-        ENV_CHOOSER);
+    final GuiceBerryWrapper wrapper = guiceBerry.doSetup(testDescription, ENV_CHOOSER);
 
     //Setup teard down before setup so that if an exception is thrown there,
     //we still do a tearDown.
-    maybeAddGuiceBerryTearDown(testDescription, testCaseScaffolding);
+    maybeAddGuiceBerryTearDown(testDescription, new TearDown() {
+      
+      public void tearDown() throws Exception {
+        wrapper.runAfterTest();
+      }
+    });
     
-    testCaseScaffolding.goSetUp();
+    wrapper.runBeforeTest();
   }
 
   private static void maybeAddGuiceBerryTearDown(
       final TestDescription testDescription,
-      final TestCaseScaffolding scaffolding) {
+      final TearDown toTearDown) {
     Object testToTearDown = testDescription.getTestCase();
     if (testToTearDown instanceof TearDownAccepter) {
       TearDownAccepter tdtc = (TearDownAccepter) testToTearDown;
-      tdtc.addTearDown(new TearDown() {
-        public void tearDown() {
-          scaffolding.goTearDown();
-        }
-      });
+      tdtc.addTearDown(toTearDown);
     } else {
-      scaffoldingThreadLocal.set(scaffolding);
+      scaffoldingThreadLocal.set(toTearDown);
     }
   }
   
@@ -214,6 +210,12 @@ public class GuiceBerryJunit3 {
       		"GuiceBerryJunit3.tearDown (it's only needed for tests that do " +
       		"not implement TearDownAccepter).");
     }
-    scaffoldingThreadLocal.get().goTearDown();
+    try {
+      scaffoldingThreadLocal.get().tearDown();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    } finally {
+      scaffoldingThreadLocal.remove();
+    }
   }
 }

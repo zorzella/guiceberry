@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.guiceberry.junit4;
+package com.google.guiceberry.junit3;
 
+import com.google.common.testing.TearDown;
+import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.DefaultEnvChooser;
 import com.google.guiceberry.EnvChooser;
 import com.google.guiceberry.GuiceBerry;
@@ -23,43 +25,31 @@ import com.google.guiceberry.TestDescription;
 import com.google.guiceberry.TestId;
 import com.google.inject.Module;
 
-import org.junit.rules.MethodRule;
-import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.Statement;
+import junit.framework.TestCase;
 
 /**
+ * 
  * @author Luiz-Otavio "Z" Zorzella
  */
-public class GuiceBerryRule implements MethodRule {
+public class AutoTearDownGuiceBerry {
 
-  private final EnvChooser envChooser;
-
-  public GuiceBerryRule(Class<? extends Module> envClass) {
-    this.envChooser = DefaultEnvChooser.of(envClass);
+  public static void setup(TearDownTestCase testCase, Class<? extends Module> envClass) {
+    setup(testCase, DefaultEnvChooser.of(envClass));
   }
-
-  public GuiceBerryRule(EnvChooser envChooser) {
-    this.envChooser = envChooser;
-  }
-
-  public Statement apply(final Statement base, final FrameworkMethod method, final Object target) {
-    return new Statement() {
+  
+  public static void setup(TearDownTestCase testCase, EnvChooser envChooser) {
+    final GuiceBerryWrapper toTearDown = 
+      GuiceBerry.setup(buildTestDescription(testCase, testCase.getName()), envChooser);
+    testCase.addTearDown(new TearDown() {
       
-      @Override
-      public void evaluate() throws Throwable {
-        final GuiceBerryWrapper setupAndTearDown = 
-          GuiceBerry.setup(buildTestDescription(target, method.getName()), envChooser);
-        try {
-          setupAndTearDown.runBeforeTest();
-          base.evaluate();
-        } finally {
-          setupAndTearDown.runAfterTest();
-        }
+      public void tearDown() throws Exception {
+        toTearDown.runAfterTest();
       }
-    };
+    })  ;
+    toTearDown.runBeforeTest();
   }
 
-  private static TestDescription buildTestDescription(Object testCase, String methodName) {
+  private static TestDescription buildTestDescription(TestCase testCase, String methodName) {
     String testCaseName = testCase.getClass().getName();
     return new TestDescription(testCase, testCaseName + "." + methodName,
       new TestId(testCaseName, methodName));

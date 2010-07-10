@@ -20,7 +20,7 @@
         <pathelement location="${lib.dir}/guice-2.0.jar"/>
         <!-- guice-servlet is not really necessary -->
         <pathelement location="${lib.dir}/guice-servlet-2.0.jar"/>
-        <pathelement location="${lib.dir}/junit3.8.1.jar"/>
+        <pathelement location="${lib.dir}/junit-4.8.1.jar"/>
         <pathelement location="${lib.dir}/servlet-api-2.4.jar"/>
         <pathelement location="${lib.dir}/tl4j-junit3-1.1.1.jar"/>
       </classpath>
@@ -38,7 +38,7 @@
     <pathelement location="${lib.dir}/guice-2.0.jar"/>
     <!-- guice-servlet is not really necessary -->
     <pathelement location="${lib.dir}/guice-servlet-2.0.jar"/>
-    <pathelement location="${lib.dir}/junit3.8.1.jar"/>
+    <pathelement location="${lib.dir}/junit-4.8.1.jar"/>
     <pathelement location="${lib.dir}/servlet-api-2.4.jar"/>
     <pathelement location="${lib.dir}/tl4j-junit3-1.1.1.jar"/>
   </path>
