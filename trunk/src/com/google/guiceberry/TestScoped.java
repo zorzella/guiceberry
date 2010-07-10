@@ -25,7 +25,7 @@ import com.google.inject.Scope;
 import com.google.inject.ScopeAnnotation;
 
 /**
- * This defines a {@link Scope} that begins during test "setup" and ends during
+ * This defines a {@link Scope} that begins during test "set up" and ends during
  * test "tear down".
  * 
  * @see TestScope implementation details

@@ -16,7 +16,7 @@
 package com.google.guiceberry.junit4;
 
 import com.google.guiceberry.DefaultEnvChooser;
-import com.google.guiceberry.EnvChooser;
+import com.google.guiceberry.GuiceBerryEnvChooser;
 import com.google.guiceberry.GuiceBerry;
 import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
 import com.google.guiceberry.TestDescription;
@@ -34,13 +34,13 @@ import org.junit.runners.model.Statement;
  */
 public class GuiceBerryRule implements MethodRule {
 
-  private final EnvChooser envChooser;
+  private final GuiceBerryEnvChooser envChooser;
 
   public GuiceBerryRule(Class<? extends Module> envClass) {
     this.envChooser = DefaultEnvChooser.of(envClass);
   }
 
-  public GuiceBerryRule(EnvChooser envChooser) {
+  public GuiceBerryRule(GuiceBerryEnvChooser envChooser) {
     this.envChooser = envChooser;
   }
 

@@ -19,8 +19,6 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
 import com.google.inject.Singleton;
-import com.google.inject.testing.guiceberry.TestScoped;
-import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,14 +27,12 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Implementation of the {@link TestScoped} annotation.
  * 
- * @see GuiceBerryJunit3
  * @see Scope 
  *
- * @author Luiz-Otavio Zorzella
- * @author Danka Karwanska
+ * @author Luiz-Otavio "Z" Zorzella
  */
 @Singleton
-public class TestScope implements Scope {
+class TestScope implements Scope {
 
   private final GuiceBerryUniverse universe;
 

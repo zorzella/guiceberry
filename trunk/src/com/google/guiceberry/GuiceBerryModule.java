@@ -27,12 +27,11 @@ import com.google.inject.Provides;
 /**
  * This Module provides the basic bindings required by GuiceBerry, namely
  * {@link TestId}, {@link TearDownAccepter} and the {@link TestScoped} scope.
- * Without these bindinds, GuiceBerry will fail to setup.
-
- * <p>Therefore, this module is required to be installed by all
- * GuiceBerry Envs.
+ * Without these bindinds, GuiceBerry will fail to set up. Therefore, this
+ * module is required to be installed by all GuiceBerry Envs (see
+ * {@link GuiceBerryEnvChooser}).
  *
- * @author Luiz-Otavio Zorzella
+ * @author Luiz-Otavio "Z" Zorzella
  */
 public class GuiceBerryModule extends AbstractModule {
     
@@ -77,7 +76,7 @@ public class GuiceBerryModule extends AbstractModule {
     return universe.currentTestDescriptionThreadLocal.get().getTestId();
   }
   
-  public interface ToTearDown extends TearDownAccepter {
+  interface ToTearDown extends TearDownAccepter {
     void runTearDown();
   }
 }

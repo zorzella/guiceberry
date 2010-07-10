@@ -14,7 +14,7 @@ public class Example2ManualControlledInjectionTest extends TearDownTestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    AutoTearDownGuiceBerry.setup(this, PetStoreEnv2GlobalStaticControllablePotm.class);
+    AutoTearDownGuiceBerry.setUp(this, PetStoreEnv2GlobalStaticControllablePotm.class);
   }
 
   @Inject

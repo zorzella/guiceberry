@@ -3,7 +3,7 @@
 package com.google.inject.testing.guiceberry.junit3;
 
 import com.google.guiceberry.DefaultEnvChooser;
-import com.google.guiceberry.EnvChooser;
+import com.google.guiceberry.GuiceBerryEnvChooser;
 import com.google.guiceberry.TestDescription;
 import com.google.inject.Module;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
@@ -14,16 +14,22 @@ import junit.framework.TestCase;
  * @author Luiz-Otavio "Z" Zorzella
  */
 @Deprecated
-class VersionTwoBackwardsCompatibleEnvChooser implements EnvChooser {
+class VersionTwoBackwardsCompatibleEnvChooser implements GuiceBerryEnvChooser {
+
+  private final TestDescription testDescription;
+
+  VersionTwoBackwardsCompatibleEnvChooser(TestDescription testDescription) {
+    this.testDescription = testDescription;
+  }
 
   private static final GuiceBerryEnvRemapper
     DEFAULT_GUICE_BERRY_ENV_REMAPPER = new IdentityGuiceBerryEnvRemapper();
 
-  public Class<? extends Module> guiceBerryEnvToUse(TestDescription testDescription) {
+  public Class<? extends Module> guiceBerryEnvToUse() {
     String gbeName = getGbeNameFromGbeAnnotation(testDescription);
     
     if (System.getProperty(DefaultEnvChooser.OVERRIDE_SYSTEM_PROPERY_NAME) != null) {
-      return DefaultEnvChooser.of(gbeName).guiceBerryEnvToUse(testDescription);
+      return DefaultEnvChooser.of(gbeName).guiceBerryEnvToUse();
     }
 
     Class<? extends Module> gbeClass = getGbeClassFromClassName(gbeName);

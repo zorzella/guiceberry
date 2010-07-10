@@ -18,7 +18,7 @@ package com.google.guiceberry.junit3;
 import com.google.common.testing.TearDown;
 import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.DefaultEnvChooser;
-import com.google.guiceberry.EnvChooser;
+import com.google.guiceberry.GuiceBerryEnvChooser;
 import com.google.guiceberry.GuiceBerry;
 import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
 import com.google.guiceberry.TestDescription;
@@ -41,7 +41,7 @@ public class ManualTearDownGuiceBerry {
     return setup(testCase, DefaultEnvChooser.of(envClass));
   }
   
-  public static TearDown setup(TestCase testCase, EnvChooser envChooser) {
+  public static TearDown setup(TestCase testCase, GuiceBerryEnvChooser envChooser) {
     final GuiceBerryWrapper setUpAndTearDown =
       GuiceBerry.INSTANCE.buildWrapper(buildTestDescription(testCase, testCase.getName()), envChooser);
     setUpAndTearDown.runBeforeTest();

@@ -15,7 +15,7 @@ public class Example3ManualControlledInjectionThroughCookieTest extends TearDown
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    AutoTearDownGuiceBerry.setup(this, PetStoreEnv3CookiesControlledPotm.class);
+    AutoTearDownGuiceBerry.setUp(this, PetStoreEnv3CookiesControlledPotm.class);
   }
 
   @Inject

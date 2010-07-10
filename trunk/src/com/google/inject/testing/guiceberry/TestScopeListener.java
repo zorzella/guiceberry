@@ -28,7 +28,7 @@ package com.google.inject.testing.guiceberry;
  * @author Luiz-Otavio Zorzella
  * @author Danka Karwanska
  */
-public interface TestScopeListener extends com.google.guiceberry.TestScopeListener {
+public interface TestScopeListener {
 
   /** Performs all the operations needed when the test enters a scope*/
   void enteringScope();

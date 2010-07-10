@@ -17,23 +17,23 @@
 package com.google.guiceberry;
 
 /**
- * Required binding for a "main" {@link GuiceBerryEnv}. Upon every test's
- * start and exit (in JUnit setUp and tearDown), this listener is notified.
+ * If a {@link TestWrapper} is bound in your GuiceBerry Env, 
+ * {@link #toRunBeforeTest} is called before each test is executed, and 
+ * {@link #toRunAfterTest()} is called after each test is executed.
  *
- * By "main" {@link GuiceBerryEnv} it is understood the module defined by the 
- * user  which is provided by {@link GuiceBerryEnv} annotation. 
+ * <p>Both methods are guaranteed to be executed at a time when all Injections
+ * are still valid (as far as GuiceBerry is concerned), and the test is still
+ * in scope (i.e. {@link TestScoped} is valid.
  *
- * @see GuiceBerryEnv
- * 
- * @author Luiz-Otavio Zorzella
- * @author Danka Karwanska
+ * <p>See an usage example of this at TODO
+ *
+ * @author Luiz-Otavio "Z" Zorzella
  */
-public interface TestScopeListener { 
+public interface TestWrapper { 
 
-  /** Performs all the operations needed when the test enters a scope*/
-  void enteringScope();
+  /** @see TestWrapper */
+  void toRunBeforeTest();
   
-  /** Performs all the operations needed when the test exits a scope*/
-  void exitingScope();
-  
+  /** @see TestWrapper */
+  void toRunAfterTest();
 }

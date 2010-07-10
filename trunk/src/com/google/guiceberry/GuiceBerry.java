@@ -29,8 +29,8 @@ import com.google.guiceberry.junit4.GuiceBerryRule;
  * 
  * <ul>
  *   <li>For Junit4, {@link GuiceBerryRule}
- *   <li>For Junit3 with TearDownTestCase, {@link AutoTearDownGuiceBerry}
  *   <li>For plain Junit3 {@link ManualTearDownGuiceBerry}
+ *   <li>For Junit3 with TearDownTestCase, {@link AutoTearDownGuiceBerry}
  * </ul>
  *
  * @author Luiz-Otavio "Z" Zorzella
@@ -50,20 +50,8 @@ public class GuiceBerry {
   /**
    * @see GuiceBerryWrapper
    */
-  public GuiceBerryWrapper buildWrapper(TestDescription testDescription, EnvChooser envChooser) {
-    final TestCaseScaffolding scaffolding = 
-      universe.new TestCaseScaffolding(testDescription, envChooser);
-    
-    return new GuiceBerryWrapper() {
-
-      public void runAfterTest() {
-        scaffolding.goTearDown();
-      }
-
-      public void runBeforeTest() {
-        scaffolding.goSetUp();
-      }
-    };
+  public GuiceBerryWrapper buildWrapper(TestDescription testDescription, GuiceBerryEnvChooser envChooser) {
+    return new TestCaseScaffolding(testDescription, envChooser, universe);
   }
   
   /**
