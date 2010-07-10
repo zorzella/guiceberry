@@ -27,11 +27,11 @@ import com.google.inject.testing.guiceberry.GuiceBerryEnv;
  *
  * @author Luiz-Otavio "Z" Zorzella
  */
-public class AnnotationBasedSelector implements GuiceBerryEnvSelector {
+  public class AnnotationBasedSelector implements GuiceBerryEnvSelector {
 
   private final TestDescription testDescription;
 
-  AnnotationBasedSelector(TestDescription testDescription) {
+  public AnnotationBasedSelector(TestDescription testDescription) {
     this.testDescription = testDescription;
   }
 
