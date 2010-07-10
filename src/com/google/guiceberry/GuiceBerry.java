@@ -16,19 +16,16 @@
 package com.google.guiceberry;
 
 import com.google.guiceberry.GuiceBerryUniverse.TestCaseScaffolding;
-import com.google.inject.Module;
 
 /**
  * @author Luiz-Otavio "Z" Zorzella
  */
 public class GuiceBerry {
 
-  public static TestCaseScaffolding setup(TestDescription testDescription, Class<? extends Module> clazz) {
-    EnvChooser envChooser = DefaultEnvChooser.of(clazz);
+  public static TestCaseScaffolding setup(TestDescription testDescription, EnvChooser envChooser) {
     TestCaseScaffolding scaffolding = 
       GuiceBerryUniverse.INSTANCE.new TestCaseScaffolding(testDescription, envChooser);
     scaffolding.goSetUp();
     return scaffolding;
   }
-  
 }

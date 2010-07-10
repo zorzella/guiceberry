@@ -13,54 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.guiceberry.junit4;
+package com.google.guiceberry.junit3;
 
+import com.google.common.testing.TearDown;
+import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.DefaultEnvChooser;
 import com.google.guiceberry.EnvChooser;
 import com.google.guiceberry.GuiceBerry;
+import com.google.guiceberry.GuiceBerryUniverse.TestCaseScaffolding;
 import com.google.guiceberry.TestDescription;
 import com.google.guiceberry.TestId;
-import com.google.guiceberry.GuiceBerryUniverse.TestCaseScaffolding;
 import com.google.inject.Module;
 
-import org.junit.rules.MethodRule;
-import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.Statement;
+import junit.framework.TestCase;
 
 /**
  * @author Luiz-Otavio "Z" Zorzella
  */
-public class GuiceBerryRule implements MethodRule {
+public class TearDownGuiceBerry {
 
-  private final EnvChooser envChooser;
-
-  public GuiceBerryRule(Class<? extends Module> envClass) {
-    this.envChooser = DefaultEnvChooser.of(envClass);
+  public static void setup(TearDownTestCase testCase, Class<? extends Module> envClass) {
+    setup(testCase, DefaultEnvChooser.of(envClass));
   }
-
-  public GuiceBerryRule(EnvChooser envChooser) {
-    this.envChooser = envChooser;
-  }
-
-  public Statement apply(final Statement base, final FrameworkMethod method, final Object target) {
-    return new Statement() {
+  
+  public static void setup(TearDownTestCase testCase, EnvChooser envChooser) {
+    final TestCaseScaffolding scaffolding = 
+      GuiceBerry.setup(buildTestDescription(testCase, testCase.getName()), envChooser);
+    testCase.addTearDown(new TearDown() {
       
-      @Override
-      public void evaluate() throws Throwable {
-        TestCaseScaffolding toTearDown = 
-          GuiceBerry.setup(buildTestDescription(target, method.getName()), envChooser);
-        try {
-          base.evaluate();
-        } finally {
-          toTearDown.goTearDown();
-        }
+      public void tearDown() throws Exception {
+        scaffolding.goTearDown();
       }
-    };
+    });
   }
 
-  private static TestDescription buildTestDescription(Object testCase, String methodName) {
+  private static TestDescription buildTestDescription(TestCase testCase, String methodName) {
     String testCaseName = testCase.getClass().getName();
     return new TestDescription(testCase, testCaseName + "." + methodName,
       new TestId(testCaseName, methodName));
   }
+  
+  
 }
