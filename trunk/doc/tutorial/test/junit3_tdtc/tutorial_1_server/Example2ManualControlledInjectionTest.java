@@ -6,8 +6,9 @@ import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
 import com.google.inject.Inject;
 
+import tutorial_1_server.prod.PetOfTheMonth;
+
 import junit3_tdtc.tutorial_1_server.PetStoreEnv2GlobalStaticControllablePotm.PetStoreModuleWithGlobalStaticOverride;
-import junit3_tdtc.tutorial_1_server.prod.PetOfTheMonth;
 
 public class Example2ManualControlledInjectionTest extends TearDownTestCase {
 

@@ -3,21 +3,23 @@ package junit3.tutorial_1_server;
 import com.google.common.collect.Maps;
 import com.google.guiceberry.GuiceBerryEnvMain;
 import com.google.guiceberry.GuiceBerryModule;
+import com.google.guiceberry.TestId;
+import com.google.guiceberry.controllable.TestIdServerModule;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.guiceberry.TestId;
-import com.google.guiceberry.controllable.TestIdServerModule;
 
-import junit3.tutorial_1_server.prod.MyPetStoreServer;
-import junit3.tutorial_1_server.prod.PetOfTheMonth;
-import junit3.tutorial_1_server.prod.PortNumber;
+import junit3.tutorial_1_server.PetStoreEnv3CookiesControlledPotm.PetStoreModuleWithTestIdBasedOverride;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+
+import tutorial_1_server.prod.MyPetStoreServer;
+import tutorial_1_server.prod.PetOfTheMonth;
+import tutorial_1_server.prod.PortNumber;
 
 import java.util.Map;
 
@@ -42,7 +44,7 @@ public final class PetStoreEnv3CookiesControlledPotm extends GuiceBerryModule {
   @Provides
   @Singleton
   MyPetStoreServer buildPetStoreServer() {
-    MyPetStoreServer result = new MyPetStoreServer(8080) {
+    MyPetStoreServer result = new MyPetStoreServer() {
       @Override
       protected Module getPetStoreModule() {
         return new PetStoreModuleWithTestIdBasedOverride();

@@ -2,15 +2,16 @@ package junit4.tutorial_1_server;
 
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
+import com.google.guiceberry.TestId;
 import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
-import com.google.guiceberry.TestId;
 
 import junit4.tutorial_1_server.PetStoreEnv3CookiesControlledPotm.PetStoreModuleWithTestIdBasedOverride;
-import junit4.tutorial_1_server.prod.PetOfTheMonth;
 
 import org.junit.Rule;
 import org.junit.Test;
+
+import tutorial_1_server.prod.PetOfTheMonth;
 
 public class Example3ManualControlledInjectionThroughCookieTest {
 

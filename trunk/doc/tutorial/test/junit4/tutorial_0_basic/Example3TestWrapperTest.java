@@ -11,7 +11,7 @@ import com.google.guiceberry.TestWrapper;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class Example3TestScopeListenerTest {
+public class Example3TestWrapperTest {
 
   @Rule
   public final GuiceBerryRule guiceBerry = new GuiceBerryRule(Env.class);
@@ -26,17 +26,17 @@ public class Example3TestScopeListenerTest {
     System.out.println("Inside testTwo");
   }
 
-  public static final class Example3TestScopeListener implements TestWrapper {
+  public static final class Example3TestWrapper implements TestWrapper {
 
     @Inject
     private Provider<TestId> testId;
 
     public void toRunBeforeTest() {
-      System.out.println("Entering scope of: " + testId.get());
+      System.out.println("Beginning: " + testId.get());
     }
 
     public void toRunAfterTest() {
-      System.out.println("Exiting scope of: " + testId.get());
+      System.out.println("Ending: " + testId.get());
     }
   }
 
@@ -44,9 +44,8 @@ public class Example3TestScopeListenerTest {
     
     @Override
     protected void configure() {
-      // TODO Auto-generated method stub
       super.configure();
-      bind(TestWrapper.class).to(Example3TestScopeListener.class).in(Scopes.SINGLETON);
+      bind(TestWrapper.class).to(Example3TestWrapper.class).in(Scopes.SINGLETON);
     }
   }
 }

@@ -12,7 +12,7 @@ public class AllTests {
     suite.addTestSuite(Example0HelloWorldTest.class);
     suite.addTestSuite(Example1GetsInjectedTest.class);
     suite.addTestSuite(Example2ScopesTest.class);
-    suite.addTestSuite(Example3TestScopeListenerTest.class);
+    suite.addTestSuite(Example3TestWrapperTest.class);
     //$JUnit-END$
     return suite;
   }  

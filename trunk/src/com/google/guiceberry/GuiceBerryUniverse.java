@@ -16,6 +16,8 @@
 package com.google.guiceberry;
 
 import com.google.common.collect.Maps;
+import com.google.common.testing.TearDown;
+import com.google.common.testing.TearDownStack;
 import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
 import com.google.guiceberry.GuiceBerryModule.ToTearDown;
 import com.google.inject.ConfigurationException;
@@ -58,6 +60,8 @@ class GuiceBerryUniverse {
 
     private NonFinals nonFinals;
     
+    private final TearDownStack stack = new TearDownStack();
+    
     public TestCaseScaffolding(
         TestDescription testDescription,
         GuiceBerryEnvSelector guiceBerryEnvSelector,
@@ -83,6 +87,18 @@ class GuiceBerryUniverse {
       nonFinals = getInjector(gbeClass);
 
       nonFinals.testScopeListener.toRunBeforeTest();
+      stack.addTearDown(new TearDown() {
+        public void tearDown() throws Exception {
+          doTearDown();
+        }
+      });
+      stack.addTearDown(new TearDown() {
+        public void tearDown() throws Exception {
+          ToTearDown toTearDown = nonFinals.injector.getInstance(ToTearDown.class);
+          toTearDown.runTearDown();
+        }
+      });
+      
       injectMembersIntoTest(gbeClass, nonFinals.injector); 
     }
 
@@ -250,23 +266,20 @@ class GuiceBerryUniverse {
         universe.currentTestDescriptionThreadLocal.set(null);
         return;
       }
-      
-      ToTearDown toTearDown = injector.getInstance(ToTearDown.class);
-      toTearDown.runTearDown();
-      
-      notifyTestScopeListenerOfOutScope(nonFinals);
-      // TODO: this line used to be before the notifyTestScopeListenerOfOutScope
-      // causing a bug -- e.d. a Provider<TestId> could not be used in the 
-      // exitingScope method of the TestScopeListener. I haven't yet found a
-      // good way to test this change.
-      doTearDown(injector);
+
+      stack.runTearDown();
     }
     
     private void notifyTestScopeListenerOfOutScope(NonFinals nonFinals) {
       nonFinals.testScopeListener.toRunAfterTest();
     }
 
-    private void doTearDown(Injector injector) {
+    private void doTearDown() {
+      // TODO: this used to be at the end of this method, causing a bug -- e.g.
+      // a Provider<TestId> could not be used in the toRunAfterTest Scope method
+      // of the TestWrapper. TODO: unit test this!
+      notifyTestScopeListenerOfOutScope(nonFinals);
+      Injector injector = nonFinals.injector;
     
       if (!universe.currentTestDescriptionThreadLocal.get().equals(testDescription)) {
         String msg = String.format(GuiceBerryJunit3.class.toString() 
