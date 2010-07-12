@@ -11,8 +11,6 @@ import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
-import junit3.tutorial_1_server.PetStoreEnv3CookiesControlledPotm.PetStoreModuleWithTestIdBasedOverride;
-
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
