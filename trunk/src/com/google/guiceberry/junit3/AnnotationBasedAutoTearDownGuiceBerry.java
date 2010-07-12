@@ -13,33 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.guiceberry.util;
+package com.google.guiceberry.junit3;
 
 import com.google.common.testing.TearDown;
+import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.DefaultEnvSelector;
-import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
-
-import junit.framework.TestCase;
+import com.google.guiceberry.util.AnnotationBasedGuiceBerryEnvSelector;
 
 /**
- * Like {@link ManualTearDownGuiceBerry#setup(TestCase, Class)} but using
+ * Like {@link AutoTearDownGuiceBerry#setUp(TearDownTestCase, Class)} but using 
  * {@link AnnotationBasedGuiceBerryEnvSelector} instead of
  * {@link DefaultEnvSelector}.
  *
- * @see AnnotationBasedAutoTearDownGuiceBerry
- * 
+ * @see AnnotationBasedManualTearDownGuiceBerry
+ *
  * @author Luiz-Otavio "Z" Zorzella
  */
-public class AnnotationBasedManualTearDownGuiceBerry {
+public class AnnotationBasedAutoTearDownGuiceBerry {
 
   /**
    * Sets up the {@code testCase} by leveraging the 
-   * {@link AnnotationBasedGuiceBerryEnvSelector} and returns a {@link TearDown}
-   * whose {@link TearDown#tearDown()} method must be manually called (thus the
-   * "manual" moniker).
+   * {@link AnnotationBasedGuiceBerryEnvSelector} and automatically registers a 
+   * {@link TearDown} (thus the "auto" moniker).
    */
-  public static TearDown setup(TestCase testCase) {
-    return ManualTearDownGuiceBerry.setup(
-        testCase, AnnotationBasedGuiceBerryEnvSelector.INSTANCE);
+  public static void setUp(TearDownTestCase testCase) {
+    AutoTearDownGuiceBerry.setUp(testCase, AnnotationBasedGuiceBerryEnvSelector.INSTANCE);
   }
 }

@@ -18,11 +18,13 @@ package com.google.guiceberry.util;
 import com.google.guiceberry.DefaultEnvSelector;
 import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.TestDescription;
+import com.google.guiceberry.junit3.AnnotationBasedAutoTearDownGuiceBerry;
+import com.google.guiceberry.junit3.AnnotationBasedManualTearDownGuiceBerry;
 import com.google.inject.Module;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 
 /**
- * A {@link GuiceBerryEnvSelector} that is based on the {@link GuiceBerryEnv}
+ * A {@link GuiceBerryEnvSelector} that is based on the {@link AnnotatedGuiceBerryEnv}
  * annotation, though it also honors the {@link DefaultEnvSelector}'s override.
  *
  * @see AnnotationBasedManualTearDownGuiceBerry
@@ -42,9 +44,15 @@ public class AnnotationBasedGuiceBerryEnvSelector implements GuiceBerryEnvSelect
 
     Class<? extends Module> gbeClass = getGbeClassFromClassName(gbeName);
     if (!Module.class.isAssignableFrom(gbeClass)) {
+      String annotationName;
+      if (isOldAnnotation(testDescription.getTestCaseClass())) {
+        annotationName = GuiceBerryEnv.class.getSimpleName();
+      } else {
+        annotationName = AnnotatedGuiceBerryEnv.class.getSimpleName();
+      }
       String msg = String.format(
-          "@%s class '%s' must be a Guice Module (i.e. implement com.google.inject.Module).", 
-          GuiceBerryEnv.class.getSimpleName(),
+          "Your @%s class '%s' must be a Guice Module (i.e. implement com.google.inject.Module).", 
+          annotationName,
           gbeClass.getName()); 
       throw new IllegalArgumentException(msg);
     }
@@ -54,7 +62,20 @@ public class AnnotationBasedGuiceBerryEnvSelector implements GuiceBerryEnvSelect
   private static String getGbeNameFromGbeAnnotation(TestDescription testDescription) {
     Class<?> testCaseClass = testDescription.getTestCaseClass();
     GuiceBerryEnv gbeAnnotation = getGbeAnnotation(testCaseClass);
-    if (gbeAnnotation == null) {
+    AnnotatedGuiceBerryEnv annotatedGbeAnnotation = getAnnotatedGbeAnnotation(testCaseClass);
+
+    if ((gbeAnnotation != null) && (annotatedGbeAnnotation != null)) {
+      throw new IllegalArgumentException("It seems your test used both the "
+          + "deprecated GuiceBerryEnv and AnnotatedGuiceBerryEnv annotations."
+          + "Please remove the deprecated one.");
+    }
+
+    String declaredGbeName;
+    if (gbeAnnotation != null) {
+      declaredGbeName = gbeAnnotation.value();
+    } else if (annotatedGbeAnnotation != null) {
+      declaredGbeName = annotatedGbeAnnotation.value();
+    } else {
       throw new IllegalArgumentException(String.format(
           "In order to use the deprecated GuiceBerryJunit3, your test class "
           + "must have a @GuiceBerryEnv annotation. Either add one, or, better "
@@ -62,11 +83,19 @@ public class AnnotationBasedGuiceBerryEnvSelector implements GuiceBerryEnvSelect
           + DefaultEnvSelector.LINK_TO_UPGRADING_DOC
           ));
     }
-    
-    String declaredGbeName = gbeAnnotation.value();
     return declaredGbeName;
   }
 
+  private static boolean isOldAnnotation(Class<?> testCaseClass) {
+    return getGbeAnnotation(testCaseClass) != null;
+  }
+  
+  private static AnnotatedGuiceBerryEnv getAnnotatedGbeAnnotation(Class<?> testCaseClass) { 
+    AnnotatedGuiceBerryEnv gbeAnnotation =
+      testCaseClass.getAnnotation(AnnotatedGuiceBerryEnv.class);
+    return gbeAnnotation;
+  }
+  
   private static GuiceBerryEnv getGbeAnnotation(Class<?> testCaseClass) { 
     GuiceBerryEnv gbeAnnotation =
       testCaseClass.getAnnotation(GuiceBerryEnv.class);
@@ -77,7 +106,7 @@ public class AnnotationBasedGuiceBerryEnvSelector implements GuiceBerryEnvSelect
   private static Class<? extends Module> getGbeClassFromClassName(String gbeName) {
     Class<?> className;
     try {
-      className = DefaultEnvSelector.class.getClassLoader().loadClass(gbeName);   
+      className = AnnotationBasedGuiceBerryEnvSelector.class.getClassLoader().loadClass(gbeName);   
     } catch (ClassNotFoundException e) {  
       String msg = String.format(
               "Class '%s' was not found.",
