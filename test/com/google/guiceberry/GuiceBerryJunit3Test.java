@@ -151,7 +151,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       instance().doSetUp(test);
       fail();
     } catch (IllegalArgumentException expected) {
-        assertEquals("@GuiceBerryEnv class " +
+        assertEquals("Your @GuiceBerryEnv class " +
                 "'" + SELF_CANONICAL_NAME + "$NotAGuiceBerryEnvOne' " +
                 "must be a Guice Module (i.e. implement com.google.inject.Module).", 
                 expected.getMessage());
@@ -972,6 +972,10 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     
     private final GuiceBerryJunit3 guiceBerryJunit3;
 
+    public TestWithGbeThatFailsInjectorCreation() {
+      this(null);
+    }
+    
     public TestWithGbeThatFailsInjectorCreation(GuiceBerryJunit3 guiceBerryJunit3) {
       this.guiceBerryJunit3 = guiceBerryJunit3;
     }
@@ -982,7 +986,9 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
     @Override
     protected void setUp() throws Exception {
-      guiceBerryJunit3.doSetUp(this);
+      if (guiceBerryJunit3 != null) {
+        guiceBerryJunit3.doSetUp(this);
+      }
     }
 
     public void testNothing() {}
@@ -994,6 +1000,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
       return namedTest(new UnAnnotatedNonTdtc());
     }
     
+    public void testNothing() {}
   }
 
 // BELOW CLASSES IMPLEMENTS INTERFACE MODULE

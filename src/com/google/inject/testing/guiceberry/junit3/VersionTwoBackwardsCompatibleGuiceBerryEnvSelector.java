@@ -18,6 +18,7 @@ package com.google.inject.testing.guiceberry.junit3;
 import com.google.guiceberry.DefaultEnvSelector;
 import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.TestDescription;
+import com.google.guiceberry.util.AnnotatedGuiceBerryEnv;
 import com.google.inject.Module;
 import com.google.inject.testing.guiceberry.GuiceBerryEnv;
 
@@ -41,9 +42,15 @@ class VersionTwoBackwardsCompatibleGuiceBerryEnvSelector implements GuiceBerryEn
 
     Class<? extends Module> gbeClass = getGbeClassFromClassName(gbeName);
     if (!Module.class.isAssignableFrom(gbeClass)) {
+      String annotationName;
+      if (isOldAnnotation(testDescription.getTestCaseClass())) {
+        annotationName = GuiceBerryEnv.class.getSimpleName();
+      } else {
+        annotationName = AnnotatedGuiceBerryEnv.class.getSimpleName();
+      }
       String msg = String.format(
-          "@%s class '%s' must be a Guice Module (i.e. implement com.google.inject.Module).", 
-          GuiceBerryEnv.class.getSimpleName(),
+          "Your @%s class '%s' must be a Guice Module (i.e. implement com.google.inject.Module).", 
+          annotationName,
           gbeClass.getName()); 
       throw new IllegalArgumentException(msg);
     }
@@ -53,7 +60,20 @@ class VersionTwoBackwardsCompatibleGuiceBerryEnvSelector implements GuiceBerryEn
   private static String getGbeNameFromGbeAnnotation(TestDescription testDescription) {
     Class<?> testCaseClass = testDescription.getTestCaseClass();
     GuiceBerryEnv gbeAnnotation = getGbeAnnotation(testCaseClass);
-    if (gbeAnnotation == null) {
+    AnnotatedGuiceBerryEnv annotatedGbeAnnotation = getAnnotatedGbeAnnotation(testCaseClass);
+
+    if ((gbeAnnotation != null) && (annotatedGbeAnnotation != null)) {
+      throw new IllegalArgumentException("It seems your test used both the "
+          + "deprecated GuiceBerryEnv and AnnotatedGuiceBerryEnv annotations."
+          + "Please remove the deprecated one.");
+    }
+
+    String declaredGbeName;
+    if (gbeAnnotation != null) {
+      declaredGbeName = gbeAnnotation.value();
+    } else if (annotatedGbeAnnotation != null) {
+      declaredGbeName = annotatedGbeAnnotation.value();
+    } else {
       throw new IllegalArgumentException(String.format(
           "In order to use the deprecated GuiceBerryJunit3, your test class "
           + "must have a @GuiceBerryEnv annotation. Either add one, or, better "
@@ -62,7 +82,6 @@ class VersionTwoBackwardsCompatibleGuiceBerryEnvSelector implements GuiceBerryEn
           ));
     }
     
-    String declaredGbeName = gbeAnnotation.value();
     GuiceBerryEnvRemapper remapper = getRemapper();
     String result = remapper.remap(null, declaredGbeName);
     if (result == null) {
@@ -76,6 +95,16 @@ class VersionTwoBackwardsCompatibleGuiceBerryEnvSelector implements GuiceBerryEn
     return result;
   }
 
+  private static boolean isOldAnnotation(Class<?> testCaseClass) {
+    return getGbeAnnotation(testCaseClass) != null;
+  }
+  
+  private static AnnotatedGuiceBerryEnv getAnnotatedGbeAnnotation(Class<?> testCaseClass) { 
+    AnnotatedGuiceBerryEnv gbeAnnotation =
+      testCaseClass.getAnnotation(AnnotatedGuiceBerryEnv.class);
+    return gbeAnnotation;
+  }
+  
   private static GuiceBerryEnv getGbeAnnotation(Class<?> testCaseClass) { 
     GuiceBerryEnv gbeAnnotation =
       testCaseClass.getAnnotation(GuiceBerryEnv.class);
@@ -157,7 +186,7 @@ class VersionTwoBackwardsCompatibleGuiceBerryEnvSelector implements GuiceBerryEn
   private static Class<? extends Module> getGbeClassFromClassName(String gbeName) {
     Class<?> className;
     try {
-      className = DefaultEnvSelector.class.getClassLoader().loadClass(gbeName);   
+      className = VersionTwoBackwardsCompatibleGuiceBerryEnvSelector.class.getClassLoader().loadClass(gbeName);   
     } catch (ClassNotFoundException e) {  
       String msg = String.format(
               "Class '%s' was not found.",

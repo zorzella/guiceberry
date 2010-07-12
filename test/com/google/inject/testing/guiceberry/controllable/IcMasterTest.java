@@ -16,8 +16,10 @@
 
 package com.google.inject.testing.guiceberry.controllable;
 
+import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
 import com.google.common.testing.TearDownStack;
+import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -30,7 +32,7 @@ import com.google.inject.testing.guiceberry.TestId;
 
 import junit.framework.TestCase;
 
-public class IcMasterTest extends TestCase {
+public class IcMasterTest extends TearDownTestCase {
 
   private static final TestId TEST_ID = new TestId("foo", "bar");
   
@@ -105,7 +107,21 @@ public class IcMasterTest extends TestCase {
     
     Injector testInjector = Guice.createInjector(buildTestModule(icMaster));
     
-    MyTestCase injected = testInjector.getInstance(MyTestCase.class);
+    final MyTestCase injected = testInjector.getInstance(MyTestCase.class);
+    
+    addTearDown(new TearDown() {
+      
+      public void tearDown() throws Exception {
+        injected.myEnumIc.resetOverride();
+      }
+    });
+
+    addTearDown(new TearDown() {
+      
+      public void tearDown() throws Exception {
+        injected.myGenericClassOfMyEnumIc.resetOverride();
+      }
+    });
     
     ClassInServer instanceBefore = 
       controlledServerInjector.getInstance(ClassInServer.class);
