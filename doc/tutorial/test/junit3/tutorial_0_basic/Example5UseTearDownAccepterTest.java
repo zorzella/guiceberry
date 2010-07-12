@@ -15,7 +15,7 @@ public class Example5UseTearDownAccepterTest extends TestCase {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    toTearDown = ManualTearDownGuiceBerry.setup(this, Env.class);
+    toTearDown = ManualTearDownGuiceBerry.setUp(this, Env.class);
 
     tearDownAccepter.addTearDown(new FirstItemResetter());
     firstItem = 1;

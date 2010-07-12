@@ -22,7 +22,7 @@ public class Example2ManualControlledInjectionTest extends TestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    toTearDown = ManualTearDownGuiceBerry.setup(this, PetStoreEnv2GlobalStaticControllablePotm.class);
+    toTearDown = ManualTearDownGuiceBerry.setUp(this, PetStoreEnv2GlobalStaticControllablePotm.class);
   }
   
   @Inject

@@ -13,11 +13,13 @@ public class Example0HelloWorldTest extends TestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    toTearDown = ManualTearDownGuiceBerry.setup(this, Env.class);
+    // Make this the call to ManualTearDownGuiceBerry.setUp as early as possible
+    toTearDown = ManualTearDownGuiceBerry.setUp(this, Env.class);
   }
   
   @Override
   protected void tearDown() throws Exception {
+    // Make this the call to ManualTearDownGuiceBerry.tearDown Up as late as possible
     toTearDown.tearDown();
     super.tearDown();
   }

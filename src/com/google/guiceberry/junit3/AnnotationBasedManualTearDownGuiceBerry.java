@@ -22,7 +22,7 @@ import com.google.guiceberry.util.AnnotationBasedGuiceBerryEnvSelector;
 import junit.framework.TestCase;
 
 /**
- * Like {@link ManualTearDownGuiceBerry#setup(TestCase, Class)} but using
+ * Like {@link ManualTearDownGuiceBerry#setUp(TestCase, Class)} but using
  * {@link AnnotationBasedGuiceBerryEnvSelector} instead of
  * {@link DefaultEnvSelector}.
  *
@@ -38,8 +38,8 @@ public class AnnotationBasedManualTearDownGuiceBerry {
    * whose {@link TearDown#tearDown()} method must be manually called (thus the
    * "manual" moniker).
    */
-  public static TearDown setup(TestCase testCase) {
-    return ManualTearDownGuiceBerry.setup(
+  public static TearDown setUp(TestCase testCase) {
+    return ManualTearDownGuiceBerry.setUp(
         testCase, AnnotationBasedGuiceBerryEnvSelector.INSTANCE);
   }
 }

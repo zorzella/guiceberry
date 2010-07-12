@@ -143,8 +143,8 @@ public class GuiceBerryJunit3 {
     final GuiceBerryWrapper wrapper = guiceBerry.buildWrapper(testDescription, 
         new VersionTwoBackwardsCompatibleGuiceBerryEnvSelector());
 
-    //Setup teard down before setup so that if an exception is thrown there,
-    //we still do a tearDown.
+    //add a tear down before setting up so that if an exception is thrown there,
+    //we still do the tear down.
     maybeAddGuiceBerryTearDown(testDescription, new TearDown() {
       
       public void tearDown() throws Exception {

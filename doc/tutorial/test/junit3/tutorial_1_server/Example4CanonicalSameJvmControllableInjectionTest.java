@@ -21,7 +21,7 @@ public class Example4CanonicalSameJvmControllableInjectionTest extends TestCase 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    toTearDown = ManualTearDownGuiceBerry.setup(this, PetStoreEnv4CanonicalSameJvmControllablePotm.class);
+    toTearDown = ManualTearDownGuiceBerry.setUp(this, PetStoreEnv4CanonicalSameJvmControllablePotm.class);
   }
   
   @Inject

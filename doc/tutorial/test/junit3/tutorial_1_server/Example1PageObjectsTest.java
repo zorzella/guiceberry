@@ -19,7 +19,7 @@ public class Example1PageObjectsTest extends TestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    toTearDown = ManualTearDownGuiceBerry.setup(this, PetStoreEnv0Simple.class);
+    toTearDown = ManualTearDownGuiceBerry.setUp(this, PetStoreEnv0Simple.class);
   }
   
   @Inject
