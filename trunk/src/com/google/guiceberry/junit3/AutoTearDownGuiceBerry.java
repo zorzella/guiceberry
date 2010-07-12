@@ -16,12 +16,15 @@
 package com.google.guiceberry.junit3;
 
 import com.google.common.testing.TearDown;
+import com.google.common.testing.TearDownAccepter;
 import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.DefaultEnvSelector;
 import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.GuiceBerry;
 import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
 import com.google.inject.Module;
+
+import junit.framework.TestCase;
 
 /**
  * {@link GuiceBerry} adapter for JUnit3 {@link TearDownTestCase}s.
@@ -36,8 +39,17 @@ public class AutoTearDownGuiceBerry {
    * Sets up the test, by creating an injector for the given
    * {@code guiceBerryEnvClass} and registering a {@link TearDown} against the
    * given {@code testCase}.
+   *
+   * <p>A canonical test will call this method in the its setUp method, and will
+   * pass {@code this} as the testCase argument. See
+   * {@link junit3_tdtc.tutorial_0_basic.Example0HelloWorldTest#setName(String)}.
+   *
+   * <p>The parameter {@code T} is a {@link TearDownTestCase} or anything
+   * equivalent to it. 
    */
-  public static void setUp(TearDownTestCase testCase, Class<? extends Module> guiceBerryEnvClass) {
+  public static <T extends TestCase & TearDownAccepter> void setUp(
+      /* TeaDownTestCase */ T testCase,
+      Class<? extends Module> guiceBerryEnvClass) {
     setUp(testCase, DefaultEnvSelector.of(guiceBerryEnvClass));
   }
   
@@ -45,10 +57,13 @@ public class AutoTearDownGuiceBerry {
    * Same as {@link #setUp(TearDownTestCase, Class)}, but with the given 
    * {@code guiceBerryEnvSelector}.
    */
-  public static void setUp(TearDownTestCase testCase, GuiceBerryEnvSelector guiceBerryEnvSelector) {
+  public static <T extends TestCase & TearDownAccepter> void setUp(
+      /* TeaDownTestCase */ T testCase,
+      GuiceBerryEnvSelector guiceBerryEnvSelector) {
     final GuiceBerryWrapper toTearDown = 
       GuiceBerry.INSTANCE.buildWrapper(
-          ManualTearDownGuiceBerry.buildTestDescription(testCase, testCase.getName()), guiceBerryEnvSelector);
+          ManualTearDownGuiceBerry.buildTestDescription(testCase, testCase.getName()),
+          guiceBerryEnvSelector);
     testCase.addTearDown(new TearDown() {
       
       public void tearDown() throws Exception {

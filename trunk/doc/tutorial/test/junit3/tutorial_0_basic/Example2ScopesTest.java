@@ -29,7 +29,7 @@ public class Example2ScopesTest extends TestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    toTearDown = ManualTearDownGuiceBerry.setup(this, Env.class);
+    toTearDown = ManualTearDownGuiceBerry.setUp(this, Env.class);
   }
 
   @Inject

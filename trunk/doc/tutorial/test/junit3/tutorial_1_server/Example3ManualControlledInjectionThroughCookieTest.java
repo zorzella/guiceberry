@@ -23,7 +23,7 @@ public class Example3ManualControlledInjectionThroughCookieTest extends TestCase
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    toTearDown = ManualTearDownGuiceBerry.setup(this, PetStoreEnv3CookiesControlledPotm.class);
+    toTearDown = ManualTearDownGuiceBerry.setUp(this, PetStoreEnv3CookiesControlledPotm.class);
   }
   
   @Inject

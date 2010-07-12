@@ -9,6 +9,8 @@ public class Example0HelloWorldTest extends TearDownTestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
+    // Make this the call to ManualTearDownGuiceBerry.setUp as early as possible,
+    // though after TearDownTestCase's setUp.
     AutoTearDownGuiceBerry.setUp(this, Env.class);
   }
 

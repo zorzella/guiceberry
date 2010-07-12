@@ -37,11 +37,18 @@ import junit.framework.TestCase;
 public class ManualTearDownGuiceBerry {
 
   /**
-   * Calls {@link #setup(TestCase, GuiceBerryEnvSelector)} passing a
+   * Calls {@link #setUp(TestCase, GuiceBerryEnvSelector)} passing a
    * {@link DefaultEnvSelector#of} the given {@code envClass}.
+   *
+   * <p>A canonical test will call this method in the its setUp method, and will
+   * pass {@code this} as the testCase argument. It will then store the return
+   * value to run it at its tearDown. See
+   * {@link junit3.tutorial_0_basic.Example0HelloWorldTest#setName(String)}.
    */
-  public static TearDown setup(TestCase testCase, Class<? extends Module> envClass) {
-    return setup(testCase, DefaultEnvSelector.of(envClass));
+  public static TearDown setUp(
+      TestCase testCase, 
+      Class<? extends Module> envClass) {
+    return setUp(testCase, DefaultEnvSelector.of(envClass));
   }
   
   /**
@@ -49,9 +56,12 @@ public class ManualTearDownGuiceBerry {
    * and returns a {@link TearDown} whose {@link TearDown#tearDown()} method
    * must be manually called (thus the "manual" moniker).
    */
-  public static TearDown setup(TestCase testCase, GuiceBerryEnvSelector guiceBerryEnvSelector) {
+  public static TearDown setUp(
+      TestCase testCase, 
+      GuiceBerryEnvSelector guiceBerryEnvSelector) {
     final GuiceBerryWrapper setUpAndTearDown =
-      GuiceBerry.INSTANCE.buildWrapper(buildTestDescription(testCase, testCase.getName()), guiceBerryEnvSelector);
+      GuiceBerry.INSTANCE.buildWrapper(buildTestDescription(testCase, testCase.getName()), 
+          guiceBerryEnvSelector);
     setUpAndTearDown.runBeforeTest();
     return new TearDown() {
       
