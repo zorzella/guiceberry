@@ -15,6 +15,7 @@
  */
 package com.google.guiceberry.util;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.guiceberry.DefaultEnvSelector;
 import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.TestDescription;
@@ -59,7 +60,8 @@ public class AnnotationBasedGuiceBerryEnvSelector implements GuiceBerryEnvSelect
     return gbeClass;
   }
   
-  private static String getGbeNameFromGbeAnnotation(TestDescription testDescription) {
+  @VisibleForTesting
+  static String getGbeNameFromGbeAnnotation(TestDescription testDescription) {
     Class<?> testCaseClass = testDescription.getTestCaseClass();
     GuiceBerryEnv gbeAnnotation = getGbeAnnotation(testCaseClass);
     AnnotatedGuiceBerryEnv annotatedGbeAnnotation = getAnnotatedGbeAnnotation(testCaseClass);
