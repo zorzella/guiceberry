@@ -1,13 +1,13 @@
 package junit4.tutorial_1_server;
 
+import com.google.guiceberry.controllable.InjectionController;
 import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
-import com.google.guiceberry.controllable.InjectionController;
 
 import org.junit.Rule;
 import org.junit.Test;
 
-import junit4.tutorial_1_server.prod.PetOfTheMonth;
+import tutorial_1_server.prod.PetOfTheMonth;
 
 public class Example4CanonicalSameJvmControllableInjectionTest {
 

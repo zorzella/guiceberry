@@ -7,8 +7,9 @@ import com.google.guiceberry.TestId;
 import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
 import com.google.inject.Inject;
 
+import tutorial_1_server.prod.PetOfTheMonth;
+
 import junit3_tdtc.tutorial_1_server.PetStoreEnv3CookiesControlledPotm.PetStoreModuleWithTestIdBasedOverride;
-import junit3_tdtc.tutorial_1_server.prod.PetOfTheMonth;
 
 public class Example3ManualControlledInjectionThroughCookieTest extends TearDownTestCase {
 

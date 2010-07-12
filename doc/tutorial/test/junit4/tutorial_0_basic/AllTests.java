@@ -8,6 +8,6 @@ import org.junit.runners.Suite;
 Example0HelloWorldTest.class, 
 Example1GetsInjectedTest.class, 
 Example2ScopesTest.class, 
-Example3TestScopeListenerTest.class, 
+Example3TestWrapperTest.class, 
 })
 public class AllTests {}

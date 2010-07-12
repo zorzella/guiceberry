@@ -1,13 +1,22 @@
-package junit3_tdtc.tutorial_0_basic;
+package junit4.tutorial_0_basic;
+
+import static org.junit.Assert.assertEquals;
 
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
-import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.GuiceBerryModule;
-import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
+import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
-public class Example5UseTearDownAccepterTest extends TearDownTestCase {
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+public class Example4UseTearDownAccepterTest {
+
+  @Rule
+  public final GuiceBerryRule guiceBerry = new GuiceBerryRule(Env.class);
 
   @Inject
   private TearDownAccepter tearDownAccepter;
@@ -16,10 +25,8 @@ public class Example5UseTearDownAccepterTest extends TearDownTestCase {
   private int secondItem;
   private boolean throwExceptionOnSecondItemDeleter = false;
 
-  @Override
+  @Before
   public void setUp() throws Exception {
-    super.setUp();
-    AutoTearDownGuiceBerry.setUp(this, Env.class);
     tearDownAccepter.addTearDown(new FirstItemResetter());
     firstItem = 1;
 
@@ -27,11 +34,20 @@ public class Example5UseTearDownAccepterTest extends TearDownTestCase {
     secondItem = 2;
   }
   
+  @After
+  public void tearDown() throws Exception {
+    // @Afters happen before the tear downs
+    assertEquals(1, firstItem);
+    assertEquals(2, secondItem);
+  }
+
+  @Test
   public void testOne() throws Exception {
     assertEquals(1, firstItem);
     assertEquals(2, secondItem);
   }
 
+  @Test
   public void testTwoFailsWithException() throws Exception {
     assertEquals(1, firstItem);
     throwExceptionOnSecondItemDeleter = true;
@@ -56,7 +72,7 @@ public class Example5UseTearDownAccepterTest extends TearDownTestCase {
       if (throwExceptionOnSecondItemDeleter) {
         // We'll simulate a situation where a tear down goes wrong -- like getting
         // an exception trying to close a File or DB connection or whatever.
-        throw new Exception("Let's say something went wrong here.");
+        throw new Exception("This test is expected to fail! Let's say something went wrong here.");
       } else {
         secondItem = 0;
       }

@@ -1,35 +1,14 @@
-package junit3.tutorial_0_basic;
+package junit3_tdtc.tutorial_0_basic;
 
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
+import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.GuiceBerryModule;
-import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
+import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
 import com.google.inject.Inject;
 
-import junit.framework.TestCase;
+public class Example4UseTearDownAccepterTest extends TearDownTestCase {
 
-public class Example5UseTearDownAccepterTest extends TestCase {
-
-  private TearDown toTearDown;
-  
-  @Override
-  public void setUp() throws Exception {
-    super.setUp();
-    toTearDown = ManualTearDownGuiceBerry.setUp(this, Env.class);
-
-    tearDownAccepter.addTearDown(new FirstItemResetter());
-    firstItem = 1;
-
-    tearDownAccepter.addTearDown(new SecondItemResetter());
-    secondItem = 2;
-  }
-  
-  @Override
-  protected void tearDown() throws Exception {
-    toTearDown.tearDown();
-    super.tearDown();
-  }
-  
   @Inject
   private TearDownAccepter tearDownAccepter;
   
@@ -37,6 +16,17 @@ public class Example5UseTearDownAccepterTest extends TestCase {
   private int secondItem;
   private boolean throwExceptionOnSecondItemDeleter = false;
 
+  @Override
+  public void setUp() throws Exception {
+    super.setUp();
+    AutoTearDownGuiceBerry.setUp(this, Env.class);
+    tearDownAccepter.addTearDown(new FirstItemResetter());
+    firstItem = 1;
+
+    tearDownAccepter.addTearDown(new SecondItemResetter());
+    secondItem = 2;
+  }
+  
   public void testOne() throws Exception {
     assertEquals(1, firstItem);
     assertEquals(2, secondItem);

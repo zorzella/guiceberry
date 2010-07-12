@@ -7,7 +7,8 @@ import com.google.inject.Inject;
 
 import junit.framework.TestCase;
 import junit3.tutorial_1_server.PetStoreEnv2GlobalStaticControllablePotm.PetStoreModuleWithGlobalStaticOverride;
-import junit3.tutorial_1_server.prod.PetOfTheMonth;
+
+import tutorial_1_server.prod.PetOfTheMonth;
 
 public class Example2ManualControlledInjectionTest extends TestCase {
 

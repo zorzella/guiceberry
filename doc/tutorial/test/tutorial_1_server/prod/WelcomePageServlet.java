@@ -1,4 +1,4 @@
-package junit4.tutorial_1_server.prod;
+package tutorial_1_server.prod;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;

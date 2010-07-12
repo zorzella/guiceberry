@@ -1,18 +1,20 @@
 package junit4.tutorial_1_server;
 
+import com.google.guiceberry.GuiceBerryEnvMain;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.guiceberry.GuiceBerryEnvMain;
 
-import junit4.tutorial_1_server.prod.MyPetStoreServer;
-import junit4.tutorial_1_server.prod.PetOfTheMonth;
-import junit4.tutorial_1_server.prod.PortNumber;
+import junit4.tutorial_1_server.PetStoreEnv2GlobalStaticControllablePotm.PetStoreModuleWithGlobalStaticOverride;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+
+import tutorial_1_server.prod.MyPetStoreServer;
+import tutorial_1_server.prod.PetOfTheMonth;
+import tutorial_1_server.prod.PortNumber;
 
 public final class PetStoreEnv2GlobalStaticControllablePotm extends GuiceBerryModule {
   
@@ -31,7 +33,7 @@ public final class PetStoreEnv2GlobalStaticControllablePotm extends GuiceBerryMo
   @Provides
   @Singleton
   MyPetStoreServer buildPetStoreServer() {
-    MyPetStoreServer result = new MyPetStoreServer(8080) {
+    MyPetStoreServer result = new MyPetStoreServer() {
       @Override
       protected Module getPetStoreModule() {
         return new PetStoreModuleWithGlobalStaticOverride();

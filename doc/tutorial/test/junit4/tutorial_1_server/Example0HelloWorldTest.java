@@ -5,13 +5,13 @@ import static org.junit.Assert.assertEquals;
 import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
-import junit4.tutorial_1_server.prod.PortNumber;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+import tutorial_1_server.prod.PortNumber;
 
 public class Example0HelloWorldTest {
 

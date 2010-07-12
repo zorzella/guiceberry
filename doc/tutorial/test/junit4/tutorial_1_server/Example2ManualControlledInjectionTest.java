@@ -5,11 +5,12 @@ import com.google.common.testing.TearDownAccepter;
 import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
+import junit4.tutorial_1_server.PetStoreEnv2GlobalStaticControllablePotm.PetStoreModuleWithGlobalStaticOverride;
+
 import org.junit.Rule;
 import org.junit.Test;
 
-import junit4.tutorial_1_server.PetStoreEnv2GlobalStaticControllablePotm.PetStoreModuleWithGlobalStaticOverride;
-import junit4.tutorial_1_server.prod.PetOfTheMonth;
+import tutorial_1_server.prod.PetOfTheMonth;
 
 public class Example2ManualControlledInjectionTest {
 

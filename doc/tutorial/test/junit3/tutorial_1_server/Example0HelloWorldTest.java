@@ -5,11 +5,12 @@ import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
 import com.google.inject.Inject;
 
 import junit.framework.TestCase;
-import junit3.tutorial_1_server.prod.PortNumber;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+import tutorial_1_server.prod.PortNumber;
 
 public class Example0HelloWorldTest extends TestCase {
 

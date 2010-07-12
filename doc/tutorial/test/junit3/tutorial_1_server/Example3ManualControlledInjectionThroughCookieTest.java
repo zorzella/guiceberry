@@ -8,7 +8,8 @@ import com.google.inject.Inject;
 
 import junit.framework.TestCase;
 import junit3.tutorial_1_server.PetStoreEnv3CookiesControlledPotm.PetStoreModuleWithTestIdBasedOverride;
-import junit3.tutorial_1_server.prod.PetOfTheMonth;
+
+import tutorial_1_server.prod.PetOfTheMonth;
 
 public class Example3ManualControlledInjectionThroughCookieTest extends TestCase {
 

@@ -6,11 +6,11 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
-import junit4.tutorial_1_server.prod.MyPetStoreServer;
-import junit4.tutorial_1_server.prod.PortNumber;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+
+import tutorial_1_server.prod.MyPetStoreServer;
+import tutorial_1_server.prod.PortNumber;
 
 
 public class PetStoreEnv0Simple extends GuiceBerryModule {
@@ -30,7 +30,7 @@ public class PetStoreEnv0Simple extends GuiceBerryModule {
   @Provides
   @Singleton
   protected MyPetStoreServer buildPetStoreServer() {
-    return new MyPetStoreServer(8080);
+    return new MyPetStoreServer();
   }
   
   @Override

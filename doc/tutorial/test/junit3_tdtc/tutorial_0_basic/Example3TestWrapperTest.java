@@ -9,7 +9,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Scopes;
 
-public class Example3TestScopeListenerTest extends TearDownTestCase {
+public class Example3TestWrapperTest extends TearDownTestCase {
 
   @Override
   protected void setUp() throws Exception {
@@ -25,17 +25,17 @@ public class Example3TestScopeListenerTest extends TearDownTestCase {
     System.out.println("Inside testTwo");
   }
 
-  public static final class Example3TestScopeListener implements TestWrapper {
+  public static final class Example3TestWrapper implements TestWrapper {
 
     @Inject
     private Provider<TestId> testId;
 
     public void toRunBeforeTest() {
-      System.out.println("Entering scope of: " + testId.get());
+      System.out.println("Beginning: " + testId.get());
     }
 
     public void toRunAfterTest() {
-      System.out.println("Exiting scope of: " + testId.get());
+      System.out.println("Ending: " + testId.get());
     }
   }
 
@@ -43,9 +43,8 @@ public class Example3TestScopeListenerTest extends TearDownTestCase {
     
     @Override
     protected void configure() {
-      // TODO Auto-generated method stub
       super.configure();
-      bind(TestWrapper.class).to(Example3TestScopeListener.class).in(Scopes.SINGLETON);
+      bind(TestWrapper.class).to(Example3TestWrapper.class).in(Scopes.SINGLETON);
     }
   }
 }

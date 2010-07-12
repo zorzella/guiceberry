@@ -5,7 +5,8 @@ import com.google.guiceberry.controllable.InjectionController;
 import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
 import com.google.inject.Inject;
 
-import junit3_tdtc.tutorial_1_server.prod.PetOfTheMonth;
+import tutorial_1_server.prod.PetOfTheMonth;
+
 
 public class Example4CanonicalSameJvmControllableInjectionTest extends TearDownTestCase {
 

@@ -11,13 +11,13 @@ import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
-import junit4.tutorial_1_server.prod.MyPetStoreServer;
-import junit4.tutorial_1_server.prod.PetOfTheMonth;
-import junit4.tutorial_1_server.prod.PortNumber;
-
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+
+import tutorial_1_server.prod.MyPetStoreServer;
+import tutorial_1_server.prod.PetOfTheMonth;
+import tutorial_1_server.prod.PortNumber;
 
 public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBerryModule {
   
@@ -39,7 +39,7 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
   @Provides
   @Singleton
   MyPetStoreServer buildPetStoreServer() {
-    MyPetStoreServer result = new MyPetStoreServer(8080) {
+    MyPetStoreServer result = new MyPetStoreServer() {
       @Override
       protected Module getPetStoreModule() {
         // !!! HERE !!!

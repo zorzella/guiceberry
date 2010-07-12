@@ -1,32 +1,22 @@
-package junit4.tutorial_0_basic;
-
-import static org.junit.Assert.assertEquals;
+package junit3.tutorial_0_basic;
 
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
 import com.google.guiceberry.GuiceBerryModule;
-import com.google.guiceberry.junit4.GuiceBerryRule;
+import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
 import com.google.inject.Inject;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import junit.framework.TestCase;
 
-public class Example5UseTearDownAccepterTest {
+public class Example4UseTearDownAccepterTest extends TestCase {
 
-  @Rule
-  public final GuiceBerryRule guiceBerry = new GuiceBerryRule(Env.class);
-
-  @Inject
-  private TearDownAccepter tearDownAccepter;
+  private TearDown toTearDown;
   
-  private int firstItem;
-  private int secondItem;
-  private boolean throwExceptionOnSecondItemDeleter = false;
-
-  @Before
+  @Override
   public void setUp() throws Exception {
+    super.setUp();
+    toTearDown = ManualTearDownGuiceBerry.setUp(this, Env.class);
+
     tearDownAccepter.addTearDown(new FirstItemResetter());
     firstItem = 1;
 
@@ -34,20 +24,24 @@ public class Example5UseTearDownAccepterTest {
     secondItem = 2;
   }
   
-  @After
-  public void tearDown() throws Exception {
-    // @Afters happen before the tear downs
-    assertEquals(1, firstItem);
-    assertEquals(2, secondItem);
+  @Override
+  protected void tearDown() throws Exception {
+    toTearDown.tearDown();
+    super.tearDown();
   }
+  
+  @Inject
+  private TearDownAccepter tearDownAccepter;
+  
+  private int firstItem;
+  private int secondItem;
+  private boolean throwExceptionOnSecondItemDeleter = false;
 
-  @Test
   public void testOne() throws Exception {
     assertEquals(1, firstItem);
     assertEquals(2, secondItem);
   }
 
-  @Test
   public void testTwoFailsWithException() throws Exception {
     assertEquals(1, firstItem);
     throwExceptionOnSecondItemDeleter = true;
@@ -72,7 +66,7 @@ public class Example5UseTearDownAccepterTest {
       if (throwExceptionOnSecondItemDeleter) {
         // We'll simulate a situation where a tear down goes wrong -- like getting
         // an exception trying to close a File or DB connection or whatever.
-        throw new Exception("Let's say something went wrong here.");
+        throw new Exception("This test is expected to fail! Let's say something went wrong here.");
       } else {
         secondItem = 0;
       }
