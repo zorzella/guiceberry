@@ -571,6 +571,11 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
 
   public void testGbeWithEnvMain() {
+    addTearDown(new TearDown() {
+      public void tearDown() throws Exception {
+        GuiceBerryEnvWithEnvMain.MyGuiceBerryEnvMain.count = 0;
+      }
+    });
     TestWithGbeWithEnvMain test = TestWithGbeWithEnvMain.createInstance();
     assertEquals(0, GuiceBerryEnvWithEnvMain.MyGuiceBerryEnvMain.count);
     instance().doSetUp(test);
