@@ -15,6 +15,8 @@
  */
 package com.google.guiceberry;
 
+import com.google.common.testing.TearDown;
+import com.google.common.testing.TearDownAccepter;
 import com.google.inject.Provides;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScoped;
@@ -55,4 +57,18 @@ public class DeprecatedGuiceBerryModule extends GuiceBerryModule {
     return universe.currentTestDescriptionThreadLocal.get().getTestId().toDeprecatedTestId();
   }
 
+  @Deprecated
+  public static void maybeAddGuiceBerryTearDown(
+      ThreadLocal<TearDown> scaffoldingThreadLocal, final TestDescription testDescription,
+      final TearDown toTearDown) {
+    Object testToTearDown = testDescription.getTestCase();
+    if (testToTearDown instanceof TearDownAccepter) {
+      TearDownAccepter tdtc = (TearDownAccepter) testToTearDown;
+      tdtc.addTearDown(toTearDown);
+    } else {
+      scaffoldingThreadLocal.set(toTearDown);
+    }
+  }
+
+  
 }

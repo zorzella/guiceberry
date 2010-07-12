@@ -77,7 +77,7 @@ class GuiceBerryUniverse {
       checkPreviousTestCalledTearDown(testDescription);
       
       final Class<? extends Module> gbeClass =
-        guiceBerryEnvSelector.guiceBerryEnvToUse();
+        guiceBerryEnvSelector.guiceBerryEnvToUse(testDescription);
       
       universe.currentTestDescriptionThreadLocal.set(testDescription);
       nonFinals = getInjector(gbeClass);

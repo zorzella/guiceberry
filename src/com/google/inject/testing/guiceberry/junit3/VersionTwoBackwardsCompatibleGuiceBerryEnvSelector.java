@@ -29,20 +29,14 @@ import junit.framework.TestCase;
 @Deprecated
 class VersionTwoBackwardsCompatibleGuiceBerryEnvSelector implements GuiceBerryEnvSelector {
 
-  private final TestDescription testDescription;
-
-  VersionTwoBackwardsCompatibleGuiceBerryEnvSelector(TestDescription testDescription) {
-    this.testDescription = testDescription;
-  }
-
   private static final GuiceBerryEnvRemapper
     DEFAULT_GUICE_BERRY_ENV_REMAPPER = new IdentityGuiceBerryEnvRemapper();
 
-  public Class<? extends Module> guiceBerryEnvToUse() {
+  public Class<? extends Module> guiceBerryEnvToUse(TestDescription testDescription) {
     String gbeName = getGbeNameFromGbeAnnotation(testDescription);
     
     if (DefaultEnvSelector.isOverridden()) {
-      return DefaultEnvSelector.of(gbeName).guiceBerryEnvToUse();
+      return DefaultEnvSelector.of(gbeName).guiceBerryEnvToUse(testDescription);
     }
 
     Class<? extends Module> gbeClass = getGbeClassFromClassName(gbeName);
@@ -57,8 +51,8 @@ class VersionTwoBackwardsCompatibleGuiceBerryEnvSelector implements GuiceBerryEn
   }
   
   private static String getGbeNameFromGbeAnnotation(TestDescription testDescription) {
-    Object testCase = testDescription.getTestCase();
-    GuiceBerryEnv gbeAnnotation = getGbeAnnotation(testCase);
+    Class<?> testCaseClass = testDescription.getTestCaseClass();
+    GuiceBerryEnv gbeAnnotation = getGbeAnnotation(testCaseClass);
     if (gbeAnnotation == null) {
       throw new IllegalArgumentException(String.format(
           "In order to use the deprecated GuiceBerryJunit3, your test class "
@@ -82,9 +76,9 @@ class VersionTwoBackwardsCompatibleGuiceBerryEnvSelector implements GuiceBerryEn
     return result;
   }
 
-  private static GuiceBerryEnv getGbeAnnotation(Object testCase) { 
+  private static GuiceBerryEnv getGbeAnnotation(Class<?> testCaseClass) { 
     GuiceBerryEnv gbeAnnotation =
-      testCase.getClass().getAnnotation(GuiceBerryEnv.class);
+      testCaseClass.getAnnotation(GuiceBerryEnv.class);
     return gbeAnnotation;
   }  
 

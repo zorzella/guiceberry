@@ -16,47 +16,70 @@
 package com.google.guiceberry;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+
+import java.util.regex.Pattern;
 
 /**
- * You won't have to deal with this class unless you are writing a test
- * framework adapter.
+ * This class is a test-framework-agnostic way of representing a test.
+ * 
+ * <p>See {@link #getName()} and {@link #getTestCaseClass()}.
  *
  * @author Luiz-Otavio "Z" Zorzella
  */
 public final class TestDescription {
 
+  private static final String NAME_ACCEPTABLE_CHARS_EXCEPT_UNDERSCORE = "A-Za-z0-9.$";
+  public static final Pattern NAME_PATTERN = 
+    Pattern.compile("[" + NAME_ACCEPTABLE_CHARS_EXCEPT_UNDERSCORE + "_]+");
+  private static final Pattern REVERSE_NAME_PATTERN = 
+    Pattern.compile("[^" + NAME_ACCEPTABLE_CHARS_EXCEPT_UNDERSCORE + "]+");
+  
   private final Object testCase;
   private final String name;
   private final TestId testId;
 
   /**
-   * @param testCase
-   * @param name
+   * You won't have to create an instance of this class unless you are writing a
+   * test framework adapter.
+   *
+   * <p>The given {@code testCase} is used for two main purposes: it is the
+   * class that GuiceBerry will {@link com.google.inject.Injector#injectMembers(Object)}
+   * and its class is exposed by the public {@link #getTestCaseClass()} method.
+   * 
+   * <p>The given {@code name}, on the other hand, is just a humanly-readable
+   * name for the test. It is used in error messages, and it is also the name
+   * of the {@link TestId} for that test. This name is mangled so that all
+   * characters match the {@link #NAME_PATTERN} regexp. This pattern is
+   * somewhat (though not completely) arbitrary -- file a bug if you think it
+   * should be broader.
    */
-  public TestDescription(Object testCase, String name, TestId testId) {
-    this.testCase = testCase;
-    this.name = name;
-    this.testId = testId;
+  public TestDescription(Object testCase, String name) {
+    this.testCase = Preconditions.checkNotNull(testCase);
+    this.name = mangle(Preconditions.checkNotNull(name));
+    this.testId = new TestId(name);
+  }
+  
+  private static String mangle(String name) {
+    return REVERSE_NAME_PATTERN.matcher(name).replaceAll("_");
+  }
+  
+  public Class<?> getTestCaseClass() {
+    return testCase.getClass();
   }
   
   /**
-   * @return the testCase
-   */
-  public Object getTestCase() {
-    return testCase;
-  }
-  
-  /**
-   * @return the name
+   * Returns the name of this test.
    */
   public String getName() {
     return name;
   }
  
-  /**
-   * @return the testId
-   */
-  public TestId getTestId() {
+  Object getTestCase() {
+    return testCase;
+  }
+  
+  TestId getTestId() {
     return testId;
   }
   

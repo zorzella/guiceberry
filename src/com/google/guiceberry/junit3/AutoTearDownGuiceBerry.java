@@ -21,11 +21,7 @@ import com.google.guiceberry.DefaultEnvSelector;
 import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.GuiceBerry;
 import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
-import com.google.guiceberry.TestDescription;
-import com.google.guiceberry.TestId;
 import com.google.inject.Module;
-
-import junit.framework.TestCase;
 
 /**
  * {@link GuiceBerry} adapter for JUnit3 {@link TearDownTestCase}s.
@@ -51,7 +47,8 @@ public class AutoTearDownGuiceBerry {
    */
   public static void setUp(TearDownTestCase testCase, GuiceBerryEnvSelector guiceBerryEnvSelector) {
     final GuiceBerryWrapper toTearDown = 
-      GuiceBerry.INSTANCE.buildWrapper(buildTestDescription(testCase, testCase.getName()), guiceBerryEnvSelector);
+      GuiceBerry.INSTANCE.buildWrapper(
+          ManualTearDownGuiceBerry.buildTestDescription(testCase, testCase.getName()), guiceBerryEnvSelector);
     testCase.addTearDown(new TearDown() {
       
       public void tearDown() throws Exception {
@@ -59,11 +56,5 @@ public class AutoTearDownGuiceBerry {
       }
     })  ;
     toTearDown.runBeforeTest();
-  }
-
-  private static TestDescription buildTestDescription(TestCase testCase, String methodName) {
-    String testCaseName = testCase.getClass().getName();
-    return new TestDescription(testCase, testCaseName + "." + methodName,
-      new TestId(testCaseName, methodName));
   }
 }

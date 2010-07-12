@@ -36,34 +36,30 @@ public final class TestId implements Comparable<TestId>, CharSequence {
 
   public static final String COOKIE_NAME = "testid";
   
-  private final String testCaseName;
-  private final String testMethodName;
+  private final String name;
   private final long random;
   private final String asString;
 
-  public TestId(String testCaseName, String testMethodName) {
-    this(testCaseName, testMethodName, new Random().nextInt(1000));
+  TestId(String name) {
+    this(name, new Random().nextInt(1000));
   }
 
-  private TestId(String testCaseName, String testMethodName, long random) {
-    this.testCaseName = testCaseName; 
-    this.testMethodName = testMethodName;
+  private TestId(String name, long random) {
+    this.name = name;
     this.random = random;
-    this.asString = getAsString(testCaseName, testMethodName, random);
+    this.asString = getAsString(name, random);
   }
 
-  private static String getAsString(String testCaseName, String testMethodName,
-      long random) {
-    return testMethodName + ":" + testCaseName + ":" + random;
+  private static String getAsString(String name, long random) {
+    return name + ":" + random;
   }
 
   public TestId(Cookie cookie) {
     String[] parts = cookie.getValue().split(":");
-    Preconditions.checkState(parts.length == 3);
-    this.testMethodName = parts[0];
-    this.testCaseName = parts[1];
-    this.random = Long.parseLong(parts[2]);
-    this.asString = getAsString(testCaseName, testMethodName, random);
+    Preconditions.checkState(parts.length == 2);
+    this.name = parts[0];
+    this.random = Long.parseLong(parts[1]);
+    this.asString = getAsString(name, random);
   }
 
   @Override
@@ -101,6 +97,9 @@ public final class TestId implements Comparable<TestId>, CharSequence {
   }
 
   public com.google.inject.testing.guiceberry.TestId toDeprecatedTestId() {
-    return new com.google.inject.testing.guiceberry.TestId(this.testCaseName, this.testMethodName, this.random);
+    int dotIndex = name.lastIndexOf('.');
+    String testCaseName = name.substring(0, dotIndex);
+    String testMethodName = name.substring(dotIndex + 1);
+    return new com.google.inject.testing.guiceberry.TestId(testCaseName, testMethodName, this.random);
   }
 }

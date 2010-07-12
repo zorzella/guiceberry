@@ -18,11 +18,10 @@ package com.google.guiceberry.junit3;
 import com.google.common.testing.TearDown;
 import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.DefaultEnvSelector;
-import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.GuiceBerry;
 import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
+import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.TestDescription;
-import com.google.guiceberry.TestId;
 import com.google.inject.Module;
 
 import junit.framework.TestCase;
@@ -37,10 +36,19 @@ import junit.framework.TestCase;
  */
 public class ManualTearDownGuiceBerry {
 
+  /**
+   * Calls {@link #setup(TestCase, GuiceBerryEnvSelector)} passing a
+   * {@link DefaultEnvSelector#of} the given {@code envClass}.
+   */
   public static TearDown setup(TestCase testCase, Class<? extends Module> envClass) {
     return setup(testCase, DefaultEnvSelector.of(envClass));
   }
   
+  /**
+   * Sets up the {@code testCase} with the given {@code guiceBerryEnvSelector}
+   * and returns a {@link TearDown} whose {@link TearDown#tearDown()} method
+   * must be manually called (thus the "manual" moniker).
+   */
   public static TearDown setup(TestCase testCase, GuiceBerryEnvSelector guiceBerryEnvSelector) {
     final GuiceBerryWrapper setUpAndTearDown =
       GuiceBerry.INSTANCE.buildWrapper(buildTestDescription(testCase, testCase.getName()), guiceBerryEnvSelector);
@@ -53,9 +61,8 @@ public class ManualTearDownGuiceBerry {
     };
   }
 
-  private static TestDescription buildTestDescription(TestCase testCase, String methodName) {
+  static TestDescription buildTestDescription(TestCase testCase, String methodName) {
     String testCaseName = testCase.getClass().getName();
-    return new TestDescription(testCase, testCaseName + "." + methodName,
-      new TestId(testCaseName, methodName));
+    return new TestDescription(testCase, testCaseName + "." + methodName);
   }
 }
