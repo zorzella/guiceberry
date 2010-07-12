@@ -76,10 +76,10 @@ public class DefaultEnvSelector implements GuiceBerryEnvSelector {
     }
   }
   
-  public Class<? extends Module> guiceBerryEnvToUse() {
+  public Class<? extends Module> guiceBerryEnvToUse(TestDescription testDescription) {
     GuiceBerryEnvSelector override = getOverride();
     if (override != null) {
-      return override.guiceBerryEnvToUse();
+      return override.guiceBerryEnvToUse(testDescription);
     } else {
       return getGbeFromClazzName();
     }

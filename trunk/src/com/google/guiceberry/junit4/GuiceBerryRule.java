@@ -20,7 +20,6 @@ import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.GuiceBerry;
 import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
 import com.google.guiceberry.TestDescription;
-import com.google.guiceberry.TestId;
 import com.google.inject.Module;
 
 import org.junit.rules.MethodRule;
@@ -63,7 +62,6 @@ public class GuiceBerryRule implements MethodRule {
 
   private static TestDescription buildTestDescription(Object testCase, String methodName) {
     String testCaseName = testCase.getClass().getName();
-    return new TestDescription(testCase, testCaseName + "." + methodName,
-      new TestId(testCaseName, methodName));
+    return new TestDescription(testCase, testCaseName + "." + methodName);
   }
 }

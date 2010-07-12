@@ -19,6 +19,7 @@ package com.google.inject.testing.guiceberry.junit3;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
+import com.google.guiceberry.DeprecatedGuiceBerryModule;
 import com.google.guiceberry.GuiceBerry;
 import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
 import com.google.guiceberry.TestDescription;
@@ -66,8 +67,7 @@ public class GuiceBerryJunit3 {
   private static TestDescription buildDescription(TestCase testCase) {
     return new TestDescription(
       testCase, 
-      testCase.getClass().getCanonicalName() + "." + testCase.getName(),
-      new com.google.guiceberry.TestId(testCase.getClass().getName(), testCase.getName()));
+      testCase.getClass().getName() + "." + testCase.getName());
   }
 
   private static final ThreadLocal<TearDown> scaffoldingThreadLocal = 
@@ -141,7 +141,7 @@ public class GuiceBerryJunit3 {
     TestDescription testDescription = buildDescription(testCase);
 
     final GuiceBerryWrapper wrapper = guiceBerry.buildWrapper(testDescription, 
-        new VersionTwoBackwardsCompatibleGuiceBerryEnvSelector(testDescription));
+        new VersionTwoBackwardsCompatibleGuiceBerryEnvSelector());
 
     //Setup teard down before setup so that if an exception is thrown there,
     //we still do a tearDown.
@@ -158,13 +158,8 @@ public class GuiceBerryJunit3 {
   private static void maybeAddGuiceBerryTearDown(
       final TestDescription testDescription,
       final TearDown toTearDown) {
-    Object testToTearDown = testDescription.getTestCase();
-    if (testToTearDown instanceof TearDownAccepter) {
-      TearDownAccepter tdtc = (TearDownAccepter) testToTearDown;
-      tdtc.addTearDown(toTearDown);
-    } else {
-      scaffoldingThreadLocal.set(toTearDown);
-    }
+    DeprecatedGuiceBerryModule.maybeAddGuiceBerryTearDown(
+        scaffoldingThreadLocal, testDescription, toTearDown);
   }
   
   /**   

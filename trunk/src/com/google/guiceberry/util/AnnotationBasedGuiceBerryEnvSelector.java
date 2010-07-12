@@ -25,21 +25,19 @@ import com.google.inject.testing.guiceberry.GuiceBerryEnv;
  * A {@link GuiceBerryEnvSelector} that is based on the {@link GuiceBerryEnv}
  * annotation, though it also honors the {@link DefaultEnvSelector}'s override.
  *
+ * @see AnnotationBasedManualTearDownGuiceBerry
+ * @see AnnotationBasedAutoTearDownGuiceBerry
+ *
  * @author Luiz-Otavio "Z" Zorzella
  */
-  public class AnnotationBasedSelector implements GuiceBerryEnvSelector {
+public class AnnotationBasedGuiceBerryEnvSelector implements GuiceBerryEnvSelector {
 
-  private final TestDescription testDescription;
-
-  public AnnotationBasedSelector(TestDescription testDescription) {
-    this.testDescription = testDescription;
-  }
-
-  public Class<? extends Module> guiceBerryEnvToUse() {
+  public static final GuiceBerryEnvSelector INSTANCE = new AnnotationBasedGuiceBerryEnvSelector();
+  public Class<? extends Module> guiceBerryEnvToUse(TestDescription testDescription) {
     String gbeName = getGbeNameFromGbeAnnotation(testDescription);
     
     if (DefaultEnvSelector.isOverridden()) {
-      return DefaultEnvSelector.of(gbeName).guiceBerryEnvToUse();
+      return DefaultEnvSelector.of(gbeName).guiceBerryEnvToUse(testDescription);
     }
 
     Class<? extends Module> gbeClass = getGbeClassFromClassName(gbeName);
@@ -54,8 +52,8 @@ import com.google.inject.testing.guiceberry.GuiceBerryEnv;
   }
   
   private static String getGbeNameFromGbeAnnotation(TestDescription testDescription) {
-    Object testCase = testDescription.getTestCase();
-    GuiceBerryEnv gbeAnnotation = getGbeAnnotation(testCase);
+    Class<?> testCaseClass = testDescription.getTestCaseClass();
+    GuiceBerryEnv gbeAnnotation = getGbeAnnotation(testCaseClass);
     if (gbeAnnotation == null) {
       throw new IllegalArgumentException(String.format(
           "In order to use the deprecated GuiceBerryJunit3, your test class "
@@ -69,9 +67,9 @@ import com.google.inject.testing.guiceberry.GuiceBerryEnv;
     return declaredGbeName;
   }
 
-  private static GuiceBerryEnv getGbeAnnotation(Object testCase) { 
+  private static GuiceBerryEnv getGbeAnnotation(Class<?> testCaseClass) { 
     GuiceBerryEnv gbeAnnotation =
-      testCase.getClass().getAnnotation(GuiceBerryEnv.class);
+      testCaseClass.getAnnotation(GuiceBerryEnv.class);
     return gbeAnnotation;
   }  
 

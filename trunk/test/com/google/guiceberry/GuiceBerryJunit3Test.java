@@ -327,7 +327,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
 
   private String getTestDescriptionNameFor(TestWithGbeOne test) {
-    return test.getClass().getCanonicalName() + "." + test.getName();
+    return test.getClass().getName() + "." + test.getName();
   }
   
   public void testRemapperSystemPropertyNeedsClassThatExists() {
@@ -1204,7 +1204,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   } 
 
   private static <T extends TestCase> T namedTest(T test) {
-    test.setName(test.getClass().getCanonicalName());
+    test.setName(test.getClass().getCanonicalName().replaceAll("\\.", "_"));
     return test;
   }  
 }

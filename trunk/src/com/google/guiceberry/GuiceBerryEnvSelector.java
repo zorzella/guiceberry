@@ -39,5 +39,5 @@ public interface GuiceBerryEnvSelector {
   /**
    * Returns the Class of the GuiceBerry Env to use.
    */
-  Class<? extends Module> guiceBerryEnvToUse();
+  Class<? extends Module> guiceBerryEnvToUse(TestDescription testDescription);
 }
