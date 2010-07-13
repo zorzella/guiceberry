@@ -1,0 +1,39 @@
+package junit4.tutorial_1_server;
+
+import com.google.guiceberry.controllable.InjectionController;
+import com.google.guiceberry.junit4.GuiceBerryRule;
+import com.google.inject.Inject;
+
+import org.junit.Rule;
+import org.junit.Test;
+
+import tutorial_1_server.prod.PetOfTheMonth;
+
+public class Example4CanonicalSameJvmControllableInjectionTest {
+
+  @Rule
+  public GuiceBerryRule guiceBerry = 
+    new GuiceBerryRule(PetStoreEnv4CanonicalSameJvmControllablePotm.class);
+  
+  @Inject
+  WelcomeTestPage welcomeTestPage;
+  
+  @Inject
+  private InjectionController<PetOfTheMonth> petOfTheMonthIc;
+
+  @Test
+  public void testDogAsPotm() {
+    PetOfTheMonth expected = PetOfTheMonth.DOG;
+    petOfTheMonthIc.setOverride(expected);
+    welcomeTestPage.goTo();
+    welcomeTestPage.assertPetOfTheMonth(expected);
+  }
+
+  @Test
+  public void testCatAsPotm() {
+    PetOfTheMonth expected = PetOfTheMonth.CAT;
+    petOfTheMonthIc.setOverride(expected);
+    welcomeTestPage.goTo();
+    welcomeTestPage.assertPetOfTheMonth(expected);
+  }
+}
