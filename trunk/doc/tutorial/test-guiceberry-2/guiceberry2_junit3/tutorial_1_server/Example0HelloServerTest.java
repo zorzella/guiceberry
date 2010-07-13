@@ -1,22 +1,17 @@
-package junit4.tutorial_1_server;
+package guiceberry2_junit3.tutorial_1_server;
 
-import static org.junit.Assert.assertEquals;
-
-import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
+import com.google.inject.testing.guiceberry.GuiceBerryEnv;
+import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3TestCase;
 
-import org.junit.Rule;
-import org.junit.Test;
+import guiceberry2_junit3.tutorial_1_server.prod.PortNumber;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import tutorial_1_server.prod.PortNumber;
-
-public class Example0HelloWorldTest {
-
-  @Rule
-  public GuiceBerryRule guiceBerry = new GuiceBerryRule(PetStoreEnv0Simple.class);
+@GuiceBerryEnv(Tutorial1Envs.PET_STORE_ENV_0_SIMPLE)
+public class Example0HelloServerTest extends GuiceBerryJunit3TestCase {
 
   @Inject
   WebDriver driver;
@@ -24,15 +19,13 @@ public class Example0HelloWorldTest {
   @Inject
   @PortNumber
   int portNumber;
-
-  @Test
+  
   public void testMyServletDiv() {
     driver.get("http://localhost:" + portNumber);
     WebElement element = driver.findElement(By.xpath("//div[@id='welcome']"));
     assertEquals("Welcome!", element.getText());
   }
 
-  @Test
   public void testMyServletTitle() {
     driver.get("http://localhost:" + portNumber);
     assertEquals("Welcome to the pet store", driver.getTitle());

@@ -13,6 +13,8 @@ public class AllTests {
     suite.addTestSuite(Example1GetsInjectedTest.class);
     suite.addTestSuite(Example2ScopesTest.class);
     suite.addTestSuite(Example3TestWrapperTest.class);
+    suite.addTestSuite(Example4UseTearDownAccepterTest.class);
+    suite.addTestSuite(Example5CustomSelectorTest.class);
     //$JUnit-END$
     return suite;
   }  

@@ -36,7 +36,7 @@ class VersionTwoBackwardsCompatibleGuiceBerryEnvSelector implements GuiceBerryEn
   public Class<? extends Module> guiceBerryEnvToUse(TestDescription testDescription) {
     String gbeName = getGbeNameFromGbeAnnotation(testDescription);
     
-    if (DefaultEnvSelector.isOverridden()) {
+    if (DefaultEnvSelector.isOverridden(gbeName)) {
       return DefaultEnvSelector.of(gbeName).guiceBerryEnvToUse(testDescription);
     }
 
@@ -82,7 +82,7 @@ class VersionTwoBackwardsCompatibleGuiceBerryEnvSelector implements GuiceBerryEn
           ));
     }
     
-    GuiceBerryEnvRemapper remapper = getRemapper();
+    GuiceBerryEnvRemapper remapper = getRemapper(declaredGbeName);
     String result = remapper.remap(null, declaredGbeName);
     if (result == null) {
       throw new IllegalArgumentException(String.format(
@@ -112,16 +112,16 @@ class VersionTwoBackwardsCompatibleGuiceBerryEnvSelector implements GuiceBerryEn
   }  
 
   @SuppressWarnings("unchecked")
-  private static GuiceBerryEnvRemapper getRemapper() {
+  private static GuiceBerryEnvRemapper getRemapper(String declaredGbeName) {
     String remapperName = System.getProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME);
     if (remapperName != null) {
       
-      if (DefaultEnvSelector.isOverridden()) {
+      if (DefaultEnvSelector.isOverridden(declaredGbeName)) {
         throw new IllegalArgumentException(String.format(
             "Both the '%s' and the deprecated '%s' system properties are set. " +
             "To fix this, stop using the deprecated system property. " +
             DefaultEnvSelector.LINK_TO_UPGRADING_DOC,
-            DefaultEnvSelector.OVERRIDE_SYSTEM_PROPERY_NAME,
+            DefaultEnvSelector.buildSystemPropertyName(declaredGbeName),
             GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME));
       } else {
         System.out.println(String.format(

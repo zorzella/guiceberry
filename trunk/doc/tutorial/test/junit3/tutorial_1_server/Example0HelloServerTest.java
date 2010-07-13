@@ -12,7 +12,7 @@ import org.openqa.selenium.WebElement;
 
 import tutorial_1_server.prod.PortNumber;
 
-public class Example0HelloWorldTest extends TestCase {
+public class Example0HelloServerTest extends TestCase {
 
   private TearDown toTearDown;
   
