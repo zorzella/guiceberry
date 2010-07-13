@@ -11,7 +11,7 @@ import org.openqa.selenium.WebElement;
 
 import tutorial_1_server.prod.PortNumber;
 
-public class Example0HelloWorldTest extends TearDownTestCase {
+public class Example0HelloServerTest extends TearDownTestCase {
 
   @Override
   protected void setUp() throws Exception {

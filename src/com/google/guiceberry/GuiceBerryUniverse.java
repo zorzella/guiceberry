@@ -15,6 +15,7 @@
  */
 package com.google.guiceberry;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownStack;
@@ -66,9 +67,9 @@ class GuiceBerryUniverse {
         TestDescription testDescription,
         GuiceBerryEnvSelector guiceBerryEnvSelector,
         GuiceBerryUniverse universe) {
-      this.testDescription = testDescription;
-      this.guiceBerryEnvSelector = guiceBerryEnvSelector;
-      this.universe = universe;
+      this.testDescription = Preconditions.checkNotNull(testDescription);
+      this.guiceBerryEnvSelector = Preconditions.checkNotNull(guiceBerryEnvSelector);
+      this.universe = Preconditions.checkNotNull(universe);
     }
 
     public synchronized void runBeforeTest() {

@@ -39,7 +39,7 @@ public class AnnotationBasedGuiceBerryEnvSelector implements GuiceBerryEnvSelect
   public Class<? extends Module> guiceBerryEnvToUse(TestDescription testDescription) {
     String gbeName = getGbeNameFromGbeAnnotation(testDescription);
     
-    if (DefaultEnvSelector.isOverridden()) {
+    if (DefaultEnvSelector.isOverridden(gbeName)) {
       return DefaultEnvSelector.of(gbeName).guiceBerryEnvToUse(testDescription);
     }
 
