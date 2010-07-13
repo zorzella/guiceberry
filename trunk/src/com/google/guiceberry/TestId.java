@@ -32,7 +32,7 @@ import javax.servlet.http.Cookie;
  * @author zorzella
  */
 //@Immutable
-public final class TestId implements Comparable<TestId>, CharSequence {
+public final class TestId implements Comparable<TestId> {
 
   public static final String COOKIE_NAME = "testid";
   
@@ -82,18 +82,6 @@ public final class TestId implements Comparable<TestId>, CharSequence {
   @Override
   public int hashCode() {
     return this.asString.hashCode();
-  }
-
-  public char charAt(int index) {
-    return asString.charAt(index);
-  }
-
-  public int length() {
-    return asString.length();
-  }
-
-  public CharSequence subSequence(int start, int end) {
-    return asString.subSequence(start, end);
   }
 
   public com.google.inject.testing.guiceberry.TestId toDeprecatedTestId() {
