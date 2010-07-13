@@ -148,7 +148,7 @@ class GuiceBerryUniverse {
     private NonFinals foundGbeForTheFirstTime(final Class<? extends Module> gbeClass) {
       
       Injector injector = BOGUS_INJECTOR;
-      TestWrapper testScopeListener = NoOpTestScopeListener.NO_OP_INSTANCE;
+      TestWrapper testWrapper = NoOpTestScopeListener.NO_OP_INSTANCE;
       
       NonFinals result = BOGUS_NON_FINALS;
       
@@ -163,16 +163,16 @@ class GuiceBerryUniverse {
             throw new RuntimeException(
               "Your GuiceBerry Env has bindings for both the new TestScopeListener and the deprecated one. Please fix.");
           } else if (hasTestScopeListenerBinding) {
-            testScopeListener = injector.getInstance(TestWrapper.class);
+            testWrapper = injector.getInstance(TestWrapper.class);
           } else if (hasDeprecatedTestScopeListenerBinding) {
-            testScopeListener = adapt(injector.getInstance(com.google.inject.testing.guiceberry.TestScopeListener.class));
+            testWrapper = adapt(injector.getInstance(com.google.inject.testing.guiceberry.TestScopeListener.class));
           }
         } catch (ConfigurationException e) {
           String msg = String.format("Error while creating a TestScopeListener: '%s'.",
             e.getMessage());
           throw new RuntimeException(msg, e); 
         }
-        result = new NonFinals(injector, testScopeListener);
+        result = new NonFinals(injector, testWrapper);
         return result;
       } finally {
         // This is in the finally block to ensure that BOGUS_INJECTOR
