@@ -1,6 +1,8 @@
 How To release a new version of GuiceBerry (either read this or run howtorelease.sh for instructions)
 ==========================================
 
+If you, say, upgraded libs, change the tutorial docs.
+
 0) Before you begin, make sure it's all committed and you have no compilation/test errors:
 
 $ svn update
