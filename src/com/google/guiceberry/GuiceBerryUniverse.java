@@ -87,7 +87,6 @@ class GuiceBerryUniverse {
       universe.currentTestDescriptionThreadLocal.set(testDescription);
       nonFinals = getInjector(gbeClass);
 
-      nonFinals.testScopeListener.toRunBeforeTest();
       stack.addTearDown(new TearDown() {
         public void tearDown() throws Exception {
           doTearDown();
@@ -99,6 +98,7 @@ class GuiceBerryUniverse {
           toTearDown.runTearDown();
         }
       });
+      nonFinals.testScopeListener.toRunBeforeTest();
       
       injectMembersIntoTest(gbeClass, nonFinals.injector); 
     }
@@ -217,22 +217,26 @@ class GuiceBerryUniverse {
     }
 
     private void callGbeMainIfBound(Injector injector) {
-      com.google.inject.testing.guiceberry.GuiceBerryEnvMain foo = 
+      com.google.inject.testing.guiceberry.GuiceBerryEnvMain deprecatedGuiceBerryEnvMain = 
         getInstanceIfHasBinding(injector, com.google.inject.testing.guiceberry.GuiceBerryEnvMain.class);
 
-      GuiceBerryEnvMain bar = 
+      GuiceBerryEnvMain guiceBerryEnvMain = 
         getInstanceIfHasBinding(injector, GuiceBerryEnvMain.class);
       
-      if ((foo != null) && (bar != null)) {
-        throw new RuntimeException();
+      if ((deprecatedGuiceBerryEnvMain != null) && (guiceBerryEnvMain != null)) {
+        throw new RuntimeException(String.format(
+            "You have bound both the deprecated and the new versions of GuiceBerryEnvMain ('%s' and '%s'). "
+            + "Please remove the binding to the deprecated one.", 
+            deprecatedGuiceBerryEnvMain.getClass().getName(),
+            guiceBerryEnvMain.getClass().getName()));
       }
       
-      if (foo != null) {
-        foo.run();
+      if (deprecatedGuiceBerryEnvMain != null) {
+        deprecatedGuiceBerryEnvMain.run();
       }
       
-      if (bar != null) {
-        bar.run();
+      if (guiceBerryEnvMain != null) {
+        guiceBerryEnvMain.run();
       }
     }
 
