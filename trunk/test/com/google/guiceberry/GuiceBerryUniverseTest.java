@@ -18,6 +18,8 @@ package com.google.guiceberry;
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
 import com.google.inject.Inject;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 
 import junit.framework.Assert;
 
@@ -83,4 +85,69 @@ public class GuiceBerryUniverseTest {
     } catch (RuntimeException good) {}
     Assert.assertEquals(null, universe.currentTestDescriptionThreadLocal.get());
   }
+  
+  @Test public void testFailingTestDoesNotSpoilThreadLocal() {
+    GuiceBerryEnvSelector guiceBerryEnvSelector = 
+      DefaultEnvSelector.of(MyGuiceBerryEnvThatThrowsOnTestWrapperBeforeTest.class);
+    TestDescription testDescription = bogusTestDescription();
+    GuiceBerryUniverse.TestCaseScaffolding testCaseScaffolding = 
+      new GuiceBerryUniverse.TestCaseScaffolding(testDescription, guiceBerryEnvSelector, universe);
+    
+    Assert.assertEquals(false, MyGuiceBerryEnvThatThrowsOnTestWrapperBeforeTest.beforeTestTearDownHasRun);
+    Assert.assertEquals(false, MyGuiceBerryEnvThatThrowsOnTestWrapperBeforeTest.afterTestHasRun);
+    
+    try {
+      testCaseScaffolding.runBeforeTest();
+      Assert.fail();
+    } catch (RuntimeException good) {}
+    
+//    try {
+      testCaseScaffolding.runAfterTest();
+//      Assert.fail();
+//    } catch (RuntimeException good) {}
+    Assert.assertEquals("The thread local tear down must be done even if the"
+        + "TestWrapper fails.", null, universe.currentTestDescriptionThreadLocal.get());
+    Assert.assertEquals(true, MyGuiceBerryEnvThatThrowsOnTestWrapperBeforeTest.beforeTestTearDownHasRun);
+    Assert.assertEquals(true, MyGuiceBerryEnvThatThrowsOnTestWrapperBeforeTest.afterTestHasRun);
+  }
+  
+  private static final class MyGuiceBerryEnvThatThrowsOnTestWrapperBeforeTest extends GuiceBerryModule {
+    
+    private static boolean beforeTestTearDownHasRun = false;
+    private static boolean afterTestHasRun = false;
+
+    @SuppressWarnings("unused")
+    public MyGuiceBerryEnvThatThrowsOnTestWrapperBeforeTest() {
+      super(GuiceBerryUniverseTest.universe);
+      clear();
+    }
+    
+    private void clear() {
+      beforeTestTearDownHasRun = false;
+      afterTestHasRun = false;
+    }
+    
+    @Provides
+    @Singleton
+    TestWrapper getWrapper(final TearDownAccepter accepter) {
+      
+      return new TestWrapper() {
+        
+        public void toRunBeforeTest() {
+          accepter.addTearDown(new TearDown() {
+            
+            public void tearDown() throws Exception {
+              beforeTestTearDownHasRun = true;
+            }
+          });
+          throw new RuntimeException("kaboom");
+        }
+      
+        public void toRunAfterTest() {
+          afterTestHasRun = true;
+        }
+      };
+    }
+  }
+
 }
