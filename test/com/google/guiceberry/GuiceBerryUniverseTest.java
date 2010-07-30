@@ -99,12 +99,17 @@ public class GuiceBerryUniverseTest {
     try {
       testCaseScaffolding.runBeforeTest();
       Assert.fail();
-    } catch (RuntimeException good) {}
+    } catch (RuntimeException good) {
+      Assert.assertEquals("kaboom", good.getMessage());
+    }
     
-//    try {
+    try {
       testCaseScaffolding.runAfterTest();
-//      Assert.fail();
-//    } catch (RuntimeException good) {}
+      Assert.fail();
+    } catch (RuntimeException good) {
+      Assert.assertEquals("boomka", good.getMessage());
+    }
+    
     Assert.assertEquals("The thread local tear down must be done even if the"
         + "TestWrapper fails.", null, universe.currentTestDescriptionThreadLocal.get());
     Assert.assertEquals(true, MyGuiceBerryEnvThatThrowsOnTestWrapperBeforeTest.beforeTestTearDownHasRun);
@@ -145,6 +150,7 @@ public class GuiceBerryUniverseTest {
       
         public void toRunAfterTest() {
           afterTestHasRun = true;
+          throw new RuntimeException("boomka");
         }
       };
     }
