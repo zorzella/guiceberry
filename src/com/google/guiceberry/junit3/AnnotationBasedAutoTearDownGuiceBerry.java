@@ -16,9 +16,12 @@
 package com.google.guiceberry.junit3;
 
 import com.google.common.testing.TearDown;
+import com.google.common.testing.TearDownAccepter;
 import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.DefaultEnvSelector;
 import com.google.guiceberry.util.AnnotationBasedGuiceBerryEnvSelector;
+
+import junit.framework.TestCase;
 
 /**
  * Like {@link AutoTearDownGuiceBerry#setUp(TearDownTestCase, Class)} but using 
@@ -36,7 +39,8 @@ public class AnnotationBasedAutoTearDownGuiceBerry {
    * {@link AnnotationBasedGuiceBerryEnvSelector} and automatically registers a 
    * {@link TearDown} (thus the "auto" moniker).
    */
-  public static void setUp(TearDownTestCase testCase) {
+  public static <T extends TestCase & TearDownAccepter> void setUp(
+      /*TearDownTestCase*/ T testCase) {
     AutoTearDownGuiceBerry.setUp(testCase, AnnotationBasedGuiceBerryEnvSelector.INSTANCE);
   }
 }
