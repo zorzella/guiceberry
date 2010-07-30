@@ -92,6 +92,15 @@ class GuiceBerryUniverse {
       });
       stack.addTearDown(new TearDown() {
         public void tearDown() throws Exception {
+          // TODO: this used to happen after "doTeadDown", causing a bug -- e.g.
+          // a Provider<TestId> could not be used in the toRunAfterTest Scope method
+          // of the TestWrapper. TODO: unit test this!
+          callTestWrapperToRunAfterTest(injector);
+        }
+      });
+      
+      stack.addTearDown(new TearDown() {
+        public void tearDown() throws Exception {
           ToTearDown toTearDown = injector.getInstance(ToTearDown.class);
           toTearDown.runTearDown();
         }
@@ -109,7 +118,7 @@ class GuiceBerryUniverse {
       } catch (ConfigurationException e) {
         String msg = String.format("Binding error in the GuiceBerry Env '%s': '%s'.",
             gbeClass.getName(), e.getMessage());
-        notifyTestScopeListenerOfOutScope(universe.gbeClassToInjectorMap.get(gbeClass));
+        callTestWrapperToRunAfterTest(universe.gbeClassToInjectorMap.get(gbeClass));
         throw new RuntimeException(msg, e);
       }
     }
@@ -271,22 +280,17 @@ class GuiceBerryUniverse {
         // We failed to get a valid injector for this module in the setUp method,
         // so we just gracefully return, after cleaning up the threadlocal (which
         // normally would happen in the doTearDown method).
-        universe.currentTestDescriptionThreadLocal.set(null);
+        universe.currentTestDescriptionThreadLocal.remove();
         return;
       }
       stack.runTearDown();
     }
     
-    private void notifyTestScopeListenerOfOutScope(Injector injector) {
+    private static void callTestWrapperToRunAfterTest(Injector injector) {
       buildTestWrapperInstance(injector).toRunAfterTest();
     }
 
     private void doTearDown() {
-      // TODO: this used to be at the end of this method, causing a bug -- e.g.
-      // a Provider<TestId> could not be used in the toRunAfterTest Scope method
-      // of the TestWrapper. TODO: unit test this!
-      notifyTestScopeListenerOfOutScope(injector);
-    
       if (!universe.currentTestDescriptionThreadLocal.get().equals(testDescription)) {
         String msg = String.format(GuiceBerryJunit3.class.toString() 
             + " cannot tear down "
@@ -296,7 +300,7 @@ class GuiceBerryUniverse {
             + ".setUp()"); 
         throw new RuntimeException(msg); 
       }
-      universe.currentTestDescriptionThreadLocal.set(null);
+      universe.currentTestDescriptionThreadLocal.remove();
       injector.getInstance(TestScope.class).finishScope(testDescription);    
     }
   }
