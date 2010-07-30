@@ -22,7 +22,6 @@ import com.google.common.testing.junit3.JUnitAsserts;
 import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.GuiceBerryUniverse;
 import com.google.guiceberry.TestScope;
-import com.google.guiceberry.GuiceBerryUniverse.NonFinals;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.ConfigurationException;
@@ -226,7 +225,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     
     instance().doSetUp(test);
     Injector injector = 
-      currentUniverse.gbeClassToInjectorMap.get(Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)).injector;
+      currentUniverse.gbeClassToInjectorMap.get(Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
     
     assertNotNull(injector);
   }
@@ -237,14 +236,14 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     GuiceBerryJunit3 guiceBerryJunit3 = instance();
     guiceBerryJunit3.doSetUp(testOne);
     
-    Injector injectorOne = currentUniverse.gbeClassToInjectorMap.get(Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)).injector;
+    Injector injectorOne = currentUniverse.gbeClassToInjectorMap.get(Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
     GuiceBerryJunit3.tearDown(testOne);
 
     AnotherNonTdtcForGbeOne testTwo = AnotherNonTdtcForGbeOne.createInstance();
     guiceBerryJunit3.doSetUp(testTwo);
     
     Injector injectorTwo = 
-      currentUniverse.gbeClassToInjectorMap.get(Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE)).injector;
+      currentUniverse.gbeClassToInjectorMap.get(Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE));
 
     // "number" is bound to a random, so this will only pass if the injector
     // used for both tests was the same
@@ -630,16 +629,12 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     TestScope testScope = 
       currentUniverse.gbeClassToInjectorMap.get(
         Class.forName(GuiceBerryEnvOne.GUICE_BERRY_ENV_ONE))
-        .injector.getInstance(TestScope.class);
+        .getInstance(TestScope.class);
     assertNotNull(testScope);
   }  
  
   private static TestScope getTestScopeForGbe(Class<?> key){
-    NonFinals temp = currentUniverse.gbeClassToInjectorMap.get(key);
-    if (temp == null) {
-      return null;
-    }
-    Injector injector = temp.injector;
+    Injector injector = currentUniverse.gbeClassToInjectorMap.get(key);
     if (injector == null) {
       return null;
     }
