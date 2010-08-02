@@ -84,7 +84,7 @@ public class MyPetStoreServer {
      */
     protected Pet calculateFeaturedPet() {
       Pet[] allPets = Pet.values();
-      return allPets[(random.nextInt(allPets.length))];
+      return allPets[random.nextInt(allPets.length)];
     }
 
     @Override
