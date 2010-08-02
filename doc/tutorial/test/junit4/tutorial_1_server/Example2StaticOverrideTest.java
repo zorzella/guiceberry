@@ -36,8 +36,9 @@ public class Example2StaticOverrideTest {
         PetStoreModuleWithGlobalStaticOverride.override = null;
       }
     });
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertFeaturedPetIs(expected);
+    welcomeTestPage
+        .goTo()
+        .assertFeaturedPetIs(expected);
   }
 
   @Test
@@ -51,7 +52,8 @@ public class Example2StaticOverrideTest {
         PetStoreModuleWithGlobalStaticOverride.override = null;
       }
     });
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertFeaturedPetIs(expected);
+    welcomeTestPage
+        .goTo()
+        .assertFeaturedPetIs(expected);
   }
 }

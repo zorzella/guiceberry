@@ -32,8 +32,7 @@ public final class PetStoreEnv4InjectionControlled extends GuiceBerryModule {
   WebDriver getWebDriver(@PortNumber int portNumber, TestId testId) {
     WebDriver driver = new HtmlUnitDriver();
     driver.get("http://localhost:" + portNumber);
-    driver.manage().addCookie(
-        new Cookie(TestId.COOKIE_NAME, testId.toString()));
+    driver.manage().addCookie(new Cookie(TestId.COOKIE_NAME, testId.toString()));
     return driver;
   }
   

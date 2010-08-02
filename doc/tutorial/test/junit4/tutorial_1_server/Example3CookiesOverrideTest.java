@@ -40,8 +40,9 @@ public class Example3CookiesOverrideTest {
         PetStoreModuleWithTestIdBasedOverride.override.remove(testId);
       }
     });
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertFeaturedPetIs(expected);
+    welcomeTestPage
+        .goTo()
+        .assertFeaturedPetIs(expected);
   }
 
   @Test
@@ -55,7 +56,8 @@ public class Example3CookiesOverrideTest {
         PetStoreModuleWithTestIdBasedOverride.override.remove(testId);
       }
     });
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertFeaturedPetIs(expected);
+    welcomeTestPage
+        .goTo()
+        .assertFeaturedPetIs(expected);
   }
 }

@@ -35,8 +35,7 @@ public final class PetStoreEnv3CookiesOverride extends GuiceBerryModule {
     WebDriver driver = new HtmlUnitDriver();
     // !!! HERE !!!
     driver.get("http://localhost:" + portNumber);
-    driver.manage().addCookie(
-        new Cookie(TestId.COOKIE_NAME, testId.toString()));
+    driver.manage().addCookie(new Cookie(TestId.COOKIE_NAME, testId.toString()));
     return driver;
   }
 

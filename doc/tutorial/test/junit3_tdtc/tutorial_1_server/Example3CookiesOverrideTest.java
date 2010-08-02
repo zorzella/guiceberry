@@ -39,8 +39,9 @@ public class Example3CookiesOverrideTest extends TearDownTestCase {
         PetStoreModuleWithTestIdBasedOverride.override.remove(testId);
       }
     });
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertFeaturedPetIs(expected);
+    welcomeTestPage
+        .goTo()
+        .assertFeaturedPetIs(expected);
   }
 
   public void testWhenCatIsFeatured() {
@@ -53,7 +54,8 @@ public class Example3CookiesOverrideTest extends TearDownTestCase {
         PetStoreModuleWithTestIdBasedOverride.override.remove(testId);
       }
     });
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertFeaturedPetIs(expected);
+    welcomeTestPage
+        .goTo()
+        .assertFeaturedPetIs(expected);
   }
 }

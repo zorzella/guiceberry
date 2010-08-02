@@ -44,8 +44,9 @@ public class Example2StaticOverrideTest extends TestCase {
         PetStoreModuleWithGlobalStaticOverride.override = null;
       }
     });
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertFeaturedPetIs(expected);
+    welcomeTestPage
+        .goTo()
+        .assertFeaturedPetIs(expected);
   }
 
   public void testWhenCatIsFeatured() {
@@ -58,7 +59,8 @@ public class Example2StaticOverrideTest extends TestCase {
         PetStoreModuleWithGlobalStaticOverride.override = null;
       }
     });
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertFeaturedPetIs(expected);
+    welcomeTestPage
+        .goTo()
+        .assertFeaturedPetIs(expected);
   }
 }

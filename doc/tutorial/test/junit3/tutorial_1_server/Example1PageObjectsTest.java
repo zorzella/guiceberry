@@ -30,13 +30,13 @@ public class Example1PageObjectsTest extends TestCase {
 
   public void testPetStoreWelcomeMessage() {
     welcomeTestPage
-      .goTo()
-      .assertWelcomeMessageIs("Welcome!");
+        .goTo()
+        .assertWelcomeMessageIs("Welcome!");
   }
 
   public void testPetStoreTitle() {
     welcomeTestPage
-      .goTo()
-      .assertTitleIs("Welcome to the pet store");
+        .goTo()
+        .assertTitleIs("Welcome to the pet store");
   }
 }
