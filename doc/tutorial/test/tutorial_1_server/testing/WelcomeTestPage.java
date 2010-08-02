@@ -19,21 +19,25 @@ public final class WelcomeTestPage {
   @PortNumber
   int portNumber;
   
-  public void goTo() {
+  public WelcomeTestPage goTo() {
     driver.get("http://localhost:" + portNumber);
+    return this;
   }
   
-  public void assertWelcomeMessageIs(String message) {
+  public WelcomeTestPage assertWelcomeMessageIs(String message) {
     WebElement element = driver.findElement(By.xpath("//div[@id='welcome']"));
     TestCase.assertEquals(message, element.getText());
+    return this;
   }
   
-  public void assertTitleIs(String title) {
+  public WelcomeTestPage assertTitleIs(String title) {
     TestCase.assertEquals(title, driver.getTitle());
+    return this;
   }
 
-  public void assertPetOfTheMonthIs(Pet petOfTheMonth) {
+  public WelcomeTestPage assertPetOfTheMonthIs(Pet petOfTheMonth) {
     WebElement element = driver.findElement(By.xpath("//div[@id='potm']"));
     TestCase.assertEquals(petOfTheMonth.toString(), element.getText());
+    return this;
   }
 }
