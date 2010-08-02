@@ -4,6 +4,9 @@ import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
 import com.google.inject.Inject;
 
+import tutorial_1_server.testing.PetStoreEnv2GlobalStaticControllablePotm;
+import tutorial_1_server.testing.WelcomeTestPage;
+
 public class Example1PageObjectsTest extends TearDownTestCase {
 
   @Override

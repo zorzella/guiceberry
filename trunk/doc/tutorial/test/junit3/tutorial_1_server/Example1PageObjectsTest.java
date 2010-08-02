@@ -6,6 +6,9 @@ import com.google.inject.Inject;
 
 import junit.framework.TestCase;
 
+import tutorial_1_server.testing.PetStoreEnv0Simple;
+import tutorial_1_server.testing.WelcomeTestPage;
+
 public class Example1PageObjectsTest extends TestCase {
 
   private TearDown toTearDown;

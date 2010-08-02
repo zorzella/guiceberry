@@ -1,7 +1,4 @@
-// Copyright 2008 Google Inc.  All Rights Reserved.
-// Copyright 2009 Google Inc. All Rights Reserved.
-
-package tutorial_1_server.prod;
+package tutorial_1_server.testing;
 
 import com.google.inject.BindingAnnotation;
 

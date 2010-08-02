@@ -1,4 +1,4 @@
-package junit4.tutorial_1_server;
+package tutorial_1_server.testing;
 
 import com.google.common.collect.Maps;
 import com.google.guiceberry.GuiceBerryEnvMain;
@@ -8,7 +8,9 @@ import com.google.guiceberry.controllable.TestIdServerModule;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.Provider;
 import com.google.inject.Provides;
+import com.google.inject.Scopes;
 import com.google.inject.Singleton;
 
 import org.openqa.selenium.Cookie;
@@ -16,8 +18,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import tutorial_1_server.prod.MyPetStoreServer;
-import tutorial_1_server.prod.PetOfTheMonth;
-import tutorial_1_server.prod.PortNumber;
+import tutorial_1_server.prod.Pet;
 
 import java.util.Map;
 
@@ -41,11 +42,11 @@ public final class PetStoreEnv3CookiesControlledPotm extends GuiceBerryModule {
 
   @Provides
   @Singleton
-  MyPetStoreServer buildPetStoreServer() {
+  MyPetStoreServer buildPetStoreServer(final PetStoreServerStarter starter) {
     MyPetStoreServer result = new MyPetStoreServer() {
       @Override
       protected Module getPetStoreModule() {
-        return new PetStoreModuleWithTestIdBasedOverride();
+        return new PetStoreModuleWithTestIdBasedOverride(starter);
       }
     };
     return result;
@@ -55,32 +56,39 @@ public final class PetStoreEnv3CookiesControlledPotm extends GuiceBerryModule {
   protected void configure() {
     super.configure();
     bind(GuiceBerryEnvMain.class).to(PetStoreServerStarter.class);
+    bind(PetStoreServerStarter.class).in(Scopes.SINGLETON);
   }
   
   private static final class PetStoreServerStarter implements GuiceBerryEnvMain {
 
     @Inject
-    private MyPetStoreServer myPetStoreServer;
+    private Provider<MyPetStoreServer> myPetStoreServer;
+    
+    Injector serverInjector;
     
     public void run() {
       // Starting a server should never be done in a @Provides method 
       // (or inside Provider's get).
-      PetStoreModuleWithTestIdBasedOverride.serverInjector = myPetStoreServer.start();
+      serverInjector = myPetStoreServer.get().start();
     }
   }
 
   public static final class PetStoreModuleWithTestIdBasedOverride 
       extends MyPetStoreServer.PetStoreModule {
 
-    private static Injector serverInjector;
+    public static final Map<TestId, Pet> override = Maps.newHashMap();
+
+    private PetStoreServerStarter starter;
     
-    public static final Map<TestId, PetOfTheMonth> override = Maps.newHashMap();
+    public PetStoreModuleWithTestIdBasedOverride(PetStoreServerStarter starter) {
+      this.starter = starter;
+    }
 
     // !!!HERE!!!!
     @Override
-    protected PetOfTheMonth getPetOfTheMonth() {
-      TestId testId = serverInjector.getInstance(TestId.class);
-      PetOfTheMonth petOfTheMonth = override.get(testId);
+    protected Pet getPetOfTheMonth() {
+      TestId testId = starter.serverInjector.getInstance(TestId.class);
+      Pet petOfTheMonth = override.get(testId);
       if (petOfTheMonth != null) {
         return petOfTheMonth;
       }

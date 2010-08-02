@@ -6,12 +6,13 @@ import com.google.guiceberry.TestId;
 import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.google.inject.Inject;
 
-import junit4.tutorial_1_server.PetStoreEnv3CookiesControlledPotm.PetStoreModuleWithTestIdBasedOverride;
-
 import org.junit.Rule;
 import org.junit.Test;
 
-import tutorial_1_server.prod.PetOfTheMonth;
+import tutorial_1_server.prod.Pet;
+import tutorial_1_server.testing.PetStoreEnv3CookiesControlledPotm;
+import tutorial_1_server.testing.PetStoreEnv3CookiesControlledPotm.PetStoreModuleWithTestIdBasedOverride;
+import tutorial_1_server.testing.WelcomeTestPage;
 
 public class Example3ManualControlledInjectionThroughCookieTest {
 
@@ -30,7 +31,7 @@ public class Example3ManualControlledInjectionThroughCookieTest {
   
   @Test
   public void testDogAsPotm() {
-    PetOfTheMonth expected = PetOfTheMonth.DOG;
+    Pet expected = Pet.DOG;
     PetStoreModuleWithTestIdBasedOverride.override.put(testId, expected);
     // register a tearDown, so that at the end of the test, 
     // the override is set to null again
@@ -45,7 +46,7 @@ public class Example3ManualControlledInjectionThroughCookieTest {
 
   @Test
   public void testCatAsPotm() {
-    PetOfTheMonth expected = PetOfTheMonth.CAT;
+    Pet expected = Pet.CAT;
     PetStoreModuleWithTestIdBasedOverride.override.put(testId, expected);
     // register a tearDown, so that at the end of the test, 
     // the override is set to null again

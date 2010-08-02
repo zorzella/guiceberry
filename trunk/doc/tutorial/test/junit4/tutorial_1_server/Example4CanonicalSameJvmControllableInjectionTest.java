@@ -7,7 +7,9 @@ import com.google.inject.Inject;
 import org.junit.Rule;
 import org.junit.Test;
 
-import tutorial_1_server.prod.PetOfTheMonth;
+import tutorial_1_server.prod.Pet;
+import tutorial_1_server.testing.PetStoreEnv4CanonicalSameJvmControllablePotm;
+import tutorial_1_server.testing.WelcomeTestPage;
 
 public class Example4CanonicalSameJvmControllableInjectionTest {
 
@@ -19,11 +21,11 @@ public class Example4CanonicalSameJvmControllableInjectionTest {
   WelcomeTestPage welcomeTestPage;
   
   @Inject
-  private InjectionController<PetOfTheMonth> petOfTheMonthIc;
+  private InjectionController<Pet> petOfTheMonthIc;
 
   @Test
   public void testDogAsPotm() {
-    PetOfTheMonth expected = PetOfTheMonth.DOG;
+    Pet expected = Pet.DOG;
     petOfTheMonthIc.setOverride(expected);
     welcomeTestPage.goTo();
     welcomeTestPage.assertPetOfTheMonth(expected);
@@ -31,7 +33,7 @@ public class Example4CanonicalSameJvmControllableInjectionTest {
 
   @Test
   public void testCatAsPotm() {
-    PetOfTheMonth expected = PetOfTheMonth.CAT;
+    Pet expected = Pet.CAT;
     petOfTheMonthIc.setOverride(expected);
     welcomeTestPage.goTo();
     welcomeTestPage.assertPetOfTheMonth(expected);

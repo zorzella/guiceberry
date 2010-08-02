@@ -9,7 +9,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import tutorial_1_server.prod.PortNumber;
+import tutorial_1_server.testing.PetStoreEnv0Simple;
+import tutorial_1_server.testing.PortNumber;
 
 public class Example0HelloServerTest extends TearDownTestCase {
 
