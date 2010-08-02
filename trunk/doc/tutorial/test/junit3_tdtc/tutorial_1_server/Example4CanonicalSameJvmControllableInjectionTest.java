@@ -6,6 +6,7 @@ import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
 import com.google.inject.Inject;
 
 import tutorial_1_server.prod.Pet;
+import tutorial_1_server.prod.PetOfTheMonth;
 import tutorial_1_server.testing.PetStoreEnv4CanonicalSameJvmControllablePotm;
 import tutorial_1_server.testing.WelcomeTestPage;
 
@@ -21,6 +22,7 @@ public class Example4CanonicalSameJvmControllableInjectionTest extends TearDownT
   WelcomeTestPage welcomeTestPage;
   
   @Inject
+  @PetOfTheMonth
   private InjectionController<Pet> petOfTheMonthIc;
 
   public void testDogAsPotm() {

@@ -70,6 +70,7 @@ public class MyPetStoreServer {
   public static class PetStoreModule extends AbstractModule {
 
     @Provides
+    @PetOfTheMonth
     protected Pet getPetOfTheMonth() {
       return somePetOfTheMonth();
     }

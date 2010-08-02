@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 @Singleton
 public final class WelcomePageServlet extends HttpServlet {
 
-  private Provider<Pet> petOfTheMonth;
+  private final Provider<Pet> petOfTheMonth;
 
   @Inject
-  public WelcomePageServlet(Provider<Pet> petOfTheMonth) {
+  public WelcomePageServlet(@PetOfTheMonth Provider<Pet> petOfTheMonth) {
     this.petOfTheMonth = petOfTheMonth;
   }
 
