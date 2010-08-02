@@ -8,6 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import tutorial_1_server.prod.Pet;
+import tutorial_1_server.prod.PetOfTheMonth;
 import tutorial_1_server.testing.PetStoreEnv4CanonicalSameJvmControllablePotm;
 import tutorial_1_server.testing.WelcomeTestPage;
 
@@ -21,6 +22,7 @@ public class Example4CanonicalSameJvmControllableInjectionTest {
   WelcomeTestPage welcomeTestPage;
   
   @Inject
+  @PetOfTheMonth
   private InjectionController<Pet> petOfTheMonthIc;
 
   @Test
