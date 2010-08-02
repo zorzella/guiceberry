@@ -64,12 +64,12 @@ public final class PetStoreEnv2GlobalStaticControllablePotm extends GuiceBerryMo
     public static Pet override;
     
     @Override
-    protected Pet somePetOfTheMonth() {
+    protected Pet calculateFeaturedPet() {
       // !!!HERE!!!!
       if (override != null) {
         return override;
       }
-      return super.somePetOfTheMonth();
+      return super.calculateFeaturedPet();
     }
   }
 }

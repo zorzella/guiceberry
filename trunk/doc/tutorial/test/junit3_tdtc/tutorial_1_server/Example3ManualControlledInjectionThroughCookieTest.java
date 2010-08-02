@@ -40,7 +40,7 @@ public class Example3ManualControlledInjectionThroughCookieTest extends TearDown
       }
     });
     welcomeTestPage.goTo();
-    welcomeTestPage.assertPetOfTheMonthIs(expected);
+    welcomeTestPage.assertFeaturedPetIs(expected);
   }
 
   public void testCatAsPotm() {
@@ -54,6 +54,6 @@ public class Example3ManualControlledInjectionThroughCookieTest extends TearDown
       }
     });
     welcomeTestPage.goTo();
-    welcomeTestPage.assertPetOfTheMonthIs(expected);
+    welcomeTestPage.assertFeaturedPetIs(expected);
   }
 }

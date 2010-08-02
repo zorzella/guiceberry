@@ -41,7 +41,7 @@ public class Example3ManualControlledInjectionThroughCookieTest {
       }
     });
     welcomeTestPage.goTo();
-    welcomeTestPage.assertPetOfTheMonthIs(expected);
+    welcomeTestPage.assertFeaturedPetIs(expected);
   }
 
   @Test
@@ -56,6 +56,6 @@ public class Example3ManualControlledInjectionThroughCookieTest {
       }
     });
     welcomeTestPage.goTo();
-    welcomeTestPage.assertPetOfTheMonthIs(expected);
+    welcomeTestPage.assertFeaturedPetIs(expected);
   }
 }

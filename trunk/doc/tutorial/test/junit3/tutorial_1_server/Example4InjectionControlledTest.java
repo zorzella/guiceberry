@@ -8,11 +8,11 @@ import com.google.inject.Inject;
 import junit.framework.TestCase;
 
 import tutorial_1_server.prod.Pet;
-import tutorial_1_server.prod.PetOfTheMonth;
-import tutorial_1_server.testing.PetStoreEnv4CanonicalSameJvmControllablePotm;
+import tutorial_1_server.prod.Featured;
+import tutorial_1_server.testing.PetStoreEnv4InjectionControlled;
 import tutorial_1_server.testing.WelcomeTestPage;
 
-public class Example4CanonicalSameJvmControllableInjectionTest extends TestCase {
+public class Example4InjectionControlledTest extends TestCase {
 
   private TearDown toTearDown;
   
@@ -25,27 +25,27 @@ public class Example4CanonicalSameJvmControllableInjectionTest extends TestCase 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    toTearDown = ManualTearDownGuiceBerry.setUp(this, PetStoreEnv4CanonicalSameJvmControllablePotm.class);
+    toTearDown = ManualTearDownGuiceBerry.setUp(this, PetStoreEnv4InjectionControlled.class);
   }
   
   @Inject
   WelcomeTestPage welcomeTestPage;
   
   @Inject
-  @PetOfTheMonth
-  private InjectionController<Pet> petOfTheMonthIc;
+  @Featured
+  private InjectionController<Pet> featuredPetInjectionController;
 
   public void testDogAsPotm() {
     Pet expected = Pet.DOG;
-    petOfTheMonthIc.setOverride(expected);
+    featuredPetInjectionController.setOverride(expected);
     welcomeTestPage.goTo();
-    welcomeTestPage.assertPetOfTheMonthIs(expected);
+    welcomeTestPage.assertFeaturedPetIs(expected);
   }
 
   public void testCatAsPotm() {
     Pet expected = Pet.CAT;
-    petOfTheMonthIc.setOverride(expected);
+    featuredPetInjectionController.setOverride(expected);
     welcomeTestPage.goTo();
-    welcomeTestPage.assertPetOfTheMonthIs(expected);
+    welcomeTestPage.assertFeaturedPetIs(expected);
   }
 }

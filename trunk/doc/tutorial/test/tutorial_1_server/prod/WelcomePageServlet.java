@@ -14,16 +14,16 @@ import javax.servlet.http.HttpServletResponse;
 @Singleton
 public final class WelcomePageServlet extends HttpServlet {
 
-  private final Provider<Pet> petOfTheMonth;
+  private final Provider<Pet> featuredPetProvider;
 
   @Inject
-  public WelcomePageServlet(@PetOfTheMonth Provider<Pet> petOfTheMonth) {
-    this.petOfTheMonth = petOfTheMonth;
+  public WelcomePageServlet(@Featured Provider<Pet> featuredPetProvider) {
+    this.featuredPetProvider = featuredPetProvider;
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
-  throws IOException {
+      throws IOException {
     resp.setContentType("text/html");
     PrintWriter writer = resp.getWriter();
     writer.println(
@@ -33,7 +33,7 @@ public final class WelcomePageServlet extends HttpServlet {
         "</head>\n" +
         "<body>\n" +
         "<div id='welcome'>Welcome!</div>\n" +
-        "Your pet of the month is a: <div id='potm'>" + petOfTheMonth.get() + "</div>\n" +
+        "Today's featured pet: <div id='potm'>" + featuredPetProvider.get() + "</div>\n" +
         "</body>\n" +
         "</html>\n");
     writer.flush();

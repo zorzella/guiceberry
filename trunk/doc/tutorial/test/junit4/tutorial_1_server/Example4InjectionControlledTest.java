@@ -8,36 +8,36 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import tutorial_1_server.prod.Pet;
-import tutorial_1_server.prod.PetOfTheMonth;
-import tutorial_1_server.testing.PetStoreEnv4CanonicalSameJvmControllablePotm;
+import tutorial_1_server.prod.Featured;
+import tutorial_1_server.testing.PetStoreEnv4InjectionControlled;
 import tutorial_1_server.testing.WelcomeTestPage;
 
-public class Example4CanonicalSameJvmControllableInjectionTest {
+public class Example4InjectionControlledTest {
 
   @Rule
   public GuiceBerryRule guiceBerry = 
-    new GuiceBerryRule(PetStoreEnv4CanonicalSameJvmControllablePotm.class);
+    new GuiceBerryRule(PetStoreEnv4InjectionControlled.class);
   
   @Inject
   WelcomeTestPage welcomeTestPage;
   
   @Inject
-  @PetOfTheMonth
-  private InjectionController<Pet> petOfTheMonthIc;
+  @Featured
+  private InjectionController<Pet> featuredPetInjectionController;
 
   @Test
   public void testDogAsPotm() {
     Pet expected = Pet.DOG;
-    petOfTheMonthIc.setOverride(expected);
+    featuredPetInjectionController.setOverride(expected);
     welcomeTestPage.goTo();
-    welcomeTestPage.assertPetOfTheMonthIs(expected);
+    welcomeTestPage.assertFeaturedPetIs(expected);
   }
 
   @Test
   public void testCatAsPotm() {
     Pet expected = Pet.CAT;
-    petOfTheMonthIc.setOverride(expected);
+    featuredPetInjectionController.setOverride(expected);
     welcomeTestPage.goTo();
-    welcomeTestPage.assertPetOfTheMonthIs(expected);
+    welcomeTestPage.assertFeaturedPetIs(expected);
   }
 }

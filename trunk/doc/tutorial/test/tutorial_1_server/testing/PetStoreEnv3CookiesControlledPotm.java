@@ -86,13 +86,13 @@ public final class PetStoreEnv3CookiesControlledPotm extends GuiceBerryModule {
 
     // !!!HERE!!!!
     @Override
-    protected Pet getPetOfTheMonth() {
+    protected Pet getFeaturedPet() {
       TestId testId = starter.serverInjector.getInstance(TestId.class);
-      Pet petOfTheMonth = override.get(testId);
-      if (petOfTheMonth != null) {
-        return petOfTheMonth;
+      Pet featuredPetOverride = override.get(testId);
+      if (featuredPetOverride != null) {
+        return featuredPetOverride;
       }
-      return somePetOfTheMonth();
+      return calculateFeaturedPet();
     }
 
     @Override
