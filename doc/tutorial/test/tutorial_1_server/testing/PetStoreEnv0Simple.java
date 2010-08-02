@@ -2,6 +2,7 @@ package tutorial_1_server.testing;
 
 import com.google.guiceberry.GuiceBerryEnvMain;
 import com.google.guiceberry.GuiceBerryModule;
+import com.google.guiceberry.TestScoped;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -19,7 +20,7 @@ public class PetStoreEnv0Simple extends GuiceBerryModule {
     return server.getPortNumber();
   }
   
-  @Provides
+  @Provides @TestScoped
   WebDriver getWebDriver() {
     WebDriver driver = new HtmlUnitDriver();
     return driver;
