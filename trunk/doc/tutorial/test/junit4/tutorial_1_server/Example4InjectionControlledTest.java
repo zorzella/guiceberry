@@ -29,15 +29,17 @@ public class Example4InjectionControlledTest {
   public void testWhenDogIsFeatured() {
     Pet expected = Pet.DOG;
     featuredPetInjectionController.setOverride(expected);
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertFeaturedPetIs(expected);
+    welcomeTestPage
+        .goTo()
+        .assertFeaturedPetIs(expected);
   }
 
   @Test
   public void testWhenCatIsFeatured() {
     Pet expected = Pet.CAT;
     featuredPetInjectionController.setOverride(expected);
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertFeaturedPetIs(expected);
+    welcomeTestPage
+        .goTo()
+        .assertFeaturedPetIs(expected);
   }
 }

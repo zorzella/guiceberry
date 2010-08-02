@@ -35,8 +35,9 @@ public class Example2StaticOverrideTest extends TearDownTestCase {
         PetStoreModuleWithGlobalStaticOverride.override = null;
       }
     });
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertFeaturedPetIs(expected);
+    welcomeTestPage
+        .goTo()
+        .assertFeaturedPetIs(expected);
   }
 
   public void testWhenCatIsFeatured() {
@@ -49,7 +50,8 @@ public class Example2StaticOverrideTest extends TearDownTestCase {
         PetStoreModuleWithGlobalStaticOverride.override = null;
       }
     });
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertFeaturedPetIs(expected);
+    welcomeTestPage
+        .goTo()
+        .assertFeaturedPetIs(expected);
   }
 }

@@ -28,14 +28,16 @@ public class Example4InjectionControlledTest extends TearDownTestCase {
   public void testWhenDogIsFeatured() {
     Pet expected = Pet.DOG;
     featuredPetInjectionController.setOverride(expected);
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertFeaturedPetIs(expected);
+    welcomeTestPage
+        .goTo()
+        .assertFeaturedPetIs(expected);
   }
 
   public void testWhenCatIsFeatured() {
     Pet expected = Pet.CAT;
     featuredPetInjectionController.setOverride(expected);
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertFeaturedPetIs(expected);
+    welcomeTestPage
+        .goTo()
+        .assertFeaturedPetIs(expected);
   }
 }
