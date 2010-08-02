@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 import tutorial_1_server.prod.Pet;
 import tutorial_1_server.prod.Featured;
-import tutorial_1_server.testing.PetStoreEnv4InjectionControlled;
+import tutorial_1_server.testing.PetStoreEnv4InjectionController;
 import tutorial_1_server.testing.WelcomeTestPage;
 
 public class Example4InjectionControllerTest extends TestCase {
@@ -25,7 +25,7 @@ public class Example4InjectionControllerTest extends TestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    toTearDown = ManualTearDownGuiceBerry.setUp(this, PetStoreEnv4InjectionControlled.class);
+    toTearDown = ManualTearDownGuiceBerry.setUp(this, PetStoreEnv4InjectionController.class);
   }
   
   @Inject
