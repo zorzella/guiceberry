@@ -30,7 +30,7 @@ public class Example4CanonicalSameJvmControllableInjectionTest {
     Pet expected = Pet.DOG;
     petOfTheMonthIc.setOverride(expected);
     welcomeTestPage.goTo();
-    welcomeTestPage.assertPetOfTheMonth(expected);
+    welcomeTestPage.assertPetOfTheMonthIs(expected);
   }
 
   @Test
@@ -38,6 +38,6 @@ public class Example4CanonicalSameJvmControllableInjectionTest {
     Pet expected = Pet.CAT;
     petOfTheMonthIc.setOverride(expected);
     welcomeTestPage.goTo();
-    welcomeTestPage.assertPetOfTheMonth(expected);
+    welcomeTestPage.assertPetOfTheMonthIs(expected);
   }
 }

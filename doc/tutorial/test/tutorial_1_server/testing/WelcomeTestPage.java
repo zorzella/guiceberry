@@ -23,16 +23,16 @@ public final class WelcomeTestPage {
     driver.get("http://localhost:" + portNumber);
   }
   
-  public void assertWelcomeMessage() {
+  public void assertWelcomeMessageIs(String message) {
     WebElement element = driver.findElement(By.xpath("//div[@id='welcome']"));
-    TestCase.assertEquals("Welcome!", element.getText());
+    TestCase.assertEquals(message, element.getText());
   }
   
-  public void assertTitle() {
-    TestCase.assertEquals("Welcome to the pet store", driver.getTitle());
+  public void assertTitleIs(String title) {
+    TestCase.assertEquals(title, driver.getTitle());
   }
 
-  public void assertPetOfTheMonth(Pet petOfTheMonth) {
+  public void assertPetOfTheMonthIs(Pet petOfTheMonth) {
     WebElement element = driver.findElement(By.xpath("//div[@id='potm']"));
     TestCase.assertEquals(petOfTheMonth.toString(), element.getText());
   }

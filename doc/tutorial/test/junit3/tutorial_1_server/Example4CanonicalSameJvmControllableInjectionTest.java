@@ -39,13 +39,13 @@ public class Example4CanonicalSameJvmControllableInjectionTest extends TestCase 
     Pet expected = Pet.DOG;
     petOfTheMonthIc.setOverride(expected);
     welcomeTestPage.goTo();
-    welcomeTestPage.assertPetOfTheMonth(expected);
+    welcomeTestPage.assertPetOfTheMonthIs(expected);
   }
 
   public void testCatAsPotm() {
     Pet expected = Pet.CAT;
     petOfTheMonthIc.setOverride(expected);
     welcomeTestPage.goTo();
-    welcomeTestPage.assertPetOfTheMonth(expected);
+    welcomeTestPage.assertPetOfTheMonthIs(expected);
   }
 }
