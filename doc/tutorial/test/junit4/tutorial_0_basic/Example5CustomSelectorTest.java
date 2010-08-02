@@ -1,5 +1,7 @@
 package junit4.tutorial_0_basic;
 
+import static junit.framework.Assert.assertEquals;
+
 import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.TestDescription;
@@ -52,12 +54,12 @@ public class Example5CustomSelectorTest {
 
   @Test
   public void testFake() throws Exception {
-    Assert.assertEquals("fake", server.getName());
+    assertEquals("fake", server.getName());
   }
 
   @Test
   public void testReal() throws Exception {
-    Assert.assertEquals("real", server.getName());
+    assertEquals("real", server.getName());
   }
 
   public static final class FakeGuiceBerryEnv extends GuiceBerryModule {

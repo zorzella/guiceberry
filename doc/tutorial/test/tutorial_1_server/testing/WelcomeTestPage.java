@@ -1,8 +1,8 @@
 package tutorial_1_server.testing;
 
-import com.google.inject.Inject;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.TestCase;
+import com.google.inject.Inject;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -26,18 +26,18 @@ public final class WelcomeTestPage {
   
   public WelcomeTestPage assertWelcomeMessageIs(String message) {
     WebElement element = driver.findElement(By.xpath("//div[@id='welcome']"));
-    TestCase.assertEquals(message, element.getText());
+    assertEquals(message, element.getText());
     return this;
   }
   
   public WelcomeTestPage assertTitleIs(String title) {
-    TestCase.assertEquals(title, driver.getTitle());
+    assertEquals(title, driver.getTitle());
     return this;
   }
 
   public WelcomeTestPage assertFeaturedPetIs(Pet pet) {
     WebElement element = driver.findElement(By.xpath("//div[@id='featured-pet']"));
-    TestCase.assertEquals(pet.toString(), element.getText());
+    assertEquals(pet.toString(), element.getText());
     return this;
   }
 }
