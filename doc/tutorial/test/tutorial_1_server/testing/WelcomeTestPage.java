@@ -16,8 +16,7 @@ public final class WelcomeTestPage {
   WebDriver driver;
   
   @Inject
-  @PortNumber
-  int portNumber;
+  @PortNumber int portNumber;
   
   public WelcomeTestPage goTo() {
     driver.get("http://localhost:" + portNumber);

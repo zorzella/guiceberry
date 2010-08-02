@@ -10,7 +10,7 @@ import tutorial_1_server.prod.Featured;
 import tutorial_1_server.testing.PetStoreEnv4InjectionControlled;
 import tutorial_1_server.testing.WelcomeTestPage;
 
-public class Example4InjectionControlledTest extends TearDownTestCase {
+public class Example4InjectionControllerTest extends TearDownTestCase {
 
   @Override
   protected void setUp() throws Exception {

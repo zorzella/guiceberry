@@ -12,7 +12,7 @@ import tutorial_1_server.prod.Featured;
 import tutorial_1_server.testing.PetStoreEnv4InjectionControlled;
 import tutorial_1_server.testing.WelcomeTestPage;
 
-public class Example4InjectionControlledTest {
+public class Example4InjectionControllerTest {
 
   @Rule
   public GuiceBerryRule guiceBerry = 

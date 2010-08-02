@@ -33,8 +33,7 @@ public class Example0HelloServerTest extends TestCase {
   WebDriver driver;
   
   @Inject
-  @PortNumber
-  int portNumber;
+  @PortNumber int portNumber;
 
   public void testPetStoreWelcomeMessage() {
     driver.get("http://localhost:" + portNumber);

@@ -23,8 +23,7 @@ public class Example0HelloServerTest {
   WebDriver driver;
   
   @Inject
-  @PortNumber
-  int portNumber;
+  @PortNumber int portNumber;
 
   @Test
   public void testPetStoreWelcome() {

@@ -16,8 +16,7 @@ import tutorial_1_server.prod.Pet;
 public final class PetStoreEnv2StaticOverride extends GuiceBerryModule {
   
   @Provides
-  @PortNumber
-  int getPortNumber(MyPetStoreServer server) {
+  @PortNumber int getPortNumber(MyPetStoreServer server) {
     return server.getPortNumber();
   }
   
