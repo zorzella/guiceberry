@@ -29,12 +29,14 @@ public class Example1PageObjectsTest extends TestCase {
   WelcomeTestPage welcomeTestPage;
 
   public void testMyServletDiv() {
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertWelcomeMessageIs("Welcome!");
+    welcomeTestPage
+      .goTo()
+      .assertWelcomeMessageIs("Welcome!");
   }
 
   public void testMyServletTitle() {
-    welcomeTestPage.goTo();
-    welcomeTestPage.assertTitleIs("Welcome to the pet store");
+    welcomeTestPage
+      .goTo()
+      .assertTitleIs("Welcome to the pet store");
   }
 }
