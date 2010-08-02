@@ -35,7 +35,7 @@ public final class WelcomeTestPage {
     return this;
   }
 
-  public WelcomeTestPage assertPetOfTheMonthIs(Pet pet) {
+  public WelcomeTestPage assertFeaturedPetIs(Pet pet) {
     WebElement element = driver.findElement(By.xpath("//div[@id='potm']"));
     TestCase.assertEquals(pet.toString(), element.getText());
     return this;

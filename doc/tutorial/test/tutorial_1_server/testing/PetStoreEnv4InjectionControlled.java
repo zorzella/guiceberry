@@ -18,9 +18,9 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import tutorial_1_server.prod.MyPetStoreServer;
 import tutorial_1_server.prod.Pet;
-import tutorial_1_server.prod.PetOfTheMonth;
+import tutorial_1_server.prod.Featured;
 
-public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBerryModule {
+public final class PetStoreEnv4InjectionControlled extends GuiceBerryModule {
   
   @Provides
   @PortNumber
@@ -61,7 +61,7 @@ public final class PetStoreEnv4CanonicalSameJvmControllablePotm extends GuiceBer
     // !!!! HERE !!!!
     icMaster = new IcMaster()
       .thatControls(SharedStaticVarIcStrategy.strategy(),
-         Key.get(Pet.class, PetOfTheMonth.class));
+         Key.get(Pet.class, Featured.class));
     install(icMaster.buildClientModule());
   }
   

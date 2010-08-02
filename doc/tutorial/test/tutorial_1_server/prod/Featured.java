@@ -11,9 +11,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Denotes which {@link Pet} is the special pet to be advertised this month.
+ * Denotes which {@link Pet} is to be featured today.
  */
 @Retention(RUNTIME) 
 @Target({FIELD, METHOD, PARAMETER}) 
 @BindingAnnotation
-public @interface PetOfTheMonth {}
+public @interface Featured {}
