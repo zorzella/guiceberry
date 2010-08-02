@@ -18,14 +18,14 @@ public class Example1PageObjectsTest {
   WelcomeTestPage welcomeTestPage;
 
   @Test
-  public void testMyServletDiv() {
+  public void testPetStoreWelcomeMessage() {
     welcomeTestPage
       .goTo()
       .assertWelcomeMessageIs("Welcome!");
   }
 
   @Test
-  public void testMyServletTitle() {
+  public void testPetStoreTitle() {
     welcomeTestPage
       .goTo()
       .assertTitleIs("Welcome to the pet store");

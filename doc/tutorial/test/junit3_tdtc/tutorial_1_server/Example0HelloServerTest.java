@@ -27,13 +27,13 @@ public class Example0HelloServerTest extends TearDownTestCase {
   @PortNumber
   int portNumber;
 
-  public void testMyServletDiv() {
+  public void testPetStoreWelcomeMessage() {
     driver.get("http://localhost:" + portNumber);
     WebElement element = driver.findElement(By.xpath("//div[@id='welcome']"));
     assertEquals("Welcome!", element.getText());
   }
 
-  public void testMyServletTitle() {
+  public void testPetStoreTitle() {
     driver.get("http://localhost:" + portNumber);
     assertEquals("Welcome to the pet store", driver.getTitle());
   }

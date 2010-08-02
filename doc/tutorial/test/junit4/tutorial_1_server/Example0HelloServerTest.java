@@ -27,14 +27,14 @@ public class Example0HelloServerTest {
   int portNumber;
 
   @Test
-  public void testMyServletDiv() {
+  public void testPetStoreWelcome() {
     driver.get("http://localhost:" + portNumber);
     WebElement element = driver.findElement(By.xpath("//div[@id='welcome']"));
     assertEquals("Welcome!", element.getText());
   }
 
   @Test
-  public void testMyServletTitle() {
+  public void testPetStoreTitle() {
     driver.get("http://localhost:" + portNumber);
     assertEquals("Welcome to the pet store", driver.getTitle());
   }

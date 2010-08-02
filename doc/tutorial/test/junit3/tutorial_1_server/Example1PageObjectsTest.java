@@ -28,13 +28,13 @@ public class Example1PageObjectsTest extends TestCase {
   @Inject
   WelcomeTestPage welcomeTestPage;
 
-  public void testMyServletDiv() {
+  public void testPetStoreWelcomeMessage() {
     welcomeTestPage
       .goTo()
       .assertWelcomeMessageIs("Welcome!");
   }
 
-  public void testMyServletTitle() {
+  public void testPetStoreTitle() {
     welcomeTestPage
       .goTo()
       .assertTitleIs("Welcome to the pet store");
