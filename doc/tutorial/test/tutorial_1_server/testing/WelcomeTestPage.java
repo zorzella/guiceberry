@@ -36,7 +36,7 @@ public final class WelcomeTestPage {
   }
 
   public WelcomeTestPage assertFeaturedPetIs(Pet pet) {
-    WebElement element = driver.findElement(By.xpath("//div[@id='potm']"));
+    WebElement element = driver.findElement(By.xpath("//div[@id='featured-pet']"));
     TestCase.assertEquals(pet.toString(), element.getText());
     return this;
   }

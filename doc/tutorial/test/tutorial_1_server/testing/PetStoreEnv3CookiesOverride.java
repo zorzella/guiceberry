@@ -22,7 +22,7 @@ import tutorial_1_server.prod.Pet;
 
 import java.util.Map;
 
-public final class PetStoreEnv3CookiesControlledPotm extends GuiceBerryModule {
+public final class PetStoreEnv3CookiesOverride extends GuiceBerryModule {
   
   @Provides
   @PortNumber

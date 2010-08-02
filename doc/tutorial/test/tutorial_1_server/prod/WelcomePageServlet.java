@@ -33,7 +33,7 @@ public final class WelcomePageServlet extends HttpServlet {
         "</head>\n" +
         "<body>\n" +
         "<div id='welcome'>Welcome!</div>\n" +
-        "Today's featured pet: <div id='potm'>" + featuredPetProvider.get() + "</div>\n" +
+        "Today's featured pet: <div id='featured-pet'>" + featuredPetProvider.get() + "</div>\n" +
         "</body>\n" +
         "</html>\n");
     writer.flush();

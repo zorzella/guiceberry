@@ -35,14 +35,14 @@ public class Example4InjectionControlledTest extends TestCase {
   @Featured
   private InjectionController<Pet> featuredPetInjectionController;
 
-  public void testDogAsPotm() {
+  public void testWhenDogIsFeatured() {
     Pet expected = Pet.DOG;
     featuredPetInjectionController.setOverride(expected);
     welcomeTestPage.goTo();
     welcomeTestPage.assertFeaturedPetIs(expected);
   }
 
-  public void testCatAsPotm() {
+  public void testWhenCatIsFeatured() {
     Pet expected = Pet.CAT;
     featuredPetInjectionController.setOverride(expected);
     welcomeTestPage.goTo();
