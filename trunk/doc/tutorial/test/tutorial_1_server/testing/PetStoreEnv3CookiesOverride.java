@@ -25,8 +25,7 @@ import java.util.Map;
 public final class PetStoreEnv3CookiesOverride extends GuiceBerryModule {
   
   @Provides
-  @PortNumber
-  int getPortNumber(MyPetStoreServer server) {
+  @PortNumber int getPortNumber(MyPetStoreServer server) {
     return server.getPortNumber();
   }
   
