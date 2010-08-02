@@ -1,6 +1,3 @@
-// Copyright 2008 Google Inc.  All Rights Reserved.
-// Copyright 2009 Google Inc. All Rights Reserved.
-
 package guiceberry2_junit3.tutorial_1_server.prod;
 
 public enum PetOfTheMonth {

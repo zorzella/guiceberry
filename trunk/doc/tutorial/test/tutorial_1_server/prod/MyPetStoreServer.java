@@ -2,6 +2,7 @@ package tutorial_1_server.prod;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Provides;
@@ -21,6 +22,7 @@ public class MyPetStoreServer {
   private final Server server;
   private final int portNumber;
   
+  @Inject
   public MyPetStoreServer() {
     this.portNumber = findFreePort();
     server = new Server(this.portNumber);
