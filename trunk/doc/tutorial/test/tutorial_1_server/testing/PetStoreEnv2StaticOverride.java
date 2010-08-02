@@ -13,7 +13,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import tutorial_1_server.prod.MyPetStoreServer;
 import tutorial_1_server.prod.Pet;
 
-public final class PetStoreEnv2GlobalStaticControllablePotm extends GuiceBerryModule {
+public final class PetStoreEnv2StaticOverride extends GuiceBerryModule {
   
   @Provides
   @PortNumber

@@ -1,25 +1,34 @@
-package junit3_tdtc.tutorial_1_server;
+package junit3.tutorial_1_server;
 
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
-import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.TestId;
-import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
+import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
 import com.google.inject.Inject;
 
+import junit.framework.TestCase;
+
 import tutorial_1_server.prod.Pet;
-import tutorial_1_server.testing.PetStoreEnv3CookiesControlledPotm;
-import tutorial_1_server.testing.PetStoreEnv3CookiesControlledPotm.PetStoreModuleWithTestIdBasedOverride;
+import tutorial_1_server.testing.PetStoreEnv3CookiesOverride;
+import tutorial_1_server.testing.PetStoreEnv3CookiesOverride.PetStoreModuleWithTestIdBasedOverride;
 import tutorial_1_server.testing.WelcomeTestPage;
 
-public class Example3ManualControlledInjectionThroughCookieTest extends TearDownTestCase {
+public class Example3CookiesOverrideTest extends TestCase {
 
+  private TearDown toTearDown;
+  
+  @Override
+  protected void tearDown() throws Exception {
+    toTearDown.tearDown();
+    super.tearDown();
+  }
+  
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    AutoTearDownGuiceBerry.setUp(this, PetStoreEnv3CookiesControlledPotm.class);
+    toTearDown = ManualTearDownGuiceBerry.setUp(this, PetStoreEnv3CookiesOverride.class);
   }
-
+  
   @Inject
   WelcomeTestPage welcomeTestPage;
   
@@ -29,7 +38,7 @@ public class Example3ManualControlledInjectionThroughCookieTest extends TearDown
   @Inject
   private TestId testId;
   
-  public void testDogAsPotm() {
+  public void testWhenDogIsFeatured() {
     Pet expected = Pet.DOG;
     PetStoreModuleWithTestIdBasedOverride.override.put(testId, expected);
     // register a tearDown, so that at the end of the test, 
@@ -43,7 +52,7 @@ public class Example3ManualControlledInjectionThroughCookieTest extends TearDown
     welcomeTestPage.assertFeaturedPetIs(expected);
   }
 
-  public void testCatAsPotm() {
+  public void testWhenCatIsFeatured() {
     Pet expected = Pet.CAT;
     PetStoreModuleWithTestIdBasedOverride.override.put(testId, expected);
     // register a tearDown, so that at the end of the test, 

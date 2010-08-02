@@ -10,15 +10,15 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import tutorial_1_server.prod.Pet;
-import tutorial_1_server.testing.PetStoreEnv3CookiesControlledPotm;
-import tutorial_1_server.testing.PetStoreEnv3CookiesControlledPotm.PetStoreModuleWithTestIdBasedOverride;
+import tutorial_1_server.testing.PetStoreEnv3CookiesOverride;
+import tutorial_1_server.testing.PetStoreEnv3CookiesOverride.PetStoreModuleWithTestIdBasedOverride;
 import tutorial_1_server.testing.WelcomeTestPage;
 
-public class Example3ManualControlledInjectionThroughCookieTest {
+public class Example3CookiesOverrideTest {
 
   @Rule
   public GuiceBerryRule guiceBerry = 
-    new GuiceBerryRule(PetStoreEnv3CookiesControlledPotm.class);
+    new GuiceBerryRule(PetStoreEnv3CookiesOverride.class);
 
   @Inject
   WelcomeTestPage welcomeTestPage;
@@ -30,7 +30,7 @@ public class Example3ManualControlledInjectionThroughCookieTest {
   private TestId testId;
   
   @Test
-  public void testDogAsPotm() {
+  public void testWhenDogIsFeatured() {
     Pet expected = Pet.DOG;
     PetStoreModuleWithTestIdBasedOverride.override.put(testId, expected);
     // register a tearDown, so that at the end of the test, 
@@ -45,7 +45,7 @@ public class Example3ManualControlledInjectionThroughCookieTest {
   }
 
   @Test
-  public void testCatAsPotm() {
+  public void testWhenCatIsFeatured() {
     Pet expected = Pet.CAT;
     PetStoreModuleWithTestIdBasedOverride.override.put(testId, expected);
     // register a tearDown, so that at the end of the test, 

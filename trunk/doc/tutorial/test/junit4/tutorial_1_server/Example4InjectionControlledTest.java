@@ -26,7 +26,7 @@ public class Example4InjectionControlledTest {
   private InjectionController<Pet> featuredPetInjectionController;
 
   @Test
-  public void testDogAsPotm() {
+  public void testWhenDogIsFeatured() {
     Pet expected = Pet.DOG;
     featuredPetInjectionController.setOverride(expected);
     welcomeTestPage.goTo();
@@ -34,7 +34,7 @@ public class Example4InjectionControlledTest {
   }
 
   @Test
-  public void testCatAsPotm() {
+  public void testWhenCatIsFeatured() {
     Pet expected = Pet.CAT;
     featuredPetInjectionController.setOverride(expected);
     welcomeTestPage.goTo();
