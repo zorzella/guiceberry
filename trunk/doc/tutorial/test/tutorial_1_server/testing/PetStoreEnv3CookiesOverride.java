@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.guiceberry.GuiceBerryEnvMain;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.TestId;
+import com.google.guiceberry.TestScoped;
 import com.google.guiceberry.controllable.TestIdServerModule;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -29,7 +30,7 @@ public final class PetStoreEnv3CookiesOverride extends GuiceBerryModule {
     return server.getPortNumber();
   }
   
-  @Provides
+  @Provides @TestScoped
   WebDriver getWebDriver(@PortNumber int portNumber, TestId testId) {
     WebDriver driver = new HtmlUnitDriver();
     // !!! HERE !!!

@@ -40,11 +40,6 @@ public final class SharedStaticVarIcStrategy {
     return new IcStrategy(IcClientStrategyImpl.class, IcServerStrategyImpl.class);
   }
 
-  @Deprecated
-  public static IcStrategy buildStrategyCouple() {
-    return strategy();
-  }
-  
   private static final class IcClientStrategyImpl implements IcStrategy.ClientSupport {
     public <T> void setOverride(ControllableId<T> pair, T override) {
       map.put(pair, override);

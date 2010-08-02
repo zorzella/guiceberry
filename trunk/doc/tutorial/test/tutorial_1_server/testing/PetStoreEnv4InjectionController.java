@@ -3,6 +3,7 @@ package tutorial_1_server.testing;
 import com.google.guiceberry.GuiceBerryEnvMain;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.TestId;
+import com.google.guiceberry.TestScoped;
 import com.google.guiceberry.controllable.IcMaster;
 import com.google.guiceberry.controllable.SharedStaticVarIcStrategy;
 import com.google.guiceberry.controllable.TestIdServerModule;
@@ -27,7 +28,7 @@ public final class PetStoreEnv4InjectionController extends GuiceBerryModule {
     return server.getPortNumber();
   }
   
-  @Provides
+  @Provides @TestScoped
   WebDriver getWebDriver(@PortNumber int portNumber, TestId testId) {
     WebDriver driver = new HtmlUnitDriver();
     driver.get("http://localhost:" + portNumber);

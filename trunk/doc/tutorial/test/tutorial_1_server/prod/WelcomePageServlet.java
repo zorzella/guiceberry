@@ -28,9 +28,7 @@ public final class WelcomePageServlet extends HttpServlet {
     PrintWriter writer = resp.getWriter();
     writer.println(
         "<html>\n" +
-        "<head>\n" +
-        "<title>Welcome to the pet store</title>\n" +
-        "</head>\n" +
+        "<head><title>Welcome to the pet store</title></head>\n" +
         "<body>\n" +
         "<div id='welcome'>Welcome!</div>\n" +
         "Today's featured pet: <div id='featured-pet'>" + featuredPetProvider.get() + "</div>\n" +
