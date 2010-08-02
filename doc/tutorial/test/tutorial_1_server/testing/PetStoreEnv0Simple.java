@@ -1,21 +1,18 @@
-package junit3_tdtc.tutorial_1_server;
+package tutorial_1_server.testing;
 
+import com.google.guiceberry.GuiceBerryEnvMain;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.inject.Inject;
-import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.guiceberry.GuiceBerryEnvMain;
 
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import tutorial_1_server.prod.MyPetStoreServer;
-import tutorial_1_server.prod.PetOfTheMonth;
-import tutorial_1_server.prod.PortNumber;
 
-public final class PetStoreEnv2GlobalStaticControllablePotm extends GuiceBerryModule {
+public class PetStoreEnv0Simple extends GuiceBerryModule {
   
   @Provides
   @PortNumber
@@ -28,17 +25,11 @@ public final class PetStoreEnv2GlobalStaticControllablePotm extends GuiceBerryMo
     WebDriver driver = new HtmlUnitDriver();
     return driver;
   }
-
+  
   @Provides
   @Singleton
-  MyPetStoreServer buildPetStoreServer() {
-    MyPetStoreServer result = new MyPetStoreServer() {
-      @Override
-      protected Module getPetStoreModule() {
-        return new PetStoreModuleWithGlobalStaticOverride();
-      }
-    };
-    return result;
+  protected MyPetStoreServer buildPetStoreServer() {
+    return new MyPetStoreServer();
   }
   
   @Override
@@ -48,7 +39,7 @@ public final class PetStoreEnv2GlobalStaticControllablePotm extends GuiceBerryMo
   }
   
   private static final class PetStoreServerStarter implements GuiceBerryEnvMain {
-
+    
     @Inject
     private MyPetStoreServer myPetStoreServer;
     
@@ -56,22 +47,6 @@ public final class PetStoreEnv2GlobalStaticControllablePotm extends GuiceBerryMo
       // Starting a server should never be done in a @Provides method 
       // (or inside Provider's get).
       myPetStoreServer.start();
-    }
-  }
-
-  public static final class PetStoreModuleWithGlobalStaticOverride 
-      extends MyPetStoreServer.PetStoreModule {
-
-    // !!!HERE!!!!
-    public static PetOfTheMonth override;
-    
-    @Override
-    protected PetOfTheMonth somePetOfTheMonth() {
-      // !!!HERE!!!!
-      if (override != null) {
-        return override;
-      }
-      return super.somePetOfTheMonth();
     }
   }
 }

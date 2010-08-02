@@ -6,9 +6,11 @@ import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
 import com.google.inject.Inject;
 
 import junit.framework.TestCase;
-import junit3.tutorial_1_server.PetStoreEnv2GlobalStaticControllablePotm.PetStoreModuleWithGlobalStaticOverride;
 
-import tutorial_1_server.prod.PetOfTheMonth;
+import tutorial_1_server.prod.Pet;
+import tutorial_1_server.testing.PetStoreEnv2GlobalStaticControllablePotm;
+import tutorial_1_server.testing.PetStoreEnv2GlobalStaticControllablePotm.PetStoreModuleWithGlobalStaticOverride;
+import tutorial_1_server.testing.WelcomeTestPage;
 
 public class Example2ManualControlledInjectionTest extends TestCase {
 
@@ -33,7 +35,7 @@ public class Example2ManualControlledInjectionTest extends TestCase {
   WelcomeTestPage welcomeTestPage;
 
   public void testDogAsPotm() {
-    PetOfTheMonth expected = PetOfTheMonth.DOG;
+    Pet expected = Pet.DOG;
     PetStoreModuleWithGlobalStaticOverride.override = expected;
     // register a tearDown, so that at the end of the test, 
     // the override is set to null again
@@ -47,7 +49,7 @@ public class Example2ManualControlledInjectionTest extends TestCase {
   }
 
   public void testCatAsPotm() {
-    PetOfTheMonth expected = PetOfTheMonth.CAT;
+    Pet expected = Pet.CAT;
     PetStoreModuleWithGlobalStaticOverride.override = expected;
     // register a tearDown, so that at the end of the test, 
     // the override is set to null again

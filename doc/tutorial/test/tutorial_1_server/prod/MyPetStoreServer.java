@@ -23,7 +23,7 @@ public class MyPetStoreServer {
   
   public MyPetStoreServer() {
     this.portNumber = findFreePort();
-    server = new Server(this.portNumber);    
+    server = new Server(this.portNumber);
     Context root = new Context(server, "/", Context.SESSIONS);
     
     root.addFilter(GuiceFilter.class, "/*", 0);
@@ -70,7 +70,7 @@ public class MyPetStoreServer {
   public static class PetStoreModule extends AbstractModule {
 
     @Provides
-    protected PetOfTheMonth getPetOfTheMonth() {
+    protected Pet getPetOfTheMonth() {
       return somePetOfTheMonth();
     }
     
@@ -79,8 +79,8 @@ public class MyPetStoreServer {
     /** Simulates a call to a non-deterministic service -- maybe an external
      * server, maybe a DB call to a volatile entry, etc.
      */
-    protected PetOfTheMonth somePetOfTheMonth() {
-      PetOfTheMonth[] allPetsOfTheMonth = PetOfTheMonth.values();
+    protected Pet somePetOfTheMonth() {
+      Pet[] allPetsOfTheMonth = Pet.values();
       return allPetsOfTheMonth[(rand.nextInt(allPetsOfTheMonth.length))];
     }
 

@@ -5,8 +5,9 @@ import com.google.guiceberry.controllable.InjectionController;
 import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
 import com.google.inject.Inject;
 
-import tutorial_1_server.prod.PetOfTheMonth;
-
+import tutorial_1_server.prod.Pet;
+import tutorial_1_server.testing.PetStoreEnv4CanonicalSameJvmControllablePotm;
+import tutorial_1_server.testing.WelcomeTestPage;
 
 public class Example4CanonicalSameJvmControllableInjectionTest extends TearDownTestCase {
 
@@ -20,17 +21,17 @@ public class Example4CanonicalSameJvmControllableInjectionTest extends TearDownT
   WelcomeTestPage welcomeTestPage;
   
   @Inject
-  private InjectionController<PetOfTheMonth> petOfTheMonthIc;
+  private InjectionController<Pet> petOfTheMonthIc;
 
   public void testDogAsPotm() {
-    PetOfTheMonth expected = PetOfTheMonth.DOG;
+    Pet expected = Pet.DOG;
     petOfTheMonthIc.setOverride(expected);
     welcomeTestPage.goTo();
     welcomeTestPage.assertPetOfTheMonth(expected);
   }
 
   public void testCatAsPotm() {
-    PetOfTheMonth expected = PetOfTheMonth.CAT;
+    Pet expected = Pet.CAT;
     petOfTheMonthIc.setOverride(expected);
     welcomeTestPage.goTo();
     welcomeTestPage.assertPetOfTheMonth(expected);

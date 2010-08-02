@@ -7,9 +7,10 @@ import com.google.guiceberry.TestId;
 import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
 import com.google.inject.Inject;
 
-import tutorial_1_server.prod.PetOfTheMonth;
-
-import junit3_tdtc.tutorial_1_server.PetStoreEnv3CookiesControlledPotm.PetStoreModuleWithTestIdBasedOverride;
+import tutorial_1_server.prod.Pet;
+import tutorial_1_server.testing.PetStoreEnv3CookiesControlledPotm;
+import tutorial_1_server.testing.PetStoreEnv3CookiesControlledPotm.PetStoreModuleWithTestIdBasedOverride;
+import tutorial_1_server.testing.WelcomeTestPage;
 
 public class Example3ManualControlledInjectionThroughCookieTest extends TearDownTestCase {
 
@@ -29,7 +30,7 @@ public class Example3ManualControlledInjectionThroughCookieTest extends TearDown
   private TestId testId;
   
   public void testDogAsPotm() {
-    PetOfTheMonth expected = PetOfTheMonth.DOG;
+    Pet expected = Pet.DOG;
     PetStoreModuleWithTestIdBasedOverride.override.put(testId, expected);
     // register a tearDown, so that at the end of the test, 
     // the override is set to null again
@@ -43,7 +44,7 @@ public class Example3ManualControlledInjectionThroughCookieTest extends TearDown
   }
 
   public void testCatAsPotm() {
-    PetOfTheMonth expected = PetOfTheMonth.CAT;
+    Pet expected = Pet.CAT;
     PetStoreModuleWithTestIdBasedOverride.override.put(testId, expected);
     // register a tearDown, so that at the end of the test, 
     // the override is set to null again

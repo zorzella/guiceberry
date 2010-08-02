@@ -1,4 +1,4 @@
-package junit3.tutorial_1_server;
+package tutorial_1_server.testing;
 
 import com.google.inject.Inject;
 
@@ -8,10 +8,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import tutorial_1_server.prod.PetOfTheMonth;
-import tutorial_1_server.prod.PortNumber;
+import tutorial_1_server.prod.Pet;
 
 public final class WelcomeTestPage {
+
   @Inject
   WebDriver driver;
   
@@ -32,7 +32,7 @@ public final class WelcomeTestPage {
     TestCase.assertEquals("Welcome to the pet store", driver.getTitle());
   }
 
-  public void assertPetOfTheMonth(PetOfTheMonth petOfTheMonth) {
+  public void assertPetOfTheMonth(Pet petOfTheMonth) {
     WebElement element = driver.findElement(By.xpath("//div[@id='potm']"));
     TestCase.assertEquals(petOfTheMonth.toString(), element.getText());
   }

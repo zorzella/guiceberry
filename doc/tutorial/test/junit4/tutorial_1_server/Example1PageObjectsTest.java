@@ -6,6 +6,9 @@ import com.google.inject.Inject;
 import org.junit.Rule;
 import org.junit.Test;
 
+import tutorial_1_server.testing.PetStoreEnv2GlobalStaticControllablePotm;
+import tutorial_1_server.testing.WelcomeTestPage;
+
 public class Example1PageObjectsTest {
 
   @Rule
