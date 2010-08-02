@@ -9,14 +9,14 @@ import org.junit.Test;
 
 import tutorial_1_server.prod.Pet;
 import tutorial_1_server.prod.Featured;
-import tutorial_1_server.testing.PetStoreEnv4InjectionControlled;
+import tutorial_1_server.testing.PetStoreEnv4InjectionController;
 import tutorial_1_server.testing.WelcomeTestPage;
 
 public class Example4InjectionControllerTest {
 
   @Rule
   public GuiceBerryRule guiceBerry = 
-    new GuiceBerryRule(PetStoreEnv4InjectionControlled.class);
+    new GuiceBerryRule(PetStoreEnv4InjectionController.class);
   
   @Inject
   WelcomeTestPage welcomeTestPage;

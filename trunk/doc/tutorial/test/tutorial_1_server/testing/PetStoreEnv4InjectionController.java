@@ -20,7 +20,7 @@ import tutorial_1_server.prod.MyPetStoreServer;
 import tutorial_1_server.prod.Pet;
 import tutorial_1_server.prod.Featured;
 
-public final class PetStoreEnv4InjectionControlled extends GuiceBerryModule {
+public final class PetStoreEnv4InjectionController extends GuiceBerryModule {
   
   @Provides
   @PortNumber int getPortNumber(MyPetStoreServer server) {
