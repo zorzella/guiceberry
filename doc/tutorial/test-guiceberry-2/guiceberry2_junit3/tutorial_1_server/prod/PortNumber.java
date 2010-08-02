@@ -1,16 +1,16 @@
-// Copyright 2008 Google Inc.  All Rights Reserved.
-// Copyright 2009 Google Inc. All Rights Reserved.
-
 package guiceberry2_junit3.tutorial_1_server.prod;
+
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import com.google.inject.BindingAnnotation;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME) 
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER}) 
+@Retention(RUNTIME) 
+@Target({FIELD, METHOD, PARAMETER}) 
 @BindingAnnotation
 public @interface PortNumber {}
