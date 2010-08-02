@@ -45,7 +45,7 @@ public class Example2ManualControlledInjectionTest extends TestCase {
       }
     });
     welcomeTestPage.goTo();
-    welcomeTestPage.assertPetOfTheMonth(expected);
+    welcomeTestPage.assertPetOfTheMonthIs(expected);
   }
 
   public void testCatAsPotm() {
@@ -59,6 +59,6 @@ public class Example2ManualControlledInjectionTest extends TestCase {
       }
     });
     welcomeTestPage.goTo();
-    welcomeTestPage.assertPetOfTheMonth(expected);
+    welcomeTestPage.assertPetOfTheMonthIs(expected);
   }
 }

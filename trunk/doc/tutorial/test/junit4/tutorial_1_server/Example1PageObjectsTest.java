@@ -21,12 +21,12 @@ public class Example1PageObjectsTest {
   @Test
   public void testMyServletDiv() {
     welcomeTestPage.goTo();
-    welcomeTestPage.assertWelcomeMessage();
+    welcomeTestPage.assertWelcomeMessageIs("Welcome!");
   }
 
   @Test
   public void testMyServletTitle() {
     welcomeTestPage.goTo();
-    welcomeTestPage.assertTitle();
+    welcomeTestPage.assertTitleIs("Welcome to the pet store");
   }
 }

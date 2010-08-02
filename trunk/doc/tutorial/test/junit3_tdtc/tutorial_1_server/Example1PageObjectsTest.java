@@ -20,11 +20,11 @@ public class Example1PageObjectsTest extends TearDownTestCase {
 
   public void testMyServletDiv() {
     welcomeTestPage.goTo();
-    welcomeTestPage.assertWelcomeMessage();
+    welcomeTestPage.assertWelcomeMessageIs("Welcome!");
   }
 
   public void testMyServletTitle() {
     welcomeTestPage.goTo();
-    welcomeTestPage.assertTitle();
+    welcomeTestPage.assertTitleIs("Welcome to the pet store");
   }
 }
