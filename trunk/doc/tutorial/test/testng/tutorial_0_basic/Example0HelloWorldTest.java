@@ -17,13 +17,13 @@ public class Example0HelloWorldTest {
   
   @BeforeMethod
   public void setUp(Method m) {
-    // Make this the call to ManualTearDownGuiceBerry.setUp as early as possible
+    // Make this the call to TestNgGuiceBerry.setUp as early as possible
     toTearDown = TestNgGuiceBerry.setUp(this, m, Env.class);
   }
   
   @AfterMethod
   public void tearDown() throws Exception {
-    // Make this the call to ManualTearDownGuiceBerry.tearDown Up as late as possible
+    // Make this the call to TestNgGuiceBerry.tearDown as late as possible
     toTearDown.tearDown();
   }
 
