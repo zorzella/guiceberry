@@ -11,13 +11,13 @@ import com.google.inject.Singleton;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-import tutorial_1_server.prod.MyPetStoreServer;
+import tutorial_1_server.prod.PetStoreServer;
 
 public class PetStoreEnv0Simple extends GuiceBerryModule {
   
-  @Provides
-  @PortNumber int getPortNumber(MyPetStoreServer server) {
-    return server.getPortNumber();
+  @Provides @Singleton
+  @PortNumber int getPortNumber() {
+    return FreePortFinder.findFreePort();
   }
   
   @Provides @TestScoped
@@ -28,8 +28,8 @@ public class PetStoreEnv0Simple extends GuiceBerryModule {
   
   @Provides
   @Singleton
-  protected MyPetStoreServer buildPetStoreServer() {
-    return new MyPetStoreServer();
+  protected PetStoreServer buildPetStoreServer(@PortNumber int portNumber) {
+    return new PetStoreServer(portNumber);
   }
   
   @Override
@@ -41,7 +41,7 @@ public class PetStoreEnv0Simple extends GuiceBerryModule {
   private static final class PetStoreServerStarter implements GuiceBerryEnvMain {
     
     @Inject
-    private MyPetStoreServer myPetStoreServer;
+    private PetStoreServer myPetStoreServer;
     
     public void run() {
       // Starting a server should never be done in a @Provides method 

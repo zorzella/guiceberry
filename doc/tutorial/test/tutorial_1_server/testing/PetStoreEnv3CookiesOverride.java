@@ -18,16 +18,16 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-import tutorial_1_server.prod.MyPetStoreServer;
+import tutorial_1_server.prod.PetStoreServer;
 import tutorial_1_server.prod.Pet;
 
 import java.util.Map;
 
 public final class PetStoreEnv3CookiesOverride extends GuiceBerryModule {
   
-  @Provides
-  @PortNumber int getPortNumber(MyPetStoreServer server) {
-    return server.getPortNumber();
+  @Provides @Singleton
+  @PortNumber int getPortNumber() {
+    return FreePortFinder.findFreePort();
   }
   
   @Provides @TestScoped
@@ -41,8 +41,9 @@ public final class PetStoreEnv3CookiesOverride extends GuiceBerryModule {
 
   @Provides
   @Singleton
-  MyPetStoreServer buildPetStoreServer(final PetStoreServerStarter starter) {
-    MyPetStoreServer result = new MyPetStoreServer() {
+  PetStoreServer buildPetStoreServer(final PetStoreServerStarter starter, 
+      @PortNumber int portNumber) {
+    PetStoreServer result = new PetStoreServer(portNumber) {
       @Override
       protected Module getPetStoreModule() {
         return new PetStoreModuleWithTestIdBasedOverride(starter);
@@ -61,7 +62,7 @@ public final class PetStoreEnv3CookiesOverride extends GuiceBerryModule {
   private static final class PetStoreServerStarter implements GuiceBerryEnvMain {
 
     @Inject
-    private Provider<MyPetStoreServer> myPetStoreServer;
+    private Provider<PetStoreServer> myPetStoreServer;
     
     Injector serverInjector;
     
@@ -73,7 +74,7 @@ public final class PetStoreEnv3CookiesOverride extends GuiceBerryModule {
   }
 
   public static final class PetStoreModuleWithTestIdBasedOverride 
-      extends MyPetStoreServer.PetStoreModule {
+      extends PetStoreServer.PetStoreModule {
 
     public static final Map<TestId, Pet> override = Maps.newHashMap();
 

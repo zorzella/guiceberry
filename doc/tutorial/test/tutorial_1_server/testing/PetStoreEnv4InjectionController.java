@@ -17,15 +17,15 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-import tutorial_1_server.prod.MyPetStoreServer;
+import tutorial_1_server.prod.PetStoreServer;
 import tutorial_1_server.prod.Pet;
 import tutorial_1_server.prod.Featured;
 
 public final class PetStoreEnv4InjectionController extends GuiceBerryModule {
   
-  @Provides
-  @PortNumber int getPortNumber(MyPetStoreServer server) {
-    return server.getPortNumber();
+  @Provides @Singleton
+  @PortNumber int getPortNumber() {
+    return FreePortFinder.findFreePort();
   }
   
   @Provides @TestScoped
@@ -38,8 +38,8 @@ public final class PetStoreEnv4InjectionController extends GuiceBerryModule {
   
   @Provides
   @Singleton
-  MyPetStoreServer buildPetStoreServer() {
-    MyPetStoreServer result = new MyPetStoreServer() {
+  PetStoreServer buildPetStoreServer(@PortNumber int portNumber) {
+    PetStoreServer result = new PetStoreServer(portNumber) {
       @Override
       protected Module getPetStoreModule() {
         // !!! HERE !!!
@@ -67,7 +67,7 @@ public final class PetStoreEnv4InjectionController extends GuiceBerryModule {
   private static final class PetStoreServerStarter implements GuiceBerryEnvMain {
     
     @Inject
-    private MyPetStoreServer myPetStoreServer;
+    private PetStoreServer myPetStoreServer;
     
     public void run() {
       // Starting a server should never be done in a @Provides method 
