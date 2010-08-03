@@ -13,35 +13,19 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.DefaultServlet;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.util.Random;
 
-public class MyPetStoreServer {
+public class PetStoreServer {
   
   private final Server server;
-  private final int portNumber;
   
   @Inject
-  public MyPetStoreServer() {
-    this.portNumber = findFreePort();
-    server = new Server(this.portNumber);
+  public PetStoreServer(int portNumber) {
+    server = new Server(portNumber);
     Context root = new Context(server, "/", Context.SESSIONS);
     
     root.addFilter(GuiceFilter.class, "/*", 0);
     root.addServlet(DefaultServlet.class, "/");
-  }
-  
-  private static final int findFreePort() {
-    for(int i = 8000; i < 8100; i++) {
-      ServerSocket socket;
-      try {
-        socket = new ServerSocket(i);
-        socket.close();
-        return i;
-      } catch (IOException portInUse) {}
-    }
-    throw new RuntimeException("Can't find a free port");
   }
   
   public Injector start() {
@@ -54,10 +38,6 @@ public class MyPetStoreServer {
     }
   }
   
-  public int getPortNumber() {
-    return portNumber;
-  }
-
   protected Module getPetStoreModule() {
     return new PetStoreModule();
   }
@@ -94,7 +74,7 @@ public class MyPetStoreServer {
   }
 
   public static void main(String[] args) throws Exception {
-    MyPetStoreServer petStoreServer = new MyPetStoreServer();
+    PetStoreServer petStoreServer = new PetStoreServer(8888);
     petStoreServer.start();
     Thread.sleep(20000);
     petStoreServer.server.stop();
