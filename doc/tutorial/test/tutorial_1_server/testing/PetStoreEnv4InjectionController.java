@@ -5,7 +5,7 @@ import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.TestId;
 import com.google.guiceberry.TestScoped;
 import com.google.guiceberry.controllable.IcMaster;
-import com.google.guiceberry.controllable.SharedStaticVarIcStrategy;
+import com.google.guiceberry.controllable.StaticMapInjectionController;
 import com.google.guiceberry.controllable.TestIdServerModule;
 import com.google.inject.Inject;
 import com.google.inject.Key;
@@ -59,7 +59,7 @@ public final class PetStoreEnv4InjectionController extends GuiceBerryModule {
     bind(GuiceBerryEnvMain.class).to(PetStoreServerStarter.class);
     // !!!! HERE !!!!
     icMaster = new IcMaster()
-      .thatControls(SharedStaticVarIcStrategy.strategy(),
+      .thatControls(StaticMapInjectionController.strategy(),
          Key.get(Pet.class, Featured.class));
     install(icMaster.buildClientModule());
   }

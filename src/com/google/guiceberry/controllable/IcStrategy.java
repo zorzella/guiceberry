@@ -25,7 +25,7 @@ import com.google.inject.util.Types;
  * To implement controllable injections, what is fundamentally required is a way
  * for client (test) to send controllable-injection-related data to the server.
  * 
- * <p>Out-of-the-box, GuiceBerry offers a {@link SharedStaticVarIcStrategy}, 
+ * <p>Out-of-the-box, GuiceBerry offers a {@link StaticMapInjectionController}, 
  * which is ideal when you run both test and server in the same ClassLoader/JVM.
  * 
  * <p>When that is not possible, there are other ways to send this sort of data,
