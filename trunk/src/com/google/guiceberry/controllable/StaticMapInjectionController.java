@@ -23,7 +23,8 @@ import java.util.Map;
 
 /**
  * The {@link #strategy()} static factory method gives forth the 
- * canonical {@link IcStrategy}.
+ * canonical {@link IcStrategy} -- where a static map is used as a shared data
+ * structure between the server's and the test's Injector.
  * 
  * <p>This strategy is quite capable, and should likely always be used, as long
  * as possible. The one and only constraint is that its internal {@link #map} 
@@ -32,7 +33,7 @@ import java.util.Map;
  * 
  * @author Luiz-Otavio Zorzella
  */
-public final class SharedStaticVarIcStrategy {
+public final class StaticMapInjectionController {
 
   private static final Map<ControllableId<?>,Object> map = Maps.newHashMap();
 

@@ -110,7 +110,7 @@ public class IcMasterTest extends TearDownTestCase {
   
   public void testSimple() throws Exception {
     final IcMaster icMaster = new IcMaster()
-      .thatControls(SharedStaticVarIcStrategy.strategy(), 
+      .thatControls(StaticMapInjectionController.strategy(), 
           Key.get(MyEnum.class),
           // TODO: awkard construct! At least document
           Key.get(new TypeLiteral<MyGenericClass<MyEnum>> (){}));
@@ -165,7 +165,7 @@ public class IcMasterTest extends TearDownTestCase {
   public void testIllegalArg() throws Exception {
     try {
       new IcMaster()
-        .thatControls(SharedStaticVarIcStrategy.strategy(), 
+        .thatControls(StaticMapInjectionController.strategy(), 
             MyEnum.class, 
             MyEnum.class);
       fail();
