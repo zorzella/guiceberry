@@ -43,7 +43,7 @@ public class ManualTearDownGuiceBerry {
    * <p>A canonical test will call this method in the its setUp method, and will
    * pass {@code this} as the testCase argument. It will then store the return
    * value to run it at its tearDown. See
-   * {@link junit3.tutorial_0_basic.Example0HelloWorldTest#setName(String)}.
+   * {@link junit3.tutorial_0_basic.Example0HelloWorldTest#setUp()}.
    */
   public static TearDown setUp(
       TestCase testCase, 
@@ -55,6 +55,8 @@ public class ManualTearDownGuiceBerry {
    * Sets up the {@code testCase} with the given {@code guiceBerryEnvSelector}
    * and returns a {@link TearDown} whose {@link TearDown#tearDown()} method
    * must be manually called (thus the "manual" moniker).
+   *
+   * @see #setUp(TestCase, Class)
    */
   public static TearDown setUp(
       TestCase testCase, 
