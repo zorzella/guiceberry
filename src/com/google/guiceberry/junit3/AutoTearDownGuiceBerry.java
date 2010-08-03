@@ -42,7 +42,7 @@ public class AutoTearDownGuiceBerry {
    *
    * <p>A canonical test will call this method in the its setUp method, and will
    * pass {@code this} as the testCase argument. See
-   * {@link junit3_tdtc.tutorial_0_basic.Example0HelloWorldTest#setName(String)}.
+   * {@link junit3_tdtc.tutorial_0_basic.Example0HelloWorldTest#setUp()}.
    *
    * <p>The parameter {@code T} is a {@link TearDownTestCase} or anything
    * equivalent to it. 
@@ -56,6 +56,8 @@ public class AutoTearDownGuiceBerry {
   /**
    * Same as {@link #setUp(TearDownTestCase, Class)}, but with the given 
    * {@code guiceBerryEnvSelector}.
+   *
+   * @see #setUp(TestCase, Class)
    */
   public static <T extends TestCase & TearDownAccepter> void setUp(
       /* TeaDownTestCase */ T testCase,
