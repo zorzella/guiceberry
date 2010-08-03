@@ -19,7 +19,7 @@ public class Example0HelloWorldTest extends TestCase {
   
   @Override
   protected void tearDown() throws Exception {
-    // Make this the call to ManualTearDownGuiceBerry.tearDown Up as late as possible
+    // Make this the call to ManualTearDownGuiceBerry.tearDown as late as possible
     toTearDown.tearDown();
     super.tearDown();
   }

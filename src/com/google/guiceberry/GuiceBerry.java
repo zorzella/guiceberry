@@ -20,6 +20,7 @@ import com.google.guiceberry.GuiceBerryUniverse.TestCaseScaffolding;
 import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
 import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
 import com.google.guiceberry.junit4.GuiceBerryRule;
+import com.google.guiceberry.testng.TestNgGuiceBerry;
 
 /**
  * You won't have to deal with this class directly unless you are writing a test
@@ -31,6 +32,7 @@ import com.google.guiceberry.junit4.GuiceBerryRule;
  *   <li>For Junit4, {@link GuiceBerryRule}
  *   <li>For plain Junit3 {@link ManualTearDownGuiceBerry}
  *   <li>For Junit3 with TearDownTestCase, {@link AutoTearDownGuiceBerry}
+ *   <li>For TestNG, {@link TestNgGuiceBerry}
  * </ul>
  *
  * @author Luiz-Otavio "Z" Zorzella
