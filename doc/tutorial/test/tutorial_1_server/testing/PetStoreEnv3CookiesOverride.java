@@ -62,14 +62,14 @@ public final class PetStoreEnv3CookiesOverride extends GuiceBerryModule {
   private static final class PetStoreServerStarter implements GuiceBerryEnvMain {
 
     @Inject
-    private Provider<PetStoreServer> myPetStoreServer;
+    private Provider<PetStoreServer> petStoreServer;
     
     Injector serverInjector;
     
     public void run() {
       // Starting a server should never be done in a @Provides method 
       // (or inside Provider's get).
-      serverInjector = myPetStoreServer.get().start();
+      serverInjector = petStoreServer.get().start();
     }
   }
 
