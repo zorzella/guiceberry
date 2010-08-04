@@ -67,12 +67,12 @@ public final class PetStoreEnv4InjectionController extends GuiceBerryModule {
   private static final class PetStoreServerStarter implements GuiceBerryEnvMain {
     
     @Inject
-    private PetStoreServer myPetStoreServer;
+    private PetStoreServer petStoreServer;
     
     public void run() {
       // Starting a server should never be done in a @Provides method 
       // (or inside Provider's get).
-      myPetStoreServer.start();
+      petStoreServer.start();
     }
   }
 }
