@@ -9,7 +9,7 @@ public enum Pet {
   CAT,
   DOG,
   FERRET,
-  HUMMUNGBIRD,
+  HUMMINGBIRD,
   MACAW,
   PARROT,
   TAMARIN,
