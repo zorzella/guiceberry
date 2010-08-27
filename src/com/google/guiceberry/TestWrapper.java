@@ -31,7 +31,6 @@ import com.google.common.testing.TearDownAccepter;
  * 
  * <code>
  * @Provides
- * @Singleton
  * TestWrapper getTestWrapper(final TearDownAccepter tearDownAccepter) {
  *   return new TestWrapper() {
  *     public void toRunBeforeTest() {
