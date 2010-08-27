@@ -1050,7 +1050,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     
     @Override
     public void configure() {
-      install(new BasicJunit3Module());
+      install(new DeprecatedGuiceBerryModule(currentUniverse));
       bind(FooService.class).to(FooServiceOne.class);
       bind(BarService.class).to(BarServiceOne.class);      
       bind(Integer.class).toInstance(NUMBER++);
@@ -1066,7 +1066,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
     @Override
     public void configure() {
-      install(new BasicJunit3Module());
+      install(new DeprecatedGuiceBerryModule(currentUniverse));
       bind(TestScopeListener.class).toInstance(new NoOpTestScopeListener());
     }
   }
@@ -1107,7 +1107,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
     @Override
     public void configure() {
-      install(new BasicJunit3Module());
+      install(new DeprecatedGuiceBerryModule(currentUniverse));
       bind(FooService.class).to(FooServiceTwo.class);
       bind(BarService.class).to(BarServiceTwo.class);      
       bind(Integer.class).toInstance(NUMBER++);
@@ -1131,7 +1131,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
     @Override
     public void configure() {
-      install(new BasicJunit3Module());
+      install(new DeprecatedGuiceBerryModule(currentUniverse));
       requestStaticInjection(getClass());
     }
 
