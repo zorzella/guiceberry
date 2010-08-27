@@ -18,6 +18,7 @@ package com.google.guiceberry;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.testing.TearDown;
+import com.google.common.testing.TearDownAccepter;
 import com.google.common.testing.TearDownStack;
 import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
 import com.google.guiceberry.GuiceBerryModule.ToTearDown;
@@ -49,7 +50,7 @@ class GuiceBerryUniverse {
    * {@link GuiceBerryUniverse#gbeClassToInjectorMap}, to allow for graceful
    * error handling.
    */
-  private static final Injector BOGUS_INJECTOR = Guice.createInjector();
+  private static final Injector BOGUS_INJECTOR = Guice.createInjector(new GuiceBerryModule());
   
   static class TestCaseScaffolding implements GuiceBerryWrapper {
 
@@ -90,14 +91,6 @@ class GuiceBerryUniverse {
           doTearDown();
         }
       });
-      stack.addTearDown(new TearDown() {
-        public void tearDown() throws Exception {
-          // TODO: this used to happen after "doTeadDown", causing a bug -- e.g.
-          // a Provider<TestId> could not be used in the toRunAfterTest Scope method
-          // of the TestWrapper. TODO: unit test this!
-          callTestWrapperToRunAfterTest(injector);
-        }
-      });
       
       stack.addTearDown(new TearDown() {
         public void tearDown() throws Exception {
@@ -105,6 +98,7 @@ class GuiceBerryUniverse {
           toTearDown.runTearDown();
         }
       });
+      TearDownAccepter accepter = wrappedGetInstance(injector, TearDownAccepter.class, gbeClass);
       buildTestWrapperInstance(injector).toRunBeforeTest();
       
       injectMembersIntoTest(gbeClass, injector); 
@@ -118,11 +112,25 @@ class GuiceBerryUniverse {
       } catch (ConfigurationException e) {
         String msg = String.format("Binding error in the GuiceBerry Env '%s': '%s'.",
             gbeClass.getName(), e.getMessage());
-        callTestWrapperToRunAfterTest(universe.gbeClassToInjectorMap.get(gbeClass));
         throw new RuntimeException(msg, e);
       }
     }
 
+    private static <T> T wrappedGetInstance(
+        final Injector injector, 
+        final Class<T> clazz,
+        final Class<? extends Module> gbeClass
+        ) {
+      
+      try {
+        return injector.getInstance(clazz);
+      } catch (ConfigurationException e) {
+        String msg = String.format("Binding error in the GuiceBerry Env '%s': '%s'.",
+            gbeClass.getName(), e.getMessage());
+        throw new RuntimeException(msg, e);
+      }
+    }
+    
     /**
      * Returns the {@link Injector} for the given {@code gbeClass}. If this
      * GuiceBerry env has never been seen before, add it to the 
@@ -186,10 +194,12 @@ class GuiceBerryUniverse {
         } else if (hasTestScopeListenerBinding) {
           result = injector.getInstance(TestWrapper.class);
         } else if (hasDeprecatedTestScopeListenerBinding) {
-          result = adapt(injector.getInstance(com.google.inject.testing.guiceberry.TestScopeListener.class));
+          result = adapt(
+              injector.getInstance(com.google.inject.testing.guiceberry.TestScopeListener.class),
+              injector.getInstance(TearDownAccepter.class));
         }
       } catch (ConfigurationException e) {
-        String msg = String.format("Error while creating a TestScopeListener: '%s'.",
+        String msg = String.format("Error while creating a TestWrapper: '%s'.",
           e.getMessage());
         throw new RuntimeException(msg, e); 
       }
@@ -197,17 +207,18 @@ class GuiceBerryUniverse {
     }
 
     private static TestWrapper adapt(
-        final com.google.inject.testing.guiceberry.TestScopeListener instance) {
+        final com.google.inject.testing.guiceberry.TestScopeListener instance,
+        final TearDownAccepter tearDownAccepter) {
       return new TestWrapper() {
 
         public void toRunBeforeTest() {
+          tearDownAccepter.addTearDown(new TearDown() {
+            public void tearDown() throws Exception {
+              instance.exitingScope();
+            }
+          });
           instance.enteringScope();
         }
-
-        public void toRunAfterTest() {
-          instance.exitingScope();
-        }
-        
       };
     }
 
@@ -286,10 +297,6 @@ class GuiceBerryUniverse {
       stack.runTearDown();
     }
     
-    private static void callTestWrapperToRunAfterTest(Injector injector) {
-      buildTestWrapperInstance(injector).toRunAfterTest();
-    }
-
     private void doTearDown() {
       if (!universe.currentTestDescriptionThreadLocal.get().equals(testDescription)) {
         String msg = String.format(GuiceBerryJunit3.class.toString() 
@@ -307,12 +314,8 @@ class GuiceBerryUniverse {
 
   private static final class NoOpTestScopeListener implements TestWrapper {
     
-    public static final TestWrapper NO_OP_INSTANCE = new NoOpTestScopeListener();
+    private static final TestWrapper NO_OP_INSTANCE = new NoOpTestScopeListener();
 
-    public void toRunBeforeTest() {
-    }
-    
-    public void toRunAfterTest() {
-    }
+    public void toRunBeforeTest() {}
   }
 }

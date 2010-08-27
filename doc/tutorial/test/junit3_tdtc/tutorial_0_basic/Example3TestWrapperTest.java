@@ -1,13 +1,15 @@
 package junit3_tdtc.tutorial_0_basic;
 
+import com.google.common.testing.TearDown;
+import com.google.common.testing.TearDownAccepter;
 import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.TestId;
 import com.google.guiceberry.TestWrapper;
 import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
-import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.Scopes;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 
 public class Example3TestWrapperTest extends TearDownTestCase {
 
@@ -25,26 +27,25 @@ public class Example3TestWrapperTest extends TearDownTestCase {
     System.out.println("Inside testTwo");
   }
 
-  public static final class Example3TestWrapper implements TestWrapper {
-
-    @Inject
-    private Provider<TestId> testId;
-
-    public void toRunBeforeTest() {
-      System.out.println("Beginning: " + testId.get());
-    }
-
-    public void toRunAfterTest() {
-      System.out.println("Ending: " + testId.get());
-    }
-  }
-
   public static final class Env extends GuiceBerryModule {
     
-    @Override
-    protected void configure() {
-      super.configure();
-      bind(TestWrapper.class).to(Example3TestWrapper.class).in(Scopes.SINGLETON);
+    @Provides
+    @Singleton
+    TestWrapper getTestWrapper(final Provider<TestId> testId,
+        final TearDownAccepter tearDownAccepter) {
+      
+      return new TestWrapper() {
+        
+        public void toRunBeforeTest() {
+          tearDownAccepter.addTearDown(new TearDown() {
+            
+            public void tearDown() throws Exception {
+              System.out.println("Ending: " + testId.get());
+            }
+          });
+          System.out.println("Beginning: " + testId.get());
+        }
+      };
     }
   }
 }
