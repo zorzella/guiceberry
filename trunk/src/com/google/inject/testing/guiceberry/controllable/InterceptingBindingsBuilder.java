@@ -15,9 +15,10 @@
  */
 package com.google.inject.testing.guiceberry.controllable;
 
-import static com.google.inject.internal.Preconditions.checkArgument;
-import static com.google.inject.internal.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.collect.Sets;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.Binding;
@@ -30,7 +31,6 @@ import com.google.inject.ProvidedBy;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.binder.ScopedBindingBuilder;
-import com.google.inject.internal.Sets;
 import com.google.inject.internal.UniqueAnnotations;
 import com.google.inject.name.Named;
 import com.google.inject.spi.DefaultBindingTargetVisitor;

@@ -15,8 +15,8 @@
  */
 package com.google.guiceberry.controllable;
 
+import com.google.common.base.Objects;
 import com.google.inject.Key;
-import com.google.inject.internal.Objects;
 import com.google.guiceberry.TestId;
 
 /**
