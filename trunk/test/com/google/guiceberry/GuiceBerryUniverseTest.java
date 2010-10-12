@@ -19,7 +19,6 @@ import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-import com.google.inject.Singleton;
 
 import junit.framework.Assert;
 
@@ -124,7 +123,6 @@ public class GuiceBerryUniverseTest {
     }
     
     @Provides
-    @Singleton
     TestWrapper getWrapper(final TearDownAccepter tearDownAccepter) {
       
       return new TestWrapper() {
