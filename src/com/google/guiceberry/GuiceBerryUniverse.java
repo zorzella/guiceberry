@@ -22,7 +22,9 @@ import com.google.common.testing.TearDownAccepter;
 import com.google.common.testing.TearDownStack;
 import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
 import com.google.guiceberry.GuiceBerryModule.ToTearDown;
+import com.google.inject.AbstractModule;
 import com.google.inject.ConfigurationException;
+import com.google.inject.CreationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -51,6 +53,16 @@ class GuiceBerryUniverse {
    * error handling.
    */
   private static final Injector BOGUS_INJECTOR = Guice.createInjector(new GuiceBerryModule());
+  
+  /**
+   * All bindings defined in {@link GuiceBerryModule}.
+   */
+  private static final Class<?>[] REQUIRED_BINDINGS = {
+      TestScope.class,
+      TearDownAccepter.class,
+      ToTearDown.class,
+      TestId.class
+  };
   
   static class TestCaseScaffolding implements GuiceBerryWrapper {
 
@@ -98,10 +110,58 @@ class GuiceBerryUniverse {
           toTearDown.runTearDown();
         }
       });
+      
       TearDownAccepter accepter = wrappedGetInstance(injector, TearDownAccepter.class, gbeClass);
       buildTestWrapperInstance(injector).toRunBeforeTest();
       
       injectMembersIntoTest(gbeClass, injector); 
+    }
+
+    /**
+     * Throws an {@link IllegalArgumentException} if any of the bindings in
+     * {@link GuiceBerryModule} is not defined in the given {@code injector},
+     * that is, if the user has forgotten to install that module.
+     *
+     * <p>See {@link #throwAppropriateExceptionOnMissingRequiredBindinds(Class)}.
+     */
+    private static void ensureBasicBindingsExist(Injector injector,
+        Class<? extends Module> gbeClass) {
+      
+      for(Class<?> clazz : REQUIRED_BINDINGS) {
+        if (!hasBinding(injector, clazz)) {
+          throwAppropriateExceptionOnMissingRequiredBindinds(gbeClass);
+        }
+      }
+    }
+
+    /**
+     * Always throws an {@link IllegalArgumentException} exception telling the
+     * user he/she forgot to install {@link GuiceBerryModule}.
+     * 
+     * The given {@code gbeClass} is used to provide a good error message,
+     * which includes the class name, as well being tailored for a gbe that
+     * extends {@link GuiceBerryModule} or not.
+     */
+    private static void throwAppropriateExceptionOnMissingRequiredBindinds(
+        Class<? extends Module> gbeClass) {
+      if (GuiceBerryModule.class.isAssignableFrom(gbeClass)) {
+        throw new IllegalArgumentException(String.format(
+            "The GuiceBerry Env '%s' must call 'super.configure()' in its "
+            + "'configure()' method, so as to install the bindings defined"
+            + " in GuiceBerryModule.", gbeClass.getName()));
+      } else if (AbstractModule.class.isAssignableFrom(gbeClass)) {
+        throw new IllegalArgumentException(String.format(
+            "The GuiceBerry Env '%s' must call "
+            + "'install(new GuiceBerryModule())' in its 'configure()'"
+            + " method, so as to install the bindings defined there.",
+            gbeClass.getName()));
+      } else {
+        throw new IllegalArgumentException(String.format(
+            "The GuiceBerry Env '%s' must call "
+            + "'binder.install(new GuiceBerryModule()' in its "
+            + "'configure(Binder)' method, so as to install the bindings "
+            + "defined there.", gbeClass.getName()));
+      }
     }
 
     private void injectMembersIntoTest(
@@ -171,11 +231,18 @@ class GuiceBerryUniverse {
       try {
         Module gbeInstance = createGbeInstanceFromClass(gbeClass);
         Injector injector = Guice.createInjector(gbeInstance);
+        ensureBasicBindingsExist(injector, gbeClass);
         callGbeMainIfBound(injector);
         // We don't actually use the test wrapper here, but we make sure we can
         // get an instance (i.e. we fail fast).
         buildTestWrapperInstance(injector);
         result = injector;
+      } catch (CreationException e) {
+        if (e.getMessage().contains("No scope is bound to " + TestScoped.class.getName())) {
+          throwAppropriateExceptionOnMissingRequiredBindinds(gbeClass);
+        } else {
+          throw e;
+        }
       } finally {
         // This is in the finally block to ensure that BOGUS_INJECTOR
         // is put in the map if things go bad.
