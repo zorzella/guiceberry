@@ -122,14 +122,14 @@ class GuiceBerryUniverse {
      * {@link GuiceBerryModule} is not defined in the given {@code injector},
      * that is, if the user has forgotten to install that module.
      *
-     * <p>See {@link #throwAppropriateExceptionOnMissingRequiredBindinds(Class)}.
+     * <p>See {@link #throwAppropriateExceptionOnMissingRequiredBindings(Class)}.
      */
     private static void ensureBasicBindingsExist(Injector injector,
         Class<? extends Module> gbeClass) {
       
       for(Class<?> clazz : REQUIRED_BINDINGS) {
         if (!hasBinding(injector, clazz)) {
-          throwAppropriateExceptionOnMissingRequiredBindinds(gbeClass);
+          throwAppropriateExceptionOnMissingRequiredBindings(gbeClass);
         }
       }
     }
@@ -142,7 +142,7 @@ class GuiceBerryUniverse {
      * which includes the class name, as well being tailored for a gbe that
      * extends {@link GuiceBerryModule} or not.
      */
-    private static void throwAppropriateExceptionOnMissingRequiredBindinds(
+    private static void throwAppropriateExceptionOnMissingRequiredBindings(
         Class<? extends Module> gbeClass) {
       if (GuiceBerryModule.class.isAssignableFrom(gbeClass)) {
         throw new IllegalArgumentException(String.format(
@@ -239,7 +239,7 @@ class GuiceBerryUniverse {
         result = injector;
       } catch (CreationException e) {
         if (e.getMessage().contains("No scope is bound to " + TestScoped.class.getName())) {
-          throwAppropriateExceptionOnMissingRequiredBindinds(gbeClass);
+          throwAppropriateExceptionOnMissingRequiredBindings(gbeClass);
         } else {
           throw e;
         }
