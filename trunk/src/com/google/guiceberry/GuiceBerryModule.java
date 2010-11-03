@@ -33,6 +33,8 @@ import com.google.inject.Provides;
  *
  * @author Luiz-Otavio "Z" Zorzella
  */
+//NOTE TO DEVELOPERS: when adding a binding here, make sure it's also declared
+// in GuiceBerryUniverse.REQUIRED_BINDINGS.
 public class GuiceBerryModule extends AbstractModule {
     
   protected final GuiceBerryUniverse universe;

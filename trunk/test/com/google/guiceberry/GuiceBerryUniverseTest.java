@@ -17,7 +17,10 @@ package com.google.guiceberry;
 
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
+import com.google.inject.AbstractModule;
+import com.google.inject.Binder;
 import com.google.inject.Inject;
+import com.google.inject.Module;
 import com.google.inject.Provides;
 
 import junit.framework.Assert;
@@ -42,14 +45,6 @@ public class GuiceBerryUniverseTest {
   
   private static GuiceBerryUniverse universe = null;
 
-  private static final class MyGuiceBerryEnv extends GuiceBerryModule {
-    
-    @SuppressWarnings("unused")
-    public MyGuiceBerryEnv() {
-      super(GuiceBerryUniverseTest.universe);
-    }
-  }
-  
   @Before public void setUniverse () {
     if (universe != null) {
       throw new RuntimeException();
@@ -59,6 +54,88 @@ public class GuiceBerryUniverseTest {
 
   @After public void resetUniverse() {
     universe = null;
+  }
+  
+  public static final class NonGuiceBerryEnvSinceItDoesNotInstallGuiceBerryModule extends AbstractModule {
+    @Override
+    protected void configure() {}
+  }
+
+  @Test public void testExceptionWhenGbeDoesNotInstallGuiceBerryModule0() {
+    GuiceBerryEnvSelector guiceBerryEnvSelector =
+      DefaultEnvSelector.of(NonGuiceBerryEnvSinceItDoesNotInstallGuiceBerryModule.class);
+    TestDescription testDescription = bogusTestDescription();
+    GuiceBerryUniverse.TestCaseScaffolding testCaseScaffolding = 
+      new GuiceBerryUniverse.TestCaseScaffolding(testDescription, guiceBerryEnvSelector, universe);
+
+    try {
+      testCaseScaffolding.runBeforeTest();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals(String.format(
+          "The GuiceBerry Env '%s' must call 'install(new GuiceBerryModule())' "
+          + "in its 'configure()' method, so as to install the bindings defined there.",
+          NonGuiceBerryEnvSinceItDoesNotInstallGuiceBerryModule.class.getName()),
+          e.getMessage());
+    }
+    
+    testCaseScaffolding.runAfterTest();
+  }
+  
+  public static final class NonGuiceBerryEnvNonAbstractModuleSinceItDoesNotInstallGuiceBerryModule implements Module {
+    public void configure(Binder binder) {}
+  }
+
+  @Test public void testExceptionWhenGbeDoesNotInstallGuiceBerryModule1() {
+    GuiceBerryEnvSelector guiceBerryEnvSelector =
+      DefaultEnvSelector.of(NonGuiceBerryEnvNonAbstractModuleSinceItDoesNotInstallGuiceBerryModule.class);
+    TestDescription testDescription = bogusTestDescription();
+    GuiceBerryUniverse.TestCaseScaffolding testCaseScaffolding = 
+      new GuiceBerryUniverse.TestCaseScaffolding(testDescription, guiceBerryEnvSelector, universe);
+
+    try {
+      testCaseScaffolding.runBeforeTest();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals(String.format(
+          "The GuiceBerry Env '%s' must call 'binder.install(new GuiceBerryModule()' "
+          + "in its 'configure(Binder)' method, so as to install the bindings defined there.",
+          NonGuiceBerryEnvNonAbstractModuleSinceItDoesNotInstallGuiceBerryModule.class.getName()),
+          e.getMessage());
+    }
+    
+    testCaseScaffolding.runAfterTest();
+  }
+  
+  public static final class NonGuiceBerryEnvSinceItDoesNotInstallGuiceBerryModuleByNoCallingSuper extends GuiceBerryModule {
+    @Override
+    protected void configure() {}
+  }
+    
+  @Test public void testExceptionWhenGbeDoesNotInstallGuiceBerryModule2() {
+    GuiceBerryEnvSelector guiceBerryEnvSelector =
+      DefaultEnvSelector.of(NonGuiceBerryEnvSinceItDoesNotInstallGuiceBerryModuleByNoCallingSuper.class);
+    TestDescription testDescription = bogusTestDescription();
+    GuiceBerryUniverse.TestCaseScaffolding testCaseScaffolding = 
+      new GuiceBerryUniverse.TestCaseScaffolding(testDescription, guiceBerryEnvSelector, universe);
+
+    try {
+      testCaseScaffolding.runBeforeTest();
+    } catch (IllegalArgumentException e) {
+      Assert.assertEquals(String.format(
+          "The GuiceBerry Env '%s' must call 'super.configure()' "
+          + "in its 'configure()' method, so as to install the bindings defined in GuiceBerryModule.",
+          NonGuiceBerryEnvSinceItDoesNotInstallGuiceBerryModuleByNoCallingSuper.class.getName()),
+          e.getMessage());
+    }
+    
+    testCaseScaffolding.runAfterTest();
+  }
+  
+  private static final class MyGuiceBerryEnv extends GuiceBerryModule {
+    
+    @SuppressWarnings("unused")
+    public MyGuiceBerryEnv() {
+      super(GuiceBerryUniverseTest.universe);
+    }
   }
   
   @Test public void testThrowingTearDown() {
@@ -122,6 +199,7 @@ public class GuiceBerryUniverseTest {
       beforeTestTearDownHasRun = false;
     }
     
+    @SuppressWarnings("unused")
     @Provides
     TestWrapper getWrapper(final TearDownAccepter tearDownAccepter) {
       
