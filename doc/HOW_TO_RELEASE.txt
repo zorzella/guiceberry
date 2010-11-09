@@ -31,9 +31,7 @@ $ svn commit -m "release x.y.z"
 
 6) Create a tar of the release itself
 
-$ svn export . build/dist/guiceberry-release-x.y.z
-$ cd build/dist
-$ zip -r guiceberry-release-x.y.z.zip guiceberry-release-x.y.z
+$ svn export . build/dist/guiceberry-release-x.y.z; cd build/dist; zip -r guiceberry-release-x.y.z.zip guiceberry-release-x.y.z
 
 7) Upload jars to GoogleCode
 
