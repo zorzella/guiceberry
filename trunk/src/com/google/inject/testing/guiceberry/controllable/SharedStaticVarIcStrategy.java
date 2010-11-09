@@ -15,8 +15,8 @@
  */
 package com.google.inject.testing.guiceberry.controllable;
 
+import com.google.common.collect.Maps;
 import com.google.inject.Provider;
-import com.google.inject.internal.Maps;
 import com.google.inject.testing.guiceberry.controllable.IcStrategy;
 
 import java.util.Map;
