@@ -49,4 +49,17 @@ public class DefaultEnvSelectorTest extends TearDownTestCase {
     });
     DefaultEnvSelector.override(MyEnvOne.class, MyEnvTwo.class);
   }
+  
+  public void testThatTryingToOverrideASecondTimeThrows() {
+    override();
+    try {
+      override();
+      fail("Trying to override the same env a second time should throw");
+    } catch (IllegalArgumentException expected) {
+      assertEquals(String.format(
+        "The GuiceBerry Env '%s' is already overridden by '%s'.", 
+          MyEnvOne.class.getName(), MyEnvTwo.class.getName()),
+          expected.getMessage());
+    }
+  }
 }
