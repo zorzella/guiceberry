@@ -89,7 +89,7 @@ public class DefaultEnvSelector implements GuiceBerryEnvSelector {
   @VisibleForTesting
   @SuppressWarnings("unchecked")
   static Class<? extends Module> getOverride(String guiceBerryEnvName) {
-    String overrideName = System.getProperty(buildSystemPropertyName(guiceBerryEnvName));
+    String overrideName = getOverrideName(guiceBerryEnvName);
     if (overrideName != null) {
       
       if (System.getProperty(GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME) != null) {
@@ -179,7 +179,9 @@ public class DefaultEnvSelector implements GuiceBerryEnvSelector {
       Class<? extends Module> declaredGuiceBerryEnv,
       Class<? extends Module> guiceBerryEnvOverride) {
     if (isOverridden(declaredGuiceBerryEnv.getName())) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException(String.format(
+        "The GuiceBerry Env '%s' is already overridden by '%s'.", 
+        declaredGuiceBerryEnv.getName(), getOverrideName(declaredGuiceBerryEnv.getName())));
     }
     System.setProperty(buildSystemPropertyName(declaredGuiceBerryEnv.getName()),
         guiceBerryEnvOverride.getName());
@@ -206,7 +208,15 @@ public class DefaultEnvSelector implements GuiceBerryEnvSelector {
    * Returns true if the {@code declaredGuiceBerryEnv} is being overridden.
    */
   public static synchronized boolean isOverridden(String declaredGuiceBerryEnvName) {
-    return System.getProperty(buildSystemPropertyName(declaredGuiceBerryEnvName)) != null;
+    return getOverrideName(declaredGuiceBerryEnvName) != null;
+  }
+
+  /**
+   * Returns the name of the GuiceBerry Env that overrides
+   * {@code declaredGuiceBerryEnvName}, or {@code null} if there is no override.
+   */
+  private static String getOverrideName(String declaredGuiceBerryEnvName) {
+    return System.getProperty(buildSystemPropertyName(declaredGuiceBerryEnvName));
   }
 
   /**
