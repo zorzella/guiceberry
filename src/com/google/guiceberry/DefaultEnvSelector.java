@@ -20,9 +20,9 @@ import com.google.inject.Module;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryEnvRemapper;
 
 /**
- * {@inheritDoc}
+ * See {@link GuiceBerryEnvSelector}.
  * 
- * This is the default implementation of {@link GuiceBerryEnvSelector}. The GuiceBerry Env
+ * <p>This is the default implementation of {@link GuiceBerryEnvSelector}. The GuiceBerry Env
  * to use is the class (or its name) given as a parameter to one the {@link #of}
  * static factory methods, except when the {@link #override} feature is used.
  *
@@ -101,6 +101,7 @@ public class DefaultEnvSelector implements GuiceBerryEnvSelector {
             GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME));
       }
       
+      @SuppressWarnings("rawtypes")
       Class clazz;
       try {
         clazz = DefaultEnvSelector.class.getClassLoader().loadClass(overrideName);

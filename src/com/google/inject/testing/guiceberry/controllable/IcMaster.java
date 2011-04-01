@@ -27,9 +27,10 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * As documented at length in the tutorial for 
- * {@link junit4.tutorial_1_server.Example4InjectionControllerTest}
- * etc, Controllable Injections need to be set up through an {@link IcMaster}, 
+ * As documented at length in the <a 
+ * href="http://www.google.com/codesearch/p?hl=en#yL0uRk1mhCY/trunk/doc/tutorial/test/testng/tutorial_1_server/Example4InjectionControllerTest.java">
+ * Example4InjectionControllerTest.java tutorial</a> and others,
+ * Controllable Injections need to be set up through an {@link IcMaster},
  * which is to participate both in the building of the test Injector as well as
  * the server Injector.
  * 

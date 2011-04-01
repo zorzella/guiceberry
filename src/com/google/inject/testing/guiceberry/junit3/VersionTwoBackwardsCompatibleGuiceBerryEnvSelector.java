@@ -133,6 +133,7 @@ class VersionTwoBackwardsCompatibleGuiceBerryEnvSelector implements GuiceBerryEn
             GuiceBerryEnvRemapper.GUICE_BERRY_ENV_REMAPPER_PROPERTY_NAME));
       }
       
+      @SuppressWarnings("rawtypes")
       Class clazz;
       try {
         clazz = GuiceBerryJunit3.class.getClassLoader().loadClass(remapperName);
@@ -171,7 +172,7 @@ class VersionTwoBackwardsCompatibleGuiceBerryEnvSelector implements GuiceBerryEn
    * {@link com.google.inject.testing.guiceberry.GuiceBerryEnv} to itself.
    * This remapper is installed by default.
    * 
-   * {@inheritDoc}
+   * <p>See {@link GuiceBerryEnvRemapper}
    * 
    * @author Luiz-Otavio Zorzella
    */

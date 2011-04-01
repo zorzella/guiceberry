@@ -55,9 +55,9 @@ public interface IcClient<T> {
    * <p>Note that an override will clean itself up upon teardown. See 
    * {@link IcStrategy.ClientSupport#resetOverride(ControllableId)}.
    * 
-   * <p>The usage of Controllable Injections is documented at lenght in the 
-   * tutorial for 
-   * {@link junit4.tutorial_1_server.Example4InjectionControllerTest}
+   * <p>The usage of Controllable Injections is documented at length in the <a 
+   * href="http://www.google.com/codesearch/p?hl=en#yL0uRk1mhCY/trunk/doc/tutorial/test/testng/tutorial_1_server/Example4InjectionControllerTest.java">
+   * Example4InjectionControllerTest.java tutorial</a> and others.
    * 
    * <p>It is ok for a test to call this method multiple times.
    */

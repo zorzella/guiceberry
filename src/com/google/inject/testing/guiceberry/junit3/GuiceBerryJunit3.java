@@ -98,9 +98,9 @@ public class GuiceBerryJunit3 {
    *         responsibility.
    *    <li> Gets the module from the class name provided by the 
    *         {@link GuiceBerryEnv} annotation  and injects the bindings specified by 
-   *         the module into the {@link TestCase}. It also binds {@link TestId} 
+   *         the module into the {@link TestCase}. It also binds {@link com.google.guiceberry.TestId} 
    *         and {@link TestCase} to the corresponding {@link Provider} in the scope  
-   *         defined by {@link TestScoped} annotation.
+   *         defined by {@link com.google.guiceberry.TestScoped} annotation.
    *    <li> Notifies {@link TestScopeListener} that the test enters it's scope.
    *                
    *             
@@ -128,8 +128,8 @@ public class GuiceBerryJunit3 {
    *     the bindings or the {@link TestScopeListener} isn't binded to anything.
    *                                            
    * @see TestScopeListener
-   * @see TestId
-   * @see TestScoped
+   * @see com.google.guiceberry.TestId
+   * @see com.google.guiceberry.TestScoped
    * @see GuiceBerryEnv                                      
    */
   public synchronized static void setUp(final TestCase testCase) {
@@ -193,7 +193,7 @@ public class GuiceBerryJunit3 {
    *     wasn't called before calling this method.                                 
    * 
    * @see TestScopeListener
-   * @see TestScoped
+   * @see com.google.guiceberry.TestScoped
    */
   public synchronized static void tearDown(TestCase testCase) {
     if (testCase instanceof TearDownAccepter) {
