@@ -93,7 +93,9 @@ class ModuleWriter extends DefaultElementVisitor<Void> {
   protected void applyScoping(Binding<?> binding, final ScopedBindingBuilder scopedBindingBuilder) {
     binding.acceptScopingVisitor(new BindingScopingVisitor<Void>() {
       public Void visitEagerSingleton() {
-        scopedBindingBuilder.asEagerSingleton();
+        if (scopedBindingBuilder != null) {
+          scopedBindingBuilder.asEagerSingleton();
+        }
         return null;
       }
 
