@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 import java.util.Map;
 
 /**
- * {@inheritDoc}
+ * <p>See {@link GuiceBerryEnvRemapper}
  * 
  * Simple implementation of {@link GuiceBerryEnvRemapper} that simply does
  * a String->String mapping of an Env to another.

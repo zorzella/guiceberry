@@ -38,7 +38,7 @@ final class ControllableInjectionServerModule extends AbstractModule {
     this.rewriter = rewriter;
   }
   
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
   protected void configure() {
     for (Map.Entry<Key<?>, IcStrategy> e : rewriter.entrySet()) {
