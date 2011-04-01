@@ -22,7 +22,7 @@
         <pathelement location="${lib.dir}/guice-servlet-3.0.jar"/>
         <pathelement location="${lib.dir}/javax.inject.jar"/>
         <pathelement location="${lib.dir}/junit-4.8.2.jar"/>
-        <pathelement location="${lib.dir}/servlet-api-2.4.jar"/>
+        <pathelement location="${lib.dir}/servlet-api-2.5.jar"/>
         <pathelement location="${lib.dir}/tl4j-junit3-1.1.1.jar"/>
       </classpath>
     </javac>
@@ -41,7 +41,7 @@
     <pathelement location="${lib.dir}/guice-servlet-3.0.jar"/>
     <pathelement location="${lib.dir}/javax.inject.jar"/>
     <pathelement location="${lib.dir}/junit-4.8.2.jar"/>
-    <pathelement location="${lib.dir}/servlet-api-2.4.jar"/>
+    <pathelement location="${lib.dir}/servlet-api-2.5.jar"/>
     <pathelement location="${lib.dir}/tl4j-junit3-1.1.1.jar"/>
   </path>
 
