@@ -1004,7 +1004,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   private static int NUMBER = 0;
   
   public static class GuiceBerryEnvOne extends AbstractModule {
-    private static final String GUICE_BERRY_ENV_ONE = 
+    static final String GUICE_BERRY_ENV_ONE = 
       GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$" +
       		"GuiceBerryEnvOne";
 
@@ -1019,7 +1019,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
 
   public static class GuiceBerryEnvTwo extends AbstractModule {
-    private static final String GUICE_BERRY_ENV_TWO = 
+    static final String GUICE_BERRY_ENV_TWO = 
       GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$" +
       		"GuiceBerryEnvTwo";
 
@@ -1035,7 +1035,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
   
   public static class GuiceBerryEnvWithEnvMain extends AbstractModule {
-    private static final String GUICE_BERRY_ENV_WITH_ENV_MAIN = 
+    static final String GUICE_BERRY_ENV_WITH_ENV_MAIN = 
       GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$" +
       		"GuiceBerryEnvWithEnvMain";
 
@@ -1060,7 +1060,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   }
   public static class GuiceBerryEnvWithoutBindingsForFooOrBar 
       extends AbstractModule  {
-    private static final String GUICE_BERRY_ENV_WITHOUT_BINDINGS_FOR_FOO_OR_BAR =
+    static final String GUICE_BERRY_ENV_WITHOUT_BINDINGS_FOR_FOO_OR_BAR =
       GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$" +
       		"GuiceBerryEnvWithoutBindingsForFooOrBar";
 
@@ -1073,7 +1073,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
   public static class GuiceBerryEnvWithNonTrivialTestScopeListener 
       extends AbstractModule {
-    private static final String MODULE_NAME_INJECTS_TEST_CASE_IN_TEST_SCOPE_LISTENER = 
+    static final String MODULE_NAME_INJECTS_TEST_CASE_IN_TEST_SCOPE_LISTENER = 
       GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$" +
       		"GuiceBerryEnvWithNonTrivialTestScopeListener";
 
@@ -1087,7 +1087,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
   
   
   public static class GuiceBerryEnvWithIllegalConstructor implements Module {    
-    private static final String GUICE_BERRY_ENV_WITH_ILLEGAL_CONSTRUCTOR = 
+    static final String GUICE_BERRY_ENV_WITH_ILLEGAL_CONSTRUCTOR = 
       GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$" +
       		"GuiceBerryEnvWithIllegalConstructor";
 
@@ -1101,7 +1101,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
 
   public static class GuiceBerryEnvWithNoTestScopeListener 
       extends AbstractModule {    
-    private static final String GUICE_BERRY_ENV_WITH_NO_TEST_SCOPE_LISTENER = 
+    static final String GUICE_BERRY_ENV_WITH_NO_TEST_SCOPE_LISTENER = 
       GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$" +
       		"GuiceBerryEnvWithNoTestScopeListener";
 
@@ -1118,14 +1118,14 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
    * {@link GuiceBerryEnv}s must be {@link Module}s.
    */
   public static class NotAGuiceBerryEnvOne {
-    private static final String NOT_A_GUICE_BERRY_ENV_ONE = 
+    static final String NOT_A_GUICE_BERRY_ENV_ONE = 
       GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$" +
       		"NotAGuiceBerryEnvOne"; 
   }
 
   public static class GuiceBerryEnvThatFailsInjectorCreation
       extends AbstractModule  {
-    private static final String GUICE_BERRY_ENV_THAT_FAILS_INJECTOR_CREATION =
+    static final String GUICE_BERRY_ENV_THAT_FAILS_INJECTOR_CREATION =
       GuiceBerryJunit3Test.SELF_CANONICAL_NAME + "$" +
       		"GuiceBerryEnvThatFailsInjectorCreation";
 
