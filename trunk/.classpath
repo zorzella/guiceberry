@@ -27,9 +27,10 @@
 	<classpathentry kind="lib" path="doc/tutorial/lib/xercesImpl-2.8.1.jar"/>
 	<classpathentry kind="lib" path="doc/tutorial/lib/xml-apis-1.3.04.jar"/>
 	<classpathentry kind="lib" path="lib/tl4j-junit3-1.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/testng-5.12.1.jar"/>
-	<classpathentry kind="lib" path="lib/guice-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/guice-3.0.jar" sourcepath="/home/zorzella/Downloads/guice-3.0-src/core/src"/>
 	<classpathentry kind="lib" path="lib/guice-servlet-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.8.2.jar" sourcepath="lib/junit-4.8.2-src.jar"/>
+	<classpathentry kind="lib" path="lib/javax.inject.jar"/>
+	<classpathentry kind="lib" path="lib/testng-6.0.1.jar"/>
 	<classpathentry kind="output" path="eclipse-bin"/>
 </classpath>
