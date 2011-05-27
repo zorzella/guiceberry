@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+
+<project name="guiceberry" default="compile">
+
+  <property environment="env"/>
+  <property file="build.properties"/>
+
+  <!-- can be overridden at the command line with -Dversion=
+       or in IDEA, in the ant properties dialog -->
+  <target name="compile" description="Compile Java source.">
+    <mkdir dir="${build.dir}/classes"/>
+    <javac srcdir="${src.dir}"
+         debug="on"
+         target="${target}"
+         destdir="${build.dir}/classes">
+      <classpath>
+        <pathelement location="${build.dir}/classes"/>
+        <pathelement location="${lib.dir}/aopalliance.jar"/>
+        <pathelement location="${lib.dir}/guava-r09.jar"/>
+        <pathelement location="${lib.dir}/guice-3.0.jar"/>
+        <!-- guice-servlet is not really necessary -->
+        <pathelement location="${lib.dir}/guice-servlet-3.0.jar"/>
+        <pathelement location="${lib.dir}/javax.inject.jar"/>
+        <pathelement location="${lib.dir}/junit-4.8.2.jar"/>
+        <pathelement location="${lib.dir}/servlet-api-2.5.jar"/>
+        <pathelement location="${lib.dir}/tl4j-junit3-1.1.1.jar"/>
+      </classpath>
+    </javac>
+    <!-- copy toDir="${build.dir}/classes">
+      <fileset dir="${src.dir}" excludes="**/*.java"/>
+    </copy -->
+  </target>
+
+  <path id="project.class.path">
+    <pathelement location="${build.dir}/classes"/>
+    <pathelement location="${lib.dir}/aopalliance.jar"/>
+    <pathelement location="${lib.dir}/easymock.jar"/>
+    <pathelement location="${lib.dir}/guava-r09.jar"/>
+    <pathelement location="${lib.dir}/guice-3.0.jar"/>
+    <!-- guice-servlet is not really necessary -->
+    <pathelement location="${lib.dir}/guice-servlet-3.0.jar"/>
+    <pathelement location="${lib.dir}/javax.inject.jar"/>
+    <pathelement location="${lib.dir}/junit-4.8.2.jar"/>
+    <pathelement location="${lib.dir}/servlet-api-2.5.jar"/>
+    <pathelement location="${lib.dir}/tl4j-junit3-1.1.1.jar"/>
+  </path>
+
+  <target name="test.compile"
+      depends="compile"
+      description="Compile test source.">
+    <mkdir dir="${build.dir}/test"/>
+    <javac srcdir="${test.dir}"
+         debug="on"
+         target="${target}"
+         destdir="${build.dir}/test"
+         classpathref="project.class.path"
+           >
+    </javac>
+  </target>
+
+  <target name="test"
+      depends="test.compile"
+      description="Execute JUnit tests.">
+    
+    <mkdir dir="${build.dir}/junitreport"/>
+
+  	<junit 
+  		printsummary="yes" 
+  		haltonfailure="no">
+      <classpath
+      	refid="project.class.path"/>
+      <classpath>
+        <pathelement location="${build.dir}/test"/>
+      </classpath>
+
+      <formatter type="plain"/>
+
+      <!-- test name="my.test.TestCase" haltonfailure="no" outfile="result">
+        <formatter type="xml"/>
+      </test -->
+
+      <batchtest fork="true" todir="${build.dir}/junitreport">
+        <fileset dir="${test.dir}">
+          <include name="**/*Test*.java"/>
+          <exclude name="**/AllTests.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+    
+  	<!-- java fork="true"
+        classname="junit.textui.TestRunner"
+        failonerror="true"
+        taskname="junit"
+        classpathref="project.class.path"
+  	>
+      <arg value="${test.class}"/>
+    </java -->
+  </target>
+
+  <target name="clean"
+      description="Remove generated files.">
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <target name="jar" depends="compile" description="Build jar.">
+    <mkdir dir="${build.dir}/dist"/>
+    <mkdir dir="${build.dir}/dist/guiceberry-${version}"/>
+    <jar jarfile="${build.dir}/dist/guiceberry-${version}/guiceberry-${version}.jar">
+      <fileset dir="${build.dir}/classes"/>
+    </jar>
+  </target>
+
+  <target name="jarsrc" description="Build jar of source.">
+    <jar jarfile="${build.dir}/dist/guiceberry-${version}/guiceberry-${version}-src.jar">
+      <fileset dir="${src.dir}"/>
+    </jar>
+  </target>
+
+  <target name="tutorialsrc" description="Build jar of tutorial.">
+	 <jar jarfile="${build.dir}/dist/guiceberry-${version}/guiceberry-${version}-tutorial.jar">
+	   <fileset dir="${tutorial.dir}"/>
+	 </jar>
+  </target>
+	
+  <target name="dist" depends="jar, jarsrc, tutorialsrc, javadoc"
+       description="Build entire distribution.">
+    <copy toDir="${build.dir}/dist/guiceberry-${version}" file="COPYING"/>
+    <copy toDir="${build.dir}/dist/guiceberry-${version}">
+      <fileset dir="${build.dir}" includes="javadoc/**/*"/>
+    </copy>
+
+    <zip destfile="${build.dir}/guiceberry-${version}.zip"
+      basedir="${build.dir}/dist"/>
+  </target>
+
+  <target name="javadoc"
+      description="Generate Javadocs.">
+    <delete dir="${build.dir}/javadoc"/>
+    <mkdir dir="${build.dir}/javadoc"/>
+    <javadoc packagenames="${javadoc.packagenames}"
+         destdir="${build.dir}/javadoc"
+         author="true"
+         protected="true"
+         windowtitle="GuiceBerry"
+    	   classpathref="project.class.path">
+      <sourcepath>
+        <pathelement location="${src.dir}"/>
+      </sourcepath>
+    </javadoc>
+    <jar jarfile="${build.dir}/dist/guiceberry-${version}/guiceberry-${version}-javadoc.jar">
+      <fileset dir="${build.dir}/javadoc"/>
+    </jar>
+  </target>
+</project>
