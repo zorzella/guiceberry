@@ -16,7 +16,7 @@
       <classpath>
         <pathelement location="${build.dir}/classes"/>
         <pathelement location="${lib.dir}/aopalliance.jar"/>
-        <pathelement location="${lib.dir}/guava-r06.jar"/>
+        <pathelement location="${lib.dir}/guava-r09.jar"/>
         <pathelement location="${lib.dir}/guice-3.0.jar"/>
         <!-- guice-servlet is not really necessary -->
         <pathelement location="${lib.dir}/guice-servlet-3.0.jar"/>
@@ -35,7 +35,7 @@
     <pathelement location="${build.dir}/classes"/>
     <pathelement location="${lib.dir}/aopalliance.jar"/>
     <pathelement location="${lib.dir}/easymock.jar"/>
-    <pathelement location="${lib.dir}/guava-r06.jar"/>
+    <pathelement location="${lib.dir}/guava-r09.jar"/>
     <pathelement location="${lib.dir}/guice-3.0.jar"/>
     <!-- guice-servlet is not really necessary -->
     <pathelement location="${lib.dir}/guice-servlet-3.0.jar"/>
@@ -147,5 +147,8 @@
         <pathelement location="${src.dir}"/>
       </sourcepath>
     </javadoc>
+    <jar jarfile="${build.dir}/dist/guiceberry-${version}/guiceberry-${version}-javadoc.jar">
+      <fileset dir="${build.dir}/javadoc"/>
+    </jar>
   </target>
 </project>
