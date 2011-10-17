@@ -25,14 +25,15 @@ The *!GuiceBerry environment* is a Guice module that subclasses `GuiceBerryJunit
 
 The primary job of the !GuiceBerry environment is to bind an implementation for the `GuiceBerryEnvMain` interface. When this `Runnable`-like interface is bound, it will be executed before any tests.
 {{{
-import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3Env;
-import com.google.inject.testing.guiceberry.GuiceBerryEnvMain;
+import com.google.guiceberry.GuiceBerryEnvMain;
+import com.google.guiceberry.GuiceBerryModule;
+import com.google.inject.AbstractModule;
 
-public class PizzaAppGuiceBerryEnv extends GuiceBerryJunit3Env {
+public class PizzaAppGuiceBerryEnv extends AbstractModule {
 
   @Override
   protected void configure() {
-    super.configure();
+    install(new GuiceBerryModule());
     bind(GuiceBerryEnvMain.class).to(PizzaAppMain.class);
   }
 
@@ -52,32 +53,18 @@ public class PizzaAppGuiceBerryEnv extends GuiceBerryJunit3Env {
 }}}
 
 ==Linking the test to its !GuiceBerry Environment==
-Once we've created our !GuiceBerry environment, we need to configure our test to use it. This requires an annotation on the test, and calls to `GuiceBerryJunit3` in `setUp` and `tearDown` to manage the environment.
+Once we've created our !GuiceBerry environment, we need to configure our test to use it.
+
+On JUnit4, this is done with the @Rule as below.
+
 {{{
-@GuiceBerryEnv("com.publicobject.pizza.PizzaAppGuiceBerryEnv")
-public class OrderPizzaTest extends TestCase {
+public class OrderPizzaTest {
 
-  @Override protected void setUp() throws Exception {
-    super.setUp();
-    GuiceBerryJunit3.setUp(this);
-  }
+  @Rule
+  public final GuiceBerryRule guiceBerry =
+      new GuiceBerryRule(PizzaAppGuiceBerryEnv.class);
 
-  @Override protected void tearDown() throws Exception {
-    GuiceBerryJunit3.tearDown(this);
-    super.tearDown();
-  }
-
-  public void testOrderPizza() {
-    ...
-    fail("this test still needs to be written!");
-  }
-}
-}}}
-If you'd prefer, !GuiceBerry includes a convenient test class `GuiceBerryJunit3TestCase` to eliminate most of the above boilerplate.
-{{{
-@GuiceBerryEnv("com.publicobject.pizza.PizzaAppGuiceBerryEnv")
-public class OrderPizzaTest extends GuiceBerryJunit3TestCase {
-
+  @Test
   public void testOrderPizza() {
     ...
     fail("this test still needs to be written!");
