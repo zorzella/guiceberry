@@ -21,7 +21,7 @@ public class OrderPizzaTest extends TestCase {
 As is traditional with functional tests, there are many moving parts in even the simplest of use-cases. Before we can start writing the test's code, we need to launch an instance of the app to test against. We'll use a !GuiceBerry environment to prepare our test's dependencies.
 
 ==Creating a !GuiceBerry Environment==
-The *!GuiceBerry environment* is a Guice module that subclasses `GuiceBerryJunit3Env`. It prepares our application, its dependencies, and infrastructure for the test. In most applications, a single !GuiceBerry environment is shared by all functional tests. 
+The *!GuiceBerry environment* is a Guice module that prepares our application, its dependencies, and infrastructure for the test. In most applications, a single !GuiceBerry environment is shared by all functional tests. 
 
 The primary job of the !GuiceBerry environment is to bind an implementation for the `GuiceBerryEnvMain` interface. When this `Runnable`-like interface is bound, it will be executed before any tests.
 {{{
