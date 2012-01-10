@@ -37,6 +37,10 @@ $ svn export . build/dist/guiceberry-release-x.y.z; cd build/dist; zip -r guiceb
 
 The URL is http://code.google.com/p/guiceberry/downloads/list > New Download. Upload these files:
 
+build/dist/guiceberry-x.y.z/guiceberry-x.y.z-javadoc.jar
+Summary: Javadoc
+Labels: Type-Docs, OpSys-All, Order-4
+
 build/dist/guiceberry-release-x.y.z.zip
 Summary: Full project tree zip
 Labels: Type-Source, OpSys-All, Order-3
