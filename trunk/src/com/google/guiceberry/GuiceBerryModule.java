@@ -23,6 +23,7 @@ import com.google.guiceberry.GuiceBerryUniverse;
 import com.google.guiceberry.TestScope;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Scope;
 
 /**
  * This Module provides the basic bindings required by GuiceBerry, namely
@@ -42,6 +43,15 @@ public class GuiceBerryModule extends AbstractModule {
   
   public GuiceBerryModule() {
     this(GuiceBerryUniverse.INSTANCE);
+  }
+  
+  /**
+   * Builds a new instance of a {@link TestScope}.
+   */
+  // TODO: this will be unnecessary once this issue is fixed:
+  // http://code.google.com/p/google-guice/issues/detail?id=687
+  public Scope buildTestScope() {
+    return new TestScope(universe);
   }
   
   protected GuiceBerryModule(GuiceBerryUniverse universe) {
