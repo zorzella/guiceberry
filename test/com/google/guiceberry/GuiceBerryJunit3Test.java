@@ -35,7 +35,6 @@ import com.google.inject.testing.guiceberry.GuiceBerryEnvMain;
 import com.google.inject.testing.guiceberry.NoOpTestScopeListener;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScopeListener;
-import com.google.inject.testing.guiceberry.junit3.BasicJunit3Module;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryEnvRemapper;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3;
 

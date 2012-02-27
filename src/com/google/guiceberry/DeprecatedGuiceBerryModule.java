@@ -17,6 +17,7 @@ package com.google.guiceberry;
 
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
+import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.testing.guiceberry.TestId;
 import com.google.inject.testing.guiceberry.TestScoped;
@@ -24,37 +25,39 @@ import com.google.inject.testing.guiceberry.TestScoped;
 import junit.framework.TestCase;
 
 /**
- * Don't use this class -- it will go away. You've been warned.
+ * @deprecated Don't use this class -- it will go away. You've been warned.
  *
  * @author Luiz-Otavio "Z" Zorzella
  */
 @Deprecated
-public class DeprecatedGuiceBerryModule extends GuiceBerryModule {
+public class DeprecatedGuiceBerryModule extends AbstractModule {
 
-  public DeprecatedGuiceBerryModule() {
-    super();
-  }
+  private final GuiceBerryModule gbm;
   
+  public DeprecatedGuiceBerryModule() {
+    gbm = new GuiceBerryModule();
+  }
+
   public DeprecatedGuiceBerryModule(GuiceBerryUniverse universe) {
-    super(universe);
+    gbm = new GuiceBerryModule(universe);
   }
 
   @Override
   protected void configure() {
-    super.configure();
-    bindScope(com.google.inject.testing.guiceberry.TestScoped.class, testScope);
+    install(gbm);
+    bindScope(com.google.inject.testing.guiceberry.TestScoped.class, gbm.buildTestScope());
   }
   
   @Provides
   @TestScoped
   TestCase getTestCase() {
-    return (TestCase) universe.currentTestDescriptionThreadLocal.get().getTestCase();
+    return (TestCase) gbm.universe.currentTestDescriptionThreadLocal.get().getTestCase();
   }
 
   @Provides
   @TestScoped
   TestId getDeprecatedTestId() {
-    return universe.currentTestDescriptionThreadLocal.get().getTestId().toDeprecatedTestId();
+    return gbm.universe.currentTestDescriptionThreadLocal.get().getTestId().toDeprecatedTestId();
   }
 
   @Deprecated
