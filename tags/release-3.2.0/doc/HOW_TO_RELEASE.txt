@@ -1,0 +1,60 @@
+How To release a new version of GuiceBerry (either read this or run howtorelease.sh for instructions)
+==========================================
+
+If you, say, upgraded libs, change the tutorial docs.
+
+0) Before you begin, make sure it's all committed and you have no compilation/test errors:
+
+$ svn update
+$ svn status
+$ ant clean test dist
+
+1) Create a release SVN tag:
+
+$ svn cp trunk tags/release-x.y.z
+
+2) go to that directory:
+
+$ cd tags/release-x.y.z
+
+3) Edit this tag's build.properties, changing the 'version=snapshot' line to
+
+version=x.y.z
+
+4) Build a dist
+
+$ ant clean test dist
+
+5) Commit:
+
+$ svn commit -m "release x.y.z"
+
+6) Create a tar of the release itself
+
+$ svn export . build/dist/guiceberry-release-x.y.z; cd build/dist; zip -r guiceberry-release-x.y.z.zip guiceberry-release-x.y.z
+
+7) Upload jars to GoogleCode
+
+The URL is http://code.google.com/p/guiceberry/downloads/list > New Download. Upload these files:
+
+build/dist/guiceberry-x.y.z/guiceberry-x.y.z-javadoc.jar
+Summary: Javadoc
+Labels: Type-Docs, OpSys-All, Order-4
+
+build/dist/guiceberry-release-x.y.z.zip
+Summary: Full project tree zip
+Labels: Type-Source, OpSys-All, Order-3
+
+build/dist/guiceberry-x.y.z/guiceberry-x.y.z-src.jar
+Summary: source jar
+Labels: Type-Source, OpSys-All, Order-2
+
+build/dist/guiceberry-x.y.z/guiceberry-x.y.z-tutorial.jar
+Summary: Tutorial -- see the project home page for a link to the docs
+Labels: Type-Docs, OpSys-All, Order-1
+
+build/dist/guiceberry-x.y.z/guiceberry-x.y.z.jar
+Summary: jar
+Labels: Featured, Type-Package, OpSys-All, Order-0
+
+Mark the older release as deprecated (which you'll find as an option under "Delete"), and also, make sure to check the installation instructions at http://docs.google.com/Doc?id=dddf9mmq_2sjv9nkk4 particularly if you changed the version of a dependent lib.
