@@ -3,6 +3,7 @@ package tutorial_1_server.testing;
 import com.google.guiceberry.GuiceBerryEnvMain;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.TestScoped;
+import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provides;
@@ -14,7 +15,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import tutorial_1_server.prod.PetStoreServer;
 import tutorial_1_server.prod.Pet;
 
-public final class PetStoreEnv2StaticOverride extends GuiceBerryModule {
+public final class PetStoreEnv2StaticOverride extends AbstractModule {
   
   @Provides @Singleton
   @PortNumber int getPortNumber() {
@@ -41,7 +42,7 @@ public final class PetStoreEnv2StaticOverride extends GuiceBerryModule {
   
   @Override
   protected void configure() {
-    super.configure();
+    install(new GuiceBerryModule());
     bind(GuiceBerryEnvMain.class).to(PetStoreServerStarter.class);
   }
   

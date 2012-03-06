@@ -4,6 +4,7 @@ import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
+import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 
 import junit.framework.TestCase;
@@ -73,5 +74,10 @@ public class Example4UseTearDownAccepterTest extends TestCase {
     }
   }
 
-  public static final class Env extends GuiceBerryModule {}
+  public static final class Env extends AbstractModule {
+    @Override
+    protected void configure() {
+      install(new GuiceBerryModule());
+    }
+  }
 }

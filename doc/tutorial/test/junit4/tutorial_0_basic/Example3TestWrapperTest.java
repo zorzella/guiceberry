@@ -3,6 +3,7 @@ package junit4.tutorial_0_basic;
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
 import com.google.guiceberry.junit4.GuiceBerryRule;
+import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.TestId;
@@ -26,8 +27,12 @@ public class Example3TestWrapperTest {
     System.out.println("Inside testTwo");
   }
 
-  public static final class Env extends GuiceBerryModule {
-    
+  public static final class Env extends AbstractModule {
+    @Override
+    protected void configure() {
+      install(new GuiceBerryModule());
+    }
+
     @Provides
     TestWrapper getTestWrapper(final TestId testId,
         final TearDownAccepter tearDownAccepter) {

@@ -3,6 +3,7 @@ package junit4.tutorial_0_basic;
 import static org.junit.Assert.assertEquals;
 
 import com.google.guiceberry.junit4.GuiceBerryRule;
+import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -59,7 +60,7 @@ public class Example2ScopesTest {
     assertEquals(103, unscopedIncrementingNumber.get().intValue());
   }
 
-  public static final class Env extends GuiceBerryModule {
+  public static final class Env extends AbstractModule {
     private static final class IncrementingProvider implements Provider<Integer> {
       private int number;
 
@@ -74,7 +75,7 @@ public class Example2ScopesTest {
 
     @Override
     protected void configure() {
-      super.configure();
+      install(new GuiceBerryModule());
       IncrementingProvider unscopedIncrementingNumberProvider = 
         new IncrementingProvider(100);
       IncrementingProvider testScopedIncrementingNumberProvider = 

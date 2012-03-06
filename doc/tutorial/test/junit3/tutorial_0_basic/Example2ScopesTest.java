@@ -4,6 +4,7 @@ import com.google.common.testing.TearDown;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.TestScoped;
 import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
+import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -66,7 +67,7 @@ public class Example2ScopesTest extends TestCase {
     assertEquals(103, unscopedIncrementingNumber.get().intValue());
   }
 
-  public static final class Env extends GuiceBerryModule {
+  public static final class Env extends AbstractModule {
     private static final class IncrementingProvider implements Provider<Integer> {
       private int number;
 
@@ -81,7 +82,7 @@ public class Example2ScopesTest extends TestCase {
 
     @Override
     protected void configure() {
-      super.configure();
+      install(new GuiceBerryModule());
       IncrementingProvider unscopedIncrementingNumberProvider = 
         new IncrementingProvider(100);
       IncrementingProvider testScopedIncrementingNumberProvider = 

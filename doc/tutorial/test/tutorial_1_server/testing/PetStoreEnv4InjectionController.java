@@ -7,6 +7,7 @@ import com.google.guiceberry.TestScoped;
 import com.google.guiceberry.controllable.IcMaster;
 import com.google.guiceberry.controllable.StaticMapInjectionController;
 import com.google.guiceberry.controllable.TestIdServerModule;
+import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Key;
 import com.google.inject.Module;
@@ -21,7 +22,7 @@ import tutorial_1_server.prod.PetStoreServer;
 import tutorial_1_server.prod.Pet;
 import tutorial_1_server.prod.Featured;
 
-public final class PetStoreEnv4InjectionController extends GuiceBerryModule {
+public final class PetStoreEnv4InjectionController extends AbstractModule {
   
   @Provides @Singleton
   @PortNumber int getPortNumber() {
@@ -55,7 +56,7 @@ public final class PetStoreEnv4InjectionController extends GuiceBerryModule {
   
   @Override
   protected void configure() {
-    super.configure();
+    install(new GuiceBerryModule());
     bind(GuiceBerryEnvMain.class).to(PetStoreServerStarter.class);
     // !!!! HERE !!!!
     icMaster = new IcMaster()

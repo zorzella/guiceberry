@@ -3,6 +3,7 @@ package testng.tutorial_0_basic;
 import com.google.common.testing.TearDown;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.testng.TestNgGuiceBerry;
+import com.google.inject.AbstractModule;
 
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -32,6 +33,11 @@ public class Example0HelloWorldTest {
     Assert.assertTrue(true);
   }
 
-  public static final class Env extends GuiceBerryModule {}
+  public static final class Env extends AbstractModule {
+    @Override
+    protected void configure() {
+      install(new GuiceBerryModule());      
+    }
+  }
 }
 

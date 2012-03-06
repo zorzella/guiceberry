@@ -3,6 +3,7 @@ package junit3.tutorial_0_basic;
 import com.google.common.testing.TearDown;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
+import com.google.inject.AbstractModule;
 
 import junit.framework.TestCase;
 
@@ -28,5 +29,10 @@ public class Example0HelloWorldTest extends TestCase {
     assertTrue(true);
   }
 
-  public static final class Env extends GuiceBerryModule {}
+  public static final class Env extends AbstractModule {
+    @Override
+    protected void configure() {
+      install(new GuiceBerryModule());
+    }
+  }
 }
