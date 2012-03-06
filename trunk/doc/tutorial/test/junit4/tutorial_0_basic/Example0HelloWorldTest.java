@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.junit4.GuiceBerryRule;
+import com.google.inject.AbstractModule;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,5 +19,10 @@ public class Example0HelloWorldTest {
     assertTrue(true);
   }
 
-  public static final class Env extends GuiceBerryModule {}
+  public static final class Env extends AbstractModule {
+    @Override
+    protected void configure() {
+      install(new GuiceBerryModule());      
+    }
+  }
 }

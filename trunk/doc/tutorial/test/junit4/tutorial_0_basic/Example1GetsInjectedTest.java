@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.junit4.GuiceBerryRule;
+import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
 
@@ -29,10 +30,10 @@ public class Example1GetsInjectedTest {
     assertEquals(100, number);
   }
 
-  public static final class Env extends GuiceBerryModule {
+  public static final class Env extends AbstractModule {
     @Override
     protected void configure() {
-      super.configure();
+      install(new GuiceBerryModule());
       bind(Integer.class).annotatedWith(NumberOneHundred.class).toInstance(100);
     }
   }

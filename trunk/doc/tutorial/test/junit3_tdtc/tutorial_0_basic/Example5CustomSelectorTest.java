@@ -5,6 +5,7 @@ import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.TestDescription;
 import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
+import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 
@@ -57,18 +58,18 @@ public class Example5CustomSelectorTest extends TearDownTestCase {
     assertEquals("real", server.getName());
   }
 
-  public static final class FakeGuiceBerryEnv extends GuiceBerryModule {
+  public static final class FakeGuiceBerryEnv extends AbstractModule {
     @Override
     protected void configure() {
-      super.configure();
+      install(new GuiceBerryModule());
       bind(Server.class).to(FakeServer.class);
     }
   }
 
-  public static final class RealGuiceBerryEnv extends GuiceBerryModule {
+  public static final class RealGuiceBerryEnv extends AbstractModule {
     @Override
     protected void configure() {
-      super.configure();
+      install(new GuiceBerryModule());
       bind(Server.class).to(RealServer.class);
     }
   }

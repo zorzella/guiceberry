@@ -17,14 +17,25 @@ package com.google.guiceberry;
 
 import com.google.common.testing.TearDown;
 import com.google.common.testing.junit3.TearDownTestCase;
+import com.google.inject.AbstractModule;
 
 /**
  * @author Luiz-Otavio "Z" Zorzella
  */
 public class DefaultEnvSelectorTest extends TearDownTestCase {
 
-  private static final class MyEnvOne extends GuiceBerryModule {}
-  private static final class MyEnvTwo extends GuiceBerryModule {}
+  private static final class MyEnvOne extends AbstractModule {
+    @Override
+    protected void configure() {
+      install(new GuiceBerryModule());      
+    }
+  }
+  private static final class MyEnvTwo extends AbstractModule {
+    @Override
+    protected void configure() {
+      install(new GuiceBerryModule());
+    }
+  }
   
   public void testOverride() {
     assertFalse(DefaultEnvSelector.isOverridden(MyEnvOne.class));

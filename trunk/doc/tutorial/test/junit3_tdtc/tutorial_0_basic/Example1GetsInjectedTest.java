@@ -3,6 +3,7 @@ package junit3_tdtc.tutorial_0_basic;
 import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.junit3.AutoTearDownGuiceBerry;
+import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
 
@@ -27,10 +28,10 @@ public class Example1GetsInjectedTest extends TearDownTestCase {
     assertEquals(100, number);
   }
 
-  public static final class Env extends GuiceBerryModule {
+  public static final class Env extends AbstractModule {
     @Override
     protected void configure() {
-      super.configure();
+      install(new GuiceBerryModule());
       bind(Integer.class).annotatedWith(NumberOneHundred.class).toInstance(100);
     }
   }

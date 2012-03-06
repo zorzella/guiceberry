@@ -105,9 +105,11 @@ public class GuiceBerryUniverseTest {
     testCaseScaffolding.runAfterTest();
   }
   
-  public static final class NonGuiceBerryEnvSinceItDoesNotInstallGuiceBerryModuleByNoCallingSuper extends GuiceBerryModule {
+  public static final class NonGuiceBerryEnvSinceItDoesNotInstallGuiceBerryModuleByNoCallingSuper extends AbstractModule {
     @Override
-    protected void configure() {}
+    protected void configure() {
+      install(new GuiceBerryModule());
+    }
   }
     
   @Test public void testExceptionWhenGbeDoesNotInstallGuiceBerryModule2() {
@@ -130,11 +132,18 @@ public class GuiceBerryUniverseTest {
     testCaseScaffolding.runAfterTest();
   }
   
-  private static final class MyGuiceBerryEnv extends GuiceBerryModule {
+  private static final class MyGuiceBerryEnv extends AbstractModule {
+    
+    private final GuiceBerryModule gbm;
+    
+    @Override
+    protected void configure() {
+      install(gbm);
+    }
     
     @SuppressWarnings("unused")
     public MyGuiceBerryEnv() {
-      super(GuiceBerryUniverseTest.universe);
+      this.gbm = new GuiceBerryModule(GuiceBerryUniverseTest.universe);
     }
   }
   
@@ -185,13 +194,20 @@ public class GuiceBerryUniverseTest {
     Assert.assertEquals(true, MyGuiceBerryEnvThatThrowsOnTestWrapperBeforeTest.beforeTestTearDownHasRun);
   }
   
-  private static final class MyGuiceBerryEnvThatThrowsOnTestWrapperBeforeTest extends GuiceBerryModule {
+  private static final class MyGuiceBerryEnvThatThrowsOnTestWrapperBeforeTest extends AbstractModule {
     
     private static boolean beforeTestTearDownHasRun = false;
-
+    
+    private final GuiceBerryModule gbm;
+    
+    @Override
+    protected void configure() {
+      install(gbm);
+    }
+    
     @SuppressWarnings("unused")
     public MyGuiceBerryEnvThatThrowsOnTestWrapperBeforeTest() {
-      super(GuiceBerryUniverseTest.universe);
+      this.gbm = new GuiceBerryModule(GuiceBerryUniverseTest.universe);
       clear();
     }
     

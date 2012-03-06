@@ -6,6 +6,7 @@ import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.TestId;
 import com.google.guiceberry.TestScoped;
 import com.google.guiceberry.controllable.TestIdServerModule;
+import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -23,7 +24,7 @@ import tutorial_1_server.prod.Pet;
 
 import java.util.Map;
 
-public final class PetStoreEnv3CookiesOverride extends GuiceBerryModule {
+public final class PetStoreEnv3CookiesOverride extends AbstractModule {
   
   @Provides @Singleton
   @PortNumber int getPortNumber() {
@@ -54,7 +55,7 @@ public final class PetStoreEnv3CookiesOverride extends GuiceBerryModule {
   
   @Override
   protected void configure() {
-    super.configure();
+    install(new GuiceBerryModule());
     bind(GuiceBerryEnvMain.class).to(PetStoreServerStarter.class);
     bind(PetStoreServerStarter.class).in(Scopes.SINGLETON);
   }

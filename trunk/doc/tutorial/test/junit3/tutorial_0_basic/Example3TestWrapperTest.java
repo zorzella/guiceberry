@@ -6,6 +6,7 @@ import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.TestId;
 import com.google.guiceberry.TestWrapper;
 import com.google.guiceberry.junit3.ManualTearDownGuiceBerry;
+import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
@@ -35,7 +36,12 @@ public class Example3TestWrapperTest extends TestCase {
     System.out.println("Inside testTwo");
   }
 
-  public static final class Env extends GuiceBerryModule {
+  public static final class Env extends AbstractModule {
+
+    @Override
+    protected void configure() {
+      install(new GuiceBerryModule());
+    }
     
     @Provides
     @Singleton
