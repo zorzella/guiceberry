@@ -38,8 +38,7 @@ import com.google.inject.Scope;
 // in GuiceBerryUniverse.REQUIRED_BINDINGS.
 public class GuiceBerryModule extends AbstractModule {
     
-  protected final GuiceBerryUniverse universe;
-  protected final TestScope testScope;
+  final GuiceBerryUniverse universe;
   
   public GuiceBerryModule() {
     this(GuiceBerryUniverse.INSTANCE);
@@ -56,11 +55,11 @@ public class GuiceBerryModule extends AbstractModule {
   
   protected GuiceBerryModule(GuiceBerryUniverse universe) {
     this.universe = universe;
-    this.testScope = new TestScope(universe);
   }
   
   @Override
   protected void configure() {
+    TestScope testScope = new TestScope(universe);
     bind(TestScope.class).toInstance(testScope);
     bindScope(TestScoped.class, testScope);
     bind(TearDownAccepter.class).to(ToTearDown.class);
@@ -90,5 +89,19 @@ public class GuiceBerryModule extends AbstractModule {
   
   interface ToTearDown extends TearDownAccepter {
     void runTearDown();
+  }
+  
+  @Override
+  public boolean equals(Object obj) {
+    if ((obj == null) || (!(obj instanceof GuiceBerryModule))) {
+      return false;
+    }
+    GuiceBerryModule that = (GuiceBerryModule)obj;
+    return this.universe == that.universe;
+  }
+  
+  @Override
+  public int hashCode() {
+    return this.universe.hashCode();
   }
 }
