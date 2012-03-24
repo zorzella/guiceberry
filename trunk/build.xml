@@ -66,7 +66,7 @@
 
   	<junit 
   		printsummary="yes" 
-  		haltonfailure="no">
+  		haltonfailure="yes">
       <classpath
       	refid="project.class.path"/>
       <classpath>
