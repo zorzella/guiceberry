@@ -1,0 +1,47 @@
+How To release a new version of GuiceBerry (either read this or run howtorelease.sh for instructions)
+==========================================
+
+If you, say, upgraded libs, change the tutorial docs.
+
+Before you begin, make sure it's all committed and you have no compilation/test errors:
+
+$ svn update && svn status
+$ ant clean test dist
+
+Then, run this:
+
+$ echo -e "\n\n*** Creating a release SVN tag and switching to it" && \
+  cd .. && svn cp trunk tags/release-x.y.z && cd tags/release-x.y.z && \
+  echo -e "\n\n*** Changing this tag's build.properties (changing 'version=snapshot' to 'version=x.y.z')" && \
+  sed s/version=snapshot/version=x.y.z/ build.properties > tmp && mv tmp build.properties && \
+  echo -e "\n\n*** Building a dist" && \
+  ant clean test dist && \
+  echo -e "\n\n*** Committing" && \
+  svn commit -m "release x.y.z" && \
+  echo -e "\n\n*** Creating a tar of the release itself" && \
+  svn export . build/dist/guiceberry-release-x.y.z && cd build/dist && zip -r guiceberry-x.y.z/guiceberry-release-x.y.z.zip guiceberry-release-x.y.z && cd -
+
+Finally, upload the jars to GoogleCode. The URL is http://code.google.com/p/guiceberry/downloads/list > New Download. Upload these files (all of them from the build/dist/guiceberry-x.y.z directory):
+
+Summary: Javadoc
+guiceberry-x.y.z-javadoc.jar
+Labels: Type-Docs, OpSys-All, Order-4
+
+Summary: Full project tree zip
+guiceberry-release-x.y.z.zip
+Labels: Type-Source, OpSys-All, Order-3
+
+Summary: source jar
+guiceberry-x.y.z-src.jar
+Labels: Type-Source, OpSys-All, Order-2
+
+Summary: Tutorial -- see the project home page for a link to the docs
+guiceberry-x.y.z-tutorial.jar
+Labels: Type-Docs, OpSys-All, Order-1
+
+Summary: jar
+guiceberry-x.y.z.jar
+Labels: Featured, Type-Package, OpSys-All, Order-0
+
+Mark the older release as deprecated (which you'll find as an option under "Delete"), and also, make sure to check the installation instructions at https://docs.google.com/document/d/1Cyism50KXTMXcvYNbqUXi3gaaNKaXDgjXjpx4rPNet8/edit particularly if you changed the version of a dependent lib.
+
