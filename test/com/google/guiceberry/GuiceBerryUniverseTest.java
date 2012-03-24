@@ -104,34 +104,7 @@ public class GuiceBerryUniverseTest {
     
     testCaseScaffolding.runAfterTest();
   }
-  
-  public static final class NonGuiceBerryEnvSinceItDoesNotInstallGuiceBerryModuleByNoCallingSuper extends AbstractModule {
-    @Override
-    protected void configure() {
-      install(new GuiceBerryModule());
-    }
-  }
-    
-  @Test public void testExceptionWhenGbeDoesNotInstallGuiceBerryModule2() {
-    GuiceBerryEnvSelector guiceBerryEnvSelector =
-      DefaultEnvSelector.of(NonGuiceBerryEnvSinceItDoesNotInstallGuiceBerryModuleByNoCallingSuper.class);
-    TestDescription testDescription = bogusTestDescription();
-    GuiceBerryUniverse.TestCaseScaffolding testCaseScaffolding = 
-      new GuiceBerryUniverse.TestCaseScaffolding(testDescription, guiceBerryEnvSelector, universe);
 
-    try {
-      testCaseScaffolding.runBeforeTest();
-    } catch (IllegalArgumentException e) {
-      Assert.assertEquals(String.format(
-          "The GuiceBerry Env '%s' must call 'super.configure()' "
-          + "in its 'configure()' method, so as to install the bindings defined in GuiceBerryModule.",
-          NonGuiceBerryEnvSinceItDoesNotInstallGuiceBerryModuleByNoCallingSuper.class.getName()),
-          e.getMessage());
-    }
-    
-    testCaseScaffolding.runAfterTest();
-  }
-  
   private static final class MyGuiceBerryEnv extends AbstractModule {
     
     private final GuiceBerryModule gbm;
