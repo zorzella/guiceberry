@@ -12,3 +12,7 @@ Release notes at:
 
 * http://docs.google.com/Doc?id=dddf9mmq_28gxr6hrfs
 
+FAQ:
+
+* http://docs.google.com/Doc?id=dddf9mmq_19f6c7v3j2
+
