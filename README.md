@@ -10,7 +10,7 @@ The tutorial for `GuiceBerry` 3.0 is at:
 
 Release notes at:
 
-* http://docs.google.com/Doc?id=dddf9mmq_28gxr6hrfs
+* https://github.com/zorzella/guiceberry/blob/master/RELEASE_NOTES.md
 
 FAQ:
 
