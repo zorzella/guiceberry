@@ -1,47 +1,67 @@
 How To release a new version of GuiceBerry (either read this or run howtorelease.sh for instructions)
 ==========================================
 
-If you, say, upgraded libs, change the tutorial docs.
+1. If you, say, upgraded libs, fix the tutorial docs as needed:
 
-Before you begin, make sure it's all committed and you have no compilation/test errors:
+https://docs.google.com/document/d/1Cyism50KXTMXcvYNbqUXi3gaaNKaXDgjXjpx4rPNet8/preview#heading=h.rh5udi32eepa
 
-$ svn update && svn status
+2. Before you proceed, make sure it's all committed:
+
+$ git pull && git status
+
+Make sure you have no untracked files, uncommitted changes, and that you are
+not "ahead" of origin/master. If you are, you need to git push. Make sure you
+have no compilation/test errors:
+
 $ ant clean test dist
 
-Then, run this:
+TODO: javadoc, since java 8, spews up tons of warnings that I don't know how to make ant disable.
 
-$ echo -e "\n\n*** Creating a release SVN tag and switching to it" && \
-  cd .. && svn cp trunk tags/release-x.y.z && cd tags/release-x.y.z && \
-  echo -e "\n\n*** Changing this tag's build.properties (changing 'version=snapshot' to 'version=x.y.z')" && \
+3. Update RELEASE_NOTES.md. Use "gitk --all" to see that all changes since the
+last release are accounted for. Commit and push. Again run a paranoid:
+
+$ git pull && git status
+
+4. Then, run this:
+
+$ echo -e "\n\n*** Changing build.properties: 'version=snapshot' to 'version=x.y.z'. " && \
+  echo -e "\n\n*** This change is not to be committed into the master branch." && \
   sed s/version=snapshot/version=x.y.z/ build.properties > tmp && mv tmp build.properties && \
-  echo -e "\n\n*** Building a dist" && \
+  echo -e "\n\n*** Building a dist (ant clean test dist)" && \
   ant clean test dist && \
-  echo -e "\n\n*** Committing" && \
-  svn commit -m "release x.y.z" && \
-  echo -e "\n\n*** Creating a tar of the release itself" && \
-  svn export . build/dist/guiceberry-release-x.y.z && cd build/dist && zip -r guiceberry-x.y.z/guiceberry-release-x.y.z.zip guiceberry-release-x.y.z && cd -
+  echo -e "\n\n*** Committing locally (the change to build.properties)" && \
+  git commit -a -m "version=release x.y.z" && \
+  echo -e "\n\n*** Creating a git tag named 'release-x.y.z'" && \
+  git tag release-x.y.z && \
+  echo -e "\n\n*** Resetting the local branch to where we want to keep master" && \
+  git reset --hard HEAD~1 && \
+  echo -e "\n\n*** If everything worked out right, please push the tag to github with the command:" && \
+  echo -e "\n\n $ git push origin release-x.y.z"
 
-Finally, upload the jars to GoogleCode. The URL is http://code.google.com/p/guiceberry/downloads/list > New Download. Upload these files (all of them from the build/dist/guiceberry-x.y.z directory):
+5. Check that this is the right link to the current release notes:
 
-Summary: Javadoc
-guiceberry-x.y.z-javadoc.jar
-Labels: Type-Docs, OpSys-All, Order-4
+https://github.com/zorzella/guiceberry/blob/master/RELEASE_NOTES.md#guiceberry-xyz
 
-Summary: Full project tree zip
-guiceberry-release-x.y.z.zip
-Labels: Type-Source, OpSys-All, Order-3
+6. Create a release in GitHub
 
-Summary: source jar
-guiceberry-x.y.z-src.jar
-Labels: Type-Source, OpSys-All, Order-2
+https://github.com/zorzella/guiceberry/releases/new
 
-Summary: Tutorial -- see the project home page for a link to the docs
-guiceberry-x.y.z-tutorial.jar
-Labels: Type-Docs, OpSys-All, Order-1
+Tag version: release-x.y.z (@ master)
+Release title: Guiceberry x.y.z
+Describe this release: Release notes at <paste the URL from #5>
 
-Summary: jar
+Attach binaries (all of them can be found in the build/dist/guiceberry-x.y.z
+directory):
+
 guiceberry-x.y.z.jar
-Labels: Featured, Type-Package, OpSys-All, Order-0
+guiceberry-x.y.z-src.jar
+guiceberry-x.y.z-tutorial.jar
+guiceberry-x.y.z-javadoc.jar
 
-Mark the older release as deprecated (which you'll find as an option under "Delete"), and also, make sure to check the installation instructions at https://docs.google.com/document/d/1Cyism50KXTMXcvYNbqUXi3gaaNKaXDgjXjpx4rPNet8/edit particularly if you changed the version of a dependent lib.
+7. Hit "Publish release"
 
+8. Send an email to guiceberry-users@googlegroups.com with the text:
+
+GuiceBerry x.y.y released. See link to release notes in the download page:
+
+https://github.com/zorzella/guiceberry/releases

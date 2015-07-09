@@ -3,8 +3,8 @@
 <h2>Not yet released</h2>
 
 * Moved to github
-* Upgrade to guava 17
-* Upgrade to junit 4.11
+* Upgrade to guava 18
+* Upgrade to junit 4.12
 
 <h2>GuiceBerry 3.3.1</h2>
 

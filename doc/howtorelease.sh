@@ -12,5 +12,9 @@ if [[ ! ${VERSION} =~ ^[0-9]\.[0-9]\.[0-9]$ ]]; then
   exit 1
 fi
 
-cat $(dirname $0)/HOW_TO_RELEASE.txt | sed s/x.y.z/${VERSION}/g
+VERSION_MINUS_DOTS=$(echo ${VERSION} | sed s/\\.//g)
+
+echo ${VERSION_MINUS_DOTS}
+
+cat $(dirname $0)/HOW_TO_RELEASE.txt | sed s/x\\.y\\.z/${VERSION}/g | sed s/xyz/${VERSION_MINUS_DOTS}/g
 
