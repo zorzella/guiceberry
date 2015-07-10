@@ -1,6 +1,8 @@
 <h1>Release Notes</h2>
 
-<h2>Not yet released</h2>
+<!-- h2>Not yet released</h2 -->
+
+<h2>GuiceBerry 3.3.2</h2>
 
 * Moved to github
 * Upgrade to guava 18
