@@ -14,6 +14,10 @@ Release notes at:
 
 * https://github.com/zorzella/guiceberry/blob/master/RELEASE_NOTES.md#release-notes
 
+Mailing list:
+
+* https://groups.google.com/forum/#!forum/guiceberry-users
+
 FAQ:
 
 * http://docs.google.com/Doc?id=dddf9mmq_19f6c7v3j2
