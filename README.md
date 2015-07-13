@@ -10,9 +10,9 @@ The tutorial for `GuiceBerry` 3.0 is at:
 * Walk-through video: http://www.youtube.com/watch?v=yqre07YfPXQ
 * Slides: https://docs.google.com/present/view?id=dddf9mmq_30fgnf9jc2
 
-Release notes at:
+Releases:
 
-* https://github.com/zorzella/guiceberry/blob/master/RELEASE_NOTES.md#release-notes
+* https://github.com/zorzella/guiceberry/releases
 
 Mailing list:
 
