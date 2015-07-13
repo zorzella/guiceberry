@@ -27,7 +27,7 @@ $ git pull && git status
 
 $ echo -e "\n\n*** Changing build.properties: 'version=snapshot' to 'version=x.y.z'. " && \
   echo -e "\n\n*** This change is not to be committed into the master branch." && \
-  sed s/version=snapshot/version=x.y.z/ build.properties > tmp && mv tmp build.properties && \
+  sed --in-place s/version=snapshot/version=x.y.z/ build.properties && \
   echo -e "\n\n*** Building a dist (ant clean test dist)." && \
   ant clean test dist && \
   echo -e "\n\n*** Committing locally (the change to build.properties)." && \
