@@ -17,7 +17,6 @@ package com.google.guiceberry.junit3;
 
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
-import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.DefaultEnvSelector;
 import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.GuiceBerry;
@@ -27,7 +26,7 @@ import com.google.inject.Module;
 import junit.framework.TestCase;
 
 /**
- * {@link GuiceBerry} adapter for JUnit3 {@link TearDownTestCase}s.
+ * {@link GuiceBerry} adapter for JUnit3 {@link TearDownAccepter}s.
  *
  * @see ManualTearDownGuiceBerry
  *
@@ -44,7 +43,7 @@ public class AutoTearDownGuiceBerry {
    * pass {@code this} as the testCase argument. See
    * {@link junit3_tdtc.tutorial_0_basic.Example0HelloWorldTest#setUp()}.
    *
-   * <p>The parameter {@code T} is a {@link TearDownTestCase} or anything
+   * <p>The parameter {@code T} is a {@link TearDownAccepter} or anything
    * equivalent to it. 
    */
   public static <T extends TestCase & TearDownAccepter> void setUp(
@@ -54,7 +53,7 @@ public class AutoTearDownGuiceBerry {
   }
   
   /**
-   * Same as {@link #setUp(TearDownTestCase, Class)}, but with the given 
+   * Same as {@link #setUp(TearDownAccepter, Class)}, but with the given 
    * {@code guiceBerryEnvSelector}.
    *
    * @see #setUp(TestCase, Class)

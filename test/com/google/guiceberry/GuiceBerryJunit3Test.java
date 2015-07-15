@@ -18,7 +18,6 @@ package com.google.guiceberry;
 
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
-import com.google.common.testing.junit3.JUnitAsserts;
 import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.GuiceBerryUniverse;
 import com.google.guiceberry.TestScope;
@@ -39,6 +38,8 @@ import com.google.inject.testing.guiceberry.junit3.GuiceBerryEnvRemapper;
 import com.google.inject.testing.guiceberry.junit3.GuiceBerryJunit3;
 
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 /**
  * Tests the {@link GuiceBerryJunit3} class.
@@ -262,7 +263,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     
     TestWithGbeTwo testTwo = TestWithGbeTwo.createInstance();
     instance().doSetUp(testTwo);
-    JUnitAsserts.assertNotEqual(testOne.number, testTwo.number);
+    Assert.assertNotEquals(testOne.number, testTwo.number);
   }
 
   public void testPutTwoInjectorsInMapForTestsThatDeclareDifferentGbes() {
@@ -419,7 +420,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     AnotherTestWithGbeOne testTwo = AnotherTestWithGbeOne.createInstance();
     instance().doSetUp(testTwo);
    
-    JUnitAsserts.assertNotEqual(testOne.testId, testTwo.testId);
+    Assert.assertNotEquals(testOne.testId, testTwo.testId);
   }
   
   public void testInjectionOfTestCase() {  
@@ -440,7 +441,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     instance().doSetUp(testTwo);
     assertEquals(testTwo.getName(), testTwo.testCase.getName());
     
-    JUnitAsserts.assertNotEqual(testOne.testCase, testTwo.testCase);
+    Assert.assertNotEquals(testOne.testCase, testTwo.testCase);
   }
 
   public void testMethodTearDownWorksProperly() {
