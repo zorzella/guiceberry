@@ -2,6 +2,10 @@
 
 <!-- h2>Not yet released</h2 -->
 
+<h2>GuiceBerry 4.0.0</h2>
+
+* Replaced dependency to (deprecated) tl4j with a dependency to guava-testlibs. This required one change that is not strictly backwards-compatible, but really unlikely to break you. See details: https://github.com/zorzella/guiceberry/issues/27
+
 <h2>GuiceBerry 3.3.2</h2>
 
 * Moved to github
