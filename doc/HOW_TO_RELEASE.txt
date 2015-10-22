@@ -18,12 +18,15 @@ $ ant clean test dist
 TODO: javadoc, since java 8, spews up tons of warnings that I don't know how to make ant disable.
 
 3. Update RELEASE_NOTES.md. Use "gitk --all" to see that all changes since the
-last release are accounted for. Commit ("Release notes for x.y.z") and push.
-Again run a paranoid:
+last release are accounted for. Commit and push:
+
+$ git commit -a -m "Release notes for x.y.z"; git push
+
+4, Again run a paranoid:
 
 $ git pull && git status
 
-4. Then, run this:
+5. Then, run this:
 
 $ echo -e "\n\n*** Changing build.properties: 'version=snapshot' to 'version=x.y.z'. " && \
   echo -e "\n\n*** This change is not to be committed into the master branch." && \
@@ -39,11 +42,11 @@ $ echo -e "\n\n*** Changing build.properties: 'version=snapshot' to 'version=x.y
   echo -e "\n\n*** Pushing the tag to github." && \
   git push origin release-x.y.z
 
-5. Check that this is the right link to the current release notes:
+6. Check that this is the right link to the current release notes:
 
 https://github.com/zorzella/guiceberry/blob/master/RELEASE_NOTES.md#guiceberry-xyz
 
-6. Create a release in GitHub
+7. Create a release in GitHub
 
 https://github.com/zorzella/guiceberry/releases/new
 
@@ -59,9 +62,9 @@ guiceberry-x.y.z-src.jar
 guiceberry-x.y.z-tutorial.jar
 guiceberry-x.y.z-javadoc.jar
 
-7. Hit "Publish release"
+8. Hit "Publish release"
 
-8. Send an email to guiceberry-users@googlegroups.com
+9. Send an email to guiceberry-users@googlegroups.com
 
 Subject: GuiceBerry x.y.z released
 
