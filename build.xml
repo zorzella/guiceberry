@@ -20,6 +20,7 @@
         <pathelement location="${build.dir}/classes"/>
         <pathelement location="${lib.dir}/aopalliance.jar"/>
         <pathelement location="${lib.dir}/guava-18.0.jar"/>
+        <pathelement location="${lib.dir}/guava-testlib-18.0.jar"/>
         <pathelement location="${lib.dir}/guice-3.0.jar"/>
         <!-- guice-servlet is not really necessary -->
         <pathelement location="${lib.dir}/guice-servlet-3.0.jar"/>
@@ -27,7 +28,6 @@
         <pathelement location="${lib.dir}/javax.inject.jar"/>
         <pathelement location="${lib.dir}/junit-4.12.jar"/>
         <pathelement location="${lib.dir}/servlet-api-2.5.jar"/>
-        <pathelement location="${lib.dir}/tl4j-junit3-1.1.1.jar"/>
       </classpath>
     </javac>
     <!-- copy toDir="${build.dir}/classes">
@@ -40,6 +40,7 @@
     <pathelement location="${lib.dir}/aopalliance.jar"/>
     <pathelement location="${lib.dir}/easymock.jar"/>
     <pathelement location="${lib.dir}/guava-18.0.jar"/>
+    <pathelement location="${lib.dir}/guava-testlib-18.0.jar"/>
     <pathelement location="${lib.dir}/guice-3.0.jar"/>
     <!-- guice-servlet is not really necessary -->
     <pathelement location="${lib.dir}/guice-servlet-3.0.jar"/>
@@ -47,7 +48,6 @@
     <pathelement location="${lib.dir}/javax.inject.jar"/>
     <pathelement location="${lib.dir}/junit-4.12.jar"/>
     <pathelement location="${lib.dir}/servlet-api-2.5.jar"/>
-    <pathelement location="${lib.dir}/tl4j-junit3-1.1.1.jar"/>
   </path>
 
   <target name="test.compile"
@@ -89,6 +89,7 @@
         <fileset dir="${test.dir}">
           <include name="**/*Test*.java"/>
           <exclude name="**/AllTests.java"/>
+          <exclude name="**/TearDownTestCase.java"/>
         </fileset>
       </batchtest>
     </junit>

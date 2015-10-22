@@ -16,7 +16,6 @@
 package com.google.guiceberry.junit3;
 
 import com.google.common.testing.TearDown;
-import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.DefaultEnvSelector;
 import com.google.guiceberry.GuiceBerry;
 import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
@@ -28,7 +27,7 @@ import junit.framework.TestCase;
 
 /**
  * {@link GuiceBerry} adapter for vanilla JUnit3 tests (i.e. {@link TestCase}s
- * that do not extend {@link TearDownTestCase}).
+ * that do not extend {@code TearDownTestCase}).
  *
  * @see AutoTearDownGuiceBerry
  * 

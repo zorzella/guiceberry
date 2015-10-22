@@ -17,14 +17,13 @@ package com.google.guiceberry.junit3;
 
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
-import com.google.common.testing.junit3.TearDownTestCase;
 import com.google.guiceberry.DefaultEnvSelector;
 import com.google.guiceberry.util.AnnotationBasedGuiceBerryEnvSelector;
 
 import junit.framework.TestCase;
 
 /**
- * Like {@link AutoTearDownGuiceBerry#setUp(TearDownTestCase, Class)} but using 
+ * Like {@link AutoTearDownGuiceBerry#setUp(TearDownAccepter, Class)} but using
  * {@link AnnotationBasedGuiceBerryEnvSelector} instead of
  * {@link DefaultEnvSelector}.
  *
