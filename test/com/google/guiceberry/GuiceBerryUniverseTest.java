@@ -19,6 +19,7 @@ import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
+import com.google.inject.ConfigurationException;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provides;
@@ -205,4 +206,49 @@ public class GuiceBerryUniverseTest {
     }
   }
 
+  @Test public void testFailsInjectionBeforeRunningGuiceBerryEnvMain() {
+    GuiceBerryEnvSelector guiceBerryEnvSelector = 
+      DefaultEnvSelector.of(MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrows.class);
+    TestDescription testDescription = new TestDescription(new ClassWithUnsatisfiedDependency(), "bogus test case");
+    GuiceBerryUniverse.TestCaseScaffolding testCaseScaffolding = 
+      new GuiceBerryUniverse.TestCaseScaffolding(testDescription, guiceBerryEnvSelector, universe);
+      
+    try {
+      testCaseScaffolding.runBeforeTest();
+      Assert.fail();
+    } catch (RuntimeException expected) {
+      Assert.assertEquals(expected.getCause().getClass(), ConfigurationException.class);
+    }
+      
+    testCaseScaffolding.runAfterTest();
+  }
+  
+  private interface UnsatisfiedDependency {}
+  
+  private static final class ClassWithUnsatisfiedDependency {
+    @Inject UnsatisfiedDependency unsatisfied;
+  }
+  
+  private static final class MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrows extends AbstractModule {
+
+    private final GuiceBerryModule gbm;
+    
+    @Override
+    protected void configure() {
+      install(gbm);
+    }
+    
+    public MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrows() {
+      this.gbm = new GuiceBerryModule(GuiceBerryUniverseTest.universe);
+    }
+    
+    @Provides
+    GuiceBerryEnvMain getMain() {
+      return new GuiceBerryEnvMain() {
+        public void run() {
+          throw new RuntimeException("GuiceBerryEnvMain executed");
+        }
+      };
+    }
+  }
 }
