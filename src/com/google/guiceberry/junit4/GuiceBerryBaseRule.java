@@ -31,17 +31,28 @@ import org.junit.runners.model.Statement;
  * 
  * @author Luiz-Otavio "Z" Zorzella
  */
-public class GuiceBerryRule extends GuiceBerryBaseRule implements MethodRule {
+public class GuiceBerryBaseRule {
 
-  public GuiceBerryRule(Class<? extends Module> envClass) {
-    this(DefaultEnvSelector.of(envClass));
+  private final GuiceBerryEnvSelector guiceBerryEnvSelector;
+
+  protected GuiceBerryBaseRule(GuiceBerryEnvSelector guiceBerryEnvSelector) {
+    this.guiceBerryEnvSelector = guiceBerryEnvSelector;
   }
 
-  public GuiceBerryRule(GuiceBerryEnvSelector guiceBerryEnvSelector) {
-    super(guiceBerryEnvSelector);
-  }
-
-  public Statement apply(final Statement base, final FrameworkMethod method, final Object target) {
-    return apply(base, new TestDescription(target, target.getClass().getName() + "." + method.getName()));
+  public Statement apply(final Statement base, final TestDescription testDescription) {
+    return new Statement() {
+      
+      @Override
+      public void evaluate() throws Throwable {
+        final GuiceBerryWrapper setupAndTearDown = 
+          GuiceBerry.INSTANCE.buildWrapper(testDescription, guiceBerryEnvSelector);
+        try {
+          setupAndTearDown.runBeforeTest();
+          base.evaluate();
+        } finally {
+          setupAndTearDown.runAfterTest();
+        }
+      }
+    };
   }
 }
