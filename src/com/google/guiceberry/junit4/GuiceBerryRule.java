@@ -27,7 +27,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
 /**
- * {@link GuiceBerry} adapter for JUnit4 tests.
+ * {@link GuiceBerry} adapter for JUnit4 tests, implementing {@MethodRule}.
  * 
  * @author Luiz-Otavio "Z" Zorzella
  */
