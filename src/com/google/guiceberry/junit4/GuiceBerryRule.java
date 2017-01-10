@@ -39,6 +39,7 @@ public class GuiceBerryRule extends GuiceBerryBaseRule implements MethodRule {
     super(guiceBerryEnvSelector);
   }
 
+  @Override
   public Statement apply(final Statement base, final FrameworkMethod method, final Object target) {
     return apply(base, new TestDescription(target, target.getClass().getName() + "." + method.getName()));
   }
