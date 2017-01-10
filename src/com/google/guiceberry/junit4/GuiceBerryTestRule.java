@@ -16,15 +16,12 @@
 package com.google.guiceberry.junit4;
 
 import com.google.guiceberry.DefaultEnvSelector;
-import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.GuiceBerry;
-import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
+import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.TestDescription;
 import com.google.inject.Module;
-
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
-import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
 /**
