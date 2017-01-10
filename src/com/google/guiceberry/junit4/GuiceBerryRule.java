@@ -41,6 +41,7 @@ public class GuiceBerryRule extends GuiceBerryBaseRule implements MethodRule {
 
   @Override
   public Statement apply(final Statement base, final FrameworkMethod method, final Object target) {
-    return apply(base, new TestDescription(target, target.getClass().getName() + "." + method.getName()));
+    return apply(base,
+        new TestDescription(target, target.getClass().getName() + "." + method.getName()));
   }
 }

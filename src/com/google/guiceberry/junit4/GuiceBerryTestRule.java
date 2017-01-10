@@ -43,6 +43,8 @@ public class GuiceBerryTestRule extends GuiceBerryBaseRule implements TestRule {
 
   @Override
   public Statement apply(Statement base, Description description) {
-    return apply(base, new TestDescription(target, target.getClass().getName() + "." + description.getMethodName()));
+    return apply(base,
+        new TestDescription(target,
+            target.getClass().getName() + "." + description.getMethodName()));
   }
 }
