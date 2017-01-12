@@ -24,9 +24,8 @@ import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 
-import junit.framework.Assert;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -215,9 +214,13 @@ public class GuiceBerryUniverseTest {
       
     try {
       testCaseScaffolding.runBeforeTest();
-      Assert.fail();
+      Assert.fail("The test has an unsatisfied injection, and the GuiceBerryEnvMain "
+          + "throws an Exception. Either of these reasons should have prevented the "
+          + "test from having gotten here.");
+    } catch (MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrows.GuiceBerryEnvMainWasExecutedException toThrow) {
+      throw toThrow;
     } catch (RuntimeException expected) {
-      Assert.assertEquals(expected.getCause().getClass(), ConfigurationException.class);
+      Assert.assertEquals(ConfigurationException.class, expected.getCause().getClass());
     }
       
     testCaseScaffolding.runAfterTest();
@@ -226,11 +229,18 @@ public class GuiceBerryUniverseTest {
   private interface UnsatisfiedDependency {}
   
   private static final class ClassWithUnsatisfiedDependency {
+    @SuppressWarnings("unused")
     @Inject UnsatisfiedDependency unsatisfied;
   }
   
   private static final class MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrows extends AbstractModule {
 
+    private static final class GuiceBerryEnvMainWasExecutedException extends RuntimeException {
+      public GuiceBerryEnvMainWasExecutedException() {
+        super("GuiceBerryEnvMain was executed");
+      }
+    }
+    
     private final GuiceBerryModule gbm;
     
     @Override
@@ -238,6 +248,7 @@ public class GuiceBerryUniverseTest {
       install(gbm);
     }
     
+    @SuppressWarnings("unused")
     public MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrows() {
       this.gbm = new GuiceBerryModule(GuiceBerryUniverseTest.universe);
     }
@@ -246,7 +257,7 @@ public class GuiceBerryUniverseTest {
     GuiceBerryEnvMain getMain() {
       return new GuiceBerryEnvMain() {
         public void run() {
-          throw new RuntimeException("GuiceBerryEnvMain executed");
+          throw new GuiceBerryEnvMainWasExecutedException();
         }
       };
     }
