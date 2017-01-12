@@ -163,6 +163,18 @@ class GuiceBerryUniverse {
             + "defined there.", gbeClass.getName()));
       }
     }
+    
+    private void getMembersInjectorForTest(
+        final Class<? extends Module> gbeClass, Injector injector) {
+
+      try {
+        injector.getMembersInjector(testDescription.getTestCase().getClass());
+      } catch (ConfigurationException e) {
+        String msg = String.format("Binding error in the GuiceBerry Env '%s': '%s'.",
+            gbeClass.getName(), e.getMessage());
+        throw new RuntimeException(msg, e);
+      }
+    }
 
     private void injectMembersIntoTest(
         final Class<? extends Module> gbeClass, Injector injector) {
@@ -232,10 +244,13 @@ class GuiceBerryUniverse {
         Module gbeInstance = createGbeInstanceFromClass(gbeClass);
         Injector injector = Guice.createInjector(gbeInstance);
         ensureBasicBindingsExist(injector, gbeClass);
-        callGbeMainIfBound(injector);
+        // Get a members injector for the test class first so that we fail fast if there are missing
+        // bindings instead of running the main
+        getMembersInjectorForTest(gbeClass, injector);
         // We don't actually use the test wrapper here, but we make sure we can
         // get an instance (i.e. we fail fast).
         buildTestWrapperInstance(injector);
+        callGbeMainIfBound(injector);
         result = injector;
       } catch (CreationException e) {
         if (e.getMessage().contains("No scope is bound to " + TestScoped.class.getName())) {
