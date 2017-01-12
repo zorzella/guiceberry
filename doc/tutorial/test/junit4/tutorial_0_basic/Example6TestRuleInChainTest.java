@@ -14,12 +14,12 @@ import org.junit.runners.model.Statement;
 
 /**
  * Example showing the use of {@link GuiceBerryTestRule} in a {@link RuleChain}.
- * 
+ *
  * <p>In this example, the {@code DependentRule} updates some piece of global state that
  * the Guiceberry rule initializes.  In a more realistic example it might make some calls to
  * an external server that the Guiceberry rule started up.  Sharing of global state like this is
  * never ideal, but might be necessary in some cases.
- * 
+ *
  * <p>Since the dependent rule depends on the Guiceberry rule having been initialized, it has
  * to run inside that rule.  Junit4 {@link RuleChain} is intended for such cases.  Note that
  * this only works for {@link GuiceBerryTestRule} which (unlike {@link GuiceBerryRule}) implements
@@ -27,11 +27,11 @@ import org.junit.runners.model.Statement;
  */
 public class Example6TestRuleInChainTest {
   private static String globalState;
-  
+
   public static String getGlobalState() {
     return globalState;
   }
-  
+
   public static void setGlobalState(String newState) {
     globalState = newState;
   }
@@ -47,7 +47,7 @@ public class Example6TestRuleInChainTest {
   }
 
   public static final class DependentRule implements TestRule {
-    
+
     @Override
     public Statement apply(Statement base, Description description) {
       return new Statement() {

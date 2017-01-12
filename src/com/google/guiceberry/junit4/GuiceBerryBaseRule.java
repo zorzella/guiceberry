@@ -23,7 +23,7 @@ import org.junit.runners.model.Statement;
 
 /**
  * Base class for Junit4 {@link GuiceBerry} adapters.
- * 
+ *
  * @author Luiz-Otavio "Z" Zorzella
  */
 public class GuiceBerryBaseRule {
@@ -36,10 +36,10 @@ public class GuiceBerryBaseRule {
 
   public Statement apply(final Statement base, final TestDescription testDescription) {
     return new Statement() {
-      
+
       @Override
       public void evaluate() throws Throwable {
-        final GuiceBerryWrapper setupAndTearDown = 
+        final GuiceBerryWrapper setupAndTearDown =
           GuiceBerry.INSTANCE.buildWrapper(testDescription, guiceBerryEnvSelector);
         try {
           setupAndTearDown.runBeforeTest();

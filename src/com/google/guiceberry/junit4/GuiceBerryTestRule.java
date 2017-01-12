@@ -26,7 +26,7 @@ import org.junit.runners.model.Statement;
 
 /**
  * {@link GuiceBerry} adapter for JUnit4 tests, implementing {@TestRule}.
- * 
+ *
  * @author David M. Hull
  */
 public class GuiceBerryTestRule extends GuiceBerryBaseRule implements TestRule {
