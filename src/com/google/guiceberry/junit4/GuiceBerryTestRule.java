@@ -43,7 +43,7 @@ public final class GuiceBerryTestRule extends GuiceBerryBaseRule implements Test
    * {@code @Rule GuiceBerryTestRule rule = new GuiceBerryTestRule(this, ...);}.
    * @param guiceBerryEnvSelector Instance to use as env selector.
    */
-  private GuiceBerryTestRule(Object target, GuiceBerryEnvSelector guiceBerryEnvSelector) {
+  public GuiceBerryTestRule(Object target, GuiceBerryEnvSelector guiceBerryEnvSelector) {
     super(guiceBerryEnvSelector);
     this.target = target;
   }
