@@ -19,13 +19,13 @@ import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
+import com.google.inject.ConfigurationException;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 
-import junit.framework.Assert;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -205,4 +205,61 @@ public class GuiceBerryUniverseTest {
     }
   }
 
+  @Test public void testFailsInjectionBeforeRunningGuiceBerryEnvMain() {
+    GuiceBerryEnvSelector guiceBerryEnvSelector = 
+      DefaultEnvSelector.of(MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrows.class);
+    TestDescription testDescription = new TestDescription(new ClassWithUnsatisfiedDependency(), "bogus test case");
+    GuiceBerryUniverse.TestCaseScaffolding testCaseScaffolding = 
+      new GuiceBerryUniverse.TestCaseScaffolding(testDescription, guiceBerryEnvSelector, universe);
+      
+    try {
+      testCaseScaffolding.runBeforeTest();
+      Assert.fail("The test has an unsatisfied injection, and the GuiceBerryEnvMain "
+          + "throws an Exception. Either of these reasons should have prevented the "
+          + "test from having gotten here.");
+    } catch (MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrows.GuiceBerryEnvMainWasExecutedException toThrow) {
+      throw toThrow;
+    } catch (RuntimeException expected) {
+      Assert.assertEquals(ConfigurationException.class, expected.getCause().getClass());
+    }
+      
+    testCaseScaffolding.runAfterTest();
+  }
+  
+  private interface UnsatisfiedDependency {}
+  
+  private static final class ClassWithUnsatisfiedDependency {
+    @SuppressWarnings("unused")
+    @Inject UnsatisfiedDependency unsatisfied;
+  }
+  
+  private static final class MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrows extends AbstractModule {
+
+    private static final class GuiceBerryEnvMainWasExecutedException extends RuntimeException {
+      public GuiceBerryEnvMainWasExecutedException() {
+        super("GuiceBerryEnvMain was executed");
+      }
+    }
+    
+    private final GuiceBerryModule gbm;
+    
+    @Override
+    protected void configure() {
+      install(gbm);
+    }
+    
+    @SuppressWarnings("unused")
+    public MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrows() {
+      this.gbm = new GuiceBerryModule(GuiceBerryUniverseTest.universe);
+    }
+    
+    @Provides
+    GuiceBerryEnvMain getMain() {
+      return new GuiceBerryEnvMain() {
+        public void run() {
+          throw new GuiceBerryEnvMainWasExecutedException();
+        }
+      };
+    }
+  }
 }
