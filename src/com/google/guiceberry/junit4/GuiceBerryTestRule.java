@@ -29,7 +29,7 @@ import org.junit.runners.model.Statement;
  *
  * @author David M. Hull
  */
-public class GuiceBerryTestRule extends GuiceBerryBaseRule implements TestRule {
+public final class GuiceBerryTestRule extends GuiceBerryBaseRule implements TestRule {
   private final Object target;
 
   private GuiceBerryTestRule(Object target, GuiceBerryEnvSelector guiceBerryEnvSelector) {
