@@ -26,7 +26,7 @@ import org.junit.runners.model.Statement;
  *
  * @author Luiz-Otavio "Z" Zorzella
  */
-public class GuiceBerryBaseRule {
+class GuiceBerryBaseRule {
 
   private final GuiceBerryEnvSelector guiceBerryEnvSelector;
 
