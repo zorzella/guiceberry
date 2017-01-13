@@ -27,6 +27,9 @@ import org.junit.runners.model.Statement;
 /**
  * {@link GuiceBerry} adapter for JUnit4 tests, implementing {@MethodRule}.
  *
+ * <p>This is the preferred implementation to use, as it does not depend on the client code
+ * supplying the right object for {@code Object target}.
+ *
  * @author Luiz-Otavio "Z" Zorzella
  */
 public class GuiceBerryRule extends GuiceBerryBaseRule implements MethodRule {

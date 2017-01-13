@@ -20,6 +20,7 @@ import com.google.guiceberry.GuiceBerry;
 import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.TestDescription;
 import com.google.inject.Module;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -27,16 +28,33 @@ import org.junit.runners.model.Statement;
 /**
  * {@link GuiceBerry} adapter for JUnit4 tests, implementing {@TestRule}.
  *
+ * <p>Please do not use this unless there is a clear reason that {@link GuiceBerryRule} won't
+ * work, for example if you need the rule to be part of a {@link RuleChain}.
+ *
  * @author David M. Hull
  */
 public final class GuiceBerryTestRule extends GuiceBerryBaseRule implements TestRule {
   private final Object target;
 
+  /**
+   * Main constructor.
+   *
+   * @param target Must be the test object.  The usual construct is
+   * {@code @Rule GuiceBerryTestRule rule = new GuiceBerryTestRule(this, ...);}.
+   * @param guiceBerryEnvSelector Instance to use as env selector.
+   */
   private GuiceBerryTestRule(Object target, GuiceBerryEnvSelector guiceBerryEnvSelector) {
     super(guiceBerryEnvSelector);
     this.target = target;
   }
 
+  /**
+   * Convenience for the common case of a selector class with a no-arg constructor.
+   *
+   * @param target Must be the test object.  The usual construct is
+   * {@code @Rule GuiceBerryTestRule rule = new GuiceBerryTestRule(this, ...);}.
+   * @param envClass Class to use for env selector.  Must have a no-arg constructor.
+   */
   public GuiceBerryTestRule (Object target, Class<? extends Module> envClass) {
     this(target, DefaultEnvSelector.of(envClass));
   }
