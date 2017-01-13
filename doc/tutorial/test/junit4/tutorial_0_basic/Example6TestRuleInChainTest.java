@@ -48,8 +48,7 @@ public class Example6TestRuleInChainTest {
 
   public static final class DependentRule implements TestRule {
 
-    @Override
-    public Statement apply(Statement base, Description description) {
+    public Statement apply(final Statement base, final Description description) {
       return new Statement() {
         @Override
         public void evaluate() throws Throwable {

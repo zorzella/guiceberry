@@ -59,7 +59,6 @@ public final class GuiceBerryTestRule extends GuiceBerryBaseRule implements Test
     this(target, DefaultEnvSelector.of(envClass));
   }
 
-  @Override
   public Statement apply(Statement base, Description description) {
     return apply(base,
         new TestDescription(target,
