@@ -28,7 +28,7 @@ import com.google.inject.Scope;
 /**
  * This Module provides the basic bindings required by GuiceBerry, namely
  * {@link TestId}, {@link TearDownAccepter} and the {@link TestScoped} scope.
- * Without these bindinds, GuiceBerry will fail to set up. Therefore, this
+ * Without these bindings, GuiceBerry will fail to set up. Therefore, this
  * module is required to be installed by all GuiceBerry Envs (see
  * {@link GuiceBerryEnvSelector}).
  *

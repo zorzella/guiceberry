@@ -57,7 +57,7 @@ public class GuiceBerry {
   }
   
   /**
-   * You won't need to deal with this interface unless you are writting an
+   * You won't need to deal with this interface unless you are writing an
    * adapter to a test framework. See {@link GuiceBerry}.
    * 
    * <p>The two methods in this interface should "wrap" a test execution. I.e.

@@ -24,7 +24,7 @@ import com.google.guiceberry.controllable.IcStrategy.ServerSupport;
 import java.util.Map;
 
 /**
- * This internal class is basically what the {@link IcMaster} uses to fullfil
+ * This internal class is basically what the {@link IcMaster} uses to fulfill
  * its {@link IcMaster#buildServerModule(java.util.Collection)} method.
  * 
  * @author Luiz-Otavio Zorzella

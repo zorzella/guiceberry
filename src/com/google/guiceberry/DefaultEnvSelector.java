@@ -164,7 +164,7 @@ public class DefaultEnvSelector implements GuiceBerryEnvSelector {
    * <p>For details about this feature, see tutorial TODO
    *
    * <p>This method is a convenience method in case you wish to set that system
-   * property programatically.
+   * property programmatically.
    *
    * <p>Note that this override is honored by code inside the {@link #of}
    * methods, so this {@link #override} method must be called <em>before</em>

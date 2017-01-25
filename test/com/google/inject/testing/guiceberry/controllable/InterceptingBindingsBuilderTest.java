@@ -87,7 +87,7 @@ public class InterceptingBindingsBuilderTest extends TestCase {
   }
 
   /**
-   * The user's provider is scoped but the interceptor is not. As this testcase
+   * The user's provider is scoped but the interceptor is not. As this test case
    * demonstrates, the user's provider gets called only once (in singleton
    * scope) but the interceptor gets called for each provision.
    */

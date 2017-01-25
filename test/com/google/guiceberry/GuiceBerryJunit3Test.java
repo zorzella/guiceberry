@@ -450,7 +450,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     instance().doSetUp(test);
     assertEquals(test,  currentUniverse.currentTestDescriptionThreadLocal.get().getTestCase());
     GuiceBerryJunit3.tearDown(test); 
-  //No concurrency problems as the actual TestCase is: ThreadLocal<TestCase>
+    //No concurrency problems as the actual TestCase is: ThreadLocal<TestCase>
     assertNull(currentUniverse.currentTestDescriptionThreadLocal.get());
   }
   

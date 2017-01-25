@@ -187,7 +187,7 @@ final class InterceptingBindingsBuilder {
 
       // we scope the user's provider, not the interceptor. This is dangerous,
       // but convenient. It means that although the user's provider will live
-      // in its proper scope, the intereptor gets invoked without a scope
+      // in its proper scope, the interceptor gets invoked without a scope
       applyScoping(binding, scopedBindingBuilder);
 
       keysIntercepted.add(key);

@@ -32,7 +32,7 @@ import com.google.inject.util.Types;
  * such as HTTP {@link javax.servlet.http.Cookie}s, {@link java.io.File}s in a 
  * shared disk, shared database tables and whatnot.
  * 
- * <p>This class makes the implementation of these stretegies possible. Each
+ * <p>This class makes the implementation of these strategies possible. Each
  * of these would simply require an implementation of the 
  * {@link IcStrategy.ClientSupport} and {@link IcStrategy.ServerSupport} 
  * interfaces.
@@ -47,7 +47,7 @@ import com.google.inject.util.Types;
  * {@link IcStrategy.ClientSupport#resetOverride(ControllableId)} methods are
  * <em>indirectly</em> exposed to the end-user through 
  * {@link InjectionController#setOverride(Object)} and {@link InjectionController#resetOverride()}
- * respectivelly.
+ * respectively.
  * 
  * <p>Finally, note that some strategies might be fundamentally more "capable"
  * than others. E.g. a non-serializable class would pose a problem for a 
@@ -75,7 +75,7 @@ public class IcStrategy {
      * {@link IcStrategy.ServerSupport#getOverride(ControllableId, Provider)}
      * for this {@code controllableId} should return {@code override}.
      * 
-     * <p>It is considered ok for a test to call 
+     * <p>It is considered OK for a test to call 
      * {@link InjectionController#setOverride(Object)} multiple times, so this method
      * must also support it.
      */
@@ -107,7 +107,7 @@ public class IcStrategy {
      * Returns true if the {@code controllableId} is currently being controlled.
      * 
      * <p>When this returns true, the framework will call 
-     * {@link #getOverride(ControllableId, Provider)} to fullfil an injection, 
+     * {@link #getOverride(ControllableId, Provider)} to fulfill an injection, 
      * otherwise it will bypass it.
      */
     <T> boolean isControlled(ControllableId<T> controllableId);
@@ -116,7 +116,7 @@ public class IcStrategy {
      * Returns the current override for this Injection. The framework will 
      * never call this method unless {@link #isControlled(ControllableId)} 
      * returns true, so calling this method while not controlling an injection
-     * is illegal and the outcode is unspecified (though it's conceivably 
+     * is illegal and the outcome is unspecified (though it's conceivably 
      * possible to subvert the system with a race condition).
      * 
      * @param delegate what the server would return in absence of this injection 

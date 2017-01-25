@@ -25,7 +25,7 @@ import com.google.guiceberry.TestId;
 import java.util.Map;
 
 /**
- * This internal class is basically what the {@link IcMaster} uses to fullfil
+ * This internal class is basically what the {@link IcMaster} uses to fulfill
  * its {@link IcMaster#buildClientModule()} method.
  * 
  * @author Luiz-Otavio Zorzella
