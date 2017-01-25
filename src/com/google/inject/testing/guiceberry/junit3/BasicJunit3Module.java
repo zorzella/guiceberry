@@ -27,7 +27,7 @@ import junit.framework.TestCase;
  * This Module provides the three basic bindings required by 
  * {@link GuiceBerryJunit3}, namely {@link TestId}, 
  * {@link TestCase} and the {@link TestScoped} scope. Without these three
- * bindinds, {@link GuiceBerryJunit3#setUp(TestCase)} will fail.
+ * bindings, {@link GuiceBerryJunit3#setUp(TestCase)} will fail.
 
  * <p>Thus, this module is all but required to be installed by all 
  * {@link GuiceBerryEnv}s using JUnit3. 

@@ -59,7 +59,7 @@ public interface IcClient<T> {
    * href="http://www.google.com/codesearch/p?hl=en#yL0uRk1mhCY/trunk/doc/tutorial/test/testng/tutorial_1_server/Example4InjectionControllerTest.java">
    * Example4InjectionControllerTest.java tutorial</a> and others.
    * 
-   * <p>It is ok for a test to call this method multiple times.
+   * <p>It is OK for a test to call this method multiple times.
    */
   void setOverride(T override);
   
@@ -70,7 +70,7 @@ public interface IcClient<T> {
    * test, so you do not need to. This is only provided in case you need to 
    * do so to complete the test altogether.
    * 
-   * <p>It is ok for a test to call this method multiple times, even when
+   * <p>It is OK for a test to call this method multiple times, even when
    * the injection is not currently being controlled, in which case it will
    * be a no-op.
    */

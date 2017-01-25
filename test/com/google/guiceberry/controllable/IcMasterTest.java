@@ -112,7 +112,7 @@ public class IcMasterTest extends TearDownTestCase {
     final IcMaster icMaster = new IcMaster()
       .thatControls(StaticMapInjectionController.strategy(), 
           Key.get(MyEnum.class),
-          // TODO: awkard construct! At least document
+          // TODO: awkward construct! At least document
           Key.get(new TypeLiteral<MyGenericClass<MyEnum>> (){}));
 
     Injector controlledServerInjector = 
