@@ -55,6 +55,11 @@ public final class GuiceBerryTestRule implements TestRule {
   }
 
   public Statement apply(Statement base, Description description) {
+    if (!description.getTestClass().isInstance(target)) {
+      throw new RuntimeException("Rule target is not an instance of "
+          + description.getTestClass().getName()
+          + "\nAlways create a GuiceBerryTestRule with this (that is, the test object) as the first constructor argument");
+    }
     return GuiceBerryRule.apply(base, guiceBerryEnvSelector,
         new TestDescription(target,
             target.getClass().getName() + "." + description.getMethodName()));
