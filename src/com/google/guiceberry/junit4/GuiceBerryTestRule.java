@@ -33,8 +33,9 @@ import org.junit.runners.model.Statement;
  *
  * @author David M. Hull
  */
-public final class GuiceBerryTestRule extends GuiceBerryBaseRule implements TestRule {
+public final class GuiceBerryTestRule implements TestRule {
   private final Object target;
+  private final GuiceBerryEnvSelector guiceBerryEnvSelector;
 
   /**
    * Main constructor.
@@ -44,8 +45,8 @@ public final class GuiceBerryTestRule extends GuiceBerryBaseRule implements Test
    * @param guiceBerryEnvSelector Instance to use as env selector.
    */
   public GuiceBerryTestRule(Object target, GuiceBerryEnvSelector guiceBerryEnvSelector) {
-    super(guiceBerryEnvSelector);
     this.target = target;
+    this.guiceBerryEnvSelector = guiceBerryEnvSelector;
   }
 
   /**
@@ -60,7 +61,7 @@ public final class GuiceBerryTestRule extends GuiceBerryBaseRule implements Test
   }
 
   public Statement apply(Statement base, Description description) {
-    return apply(base,
+    return GuiceBerryRule.apply(base, guiceBerryEnvSelector,
         new TestDescription(target,
             target.getClass().getName() + "." + description.getMethodName()));
   }

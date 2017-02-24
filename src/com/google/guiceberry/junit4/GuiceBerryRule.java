@@ -17,6 +17,7 @@ package com.google.guiceberry.junit4;
 
 import com.google.guiceberry.DefaultEnvSelector;
 import com.google.guiceberry.GuiceBerry;
+import com.google.guiceberry.GuiceBerry.GuiceBerryWrapper;
 import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.TestDescription;
 import com.google.inject.Module;
@@ -32,18 +33,41 @@ import org.junit.runners.model.Statement;
  *
  * @author Luiz-Otavio "Z" Zorzella
  */
-public class GuiceBerryRule extends GuiceBerryBaseRule implements MethodRule {
+public class GuiceBerryRule implements MethodRule {
+
+  private GuiceBerryEnvSelector guiceBerryEnvSelector;
 
   public GuiceBerryRule(Class<? extends Module> envClass) {
     this(DefaultEnvSelector.of(envClass));
   }
 
   public GuiceBerryRule(GuiceBerryEnvSelector guiceBerryEnvSelector) {
-    super(guiceBerryEnvSelector);
+    this.guiceBerryEnvSelector = guiceBerryEnvSelector;
   }
 
   public Statement apply(Statement base, FrameworkMethod method, Object target) {
-    return apply(base,
-        new TestDescription(target, target.getClass().getName() + "." + method.getName()));
+    return apply(base, guiceBerryEnvSelector,
+        new TestDescription(target,target.getClass().getName() + "." + method.getName()));
+  }
+
+  static Statement apply(
+      final Statement base,
+      final GuiceBerryEnvSelector guiceBerryEnvSelector,
+      final TestDescription testDescription) {
+    return new Statement() {
+  
+      @Override
+      public void evaluate() throws Throwable {
+        final GuiceBerryWrapper setupAndTearDown =
+          GuiceBerry.INSTANCE.buildWrapper(
+              testDescription, guiceBerryEnvSelector);
+        try {
+          setupAndTearDown.runBeforeTest();
+          base.evaluate();
+        } finally {
+          setupAndTearDown.runAfterTest();
+        }
+      }
+    };
   }
 }
