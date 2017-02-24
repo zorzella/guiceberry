@@ -26,7 +26,7 @@ public class GuiceBerryTestRuleTest {
 
   @Test
   public void ruleNotUsingThis_throws() throws Throwable {
-    thrown.expect(Exception.class);
+    thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage(GuiceBerryTestRuleTest.class.getSimpleName());
     GuiceBerryTestRule testRule = new GuiceBerryTestRule("not the test object", Env.class);
     testRule.apply(base, description).evaluate();
