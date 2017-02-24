@@ -22,14 +22,17 @@ import com.google.guiceberry.GuiceBerryEnvSelector;
 import com.google.guiceberry.TestDescription;
 import com.google.inject.Module;
 import org.junit.rules.MethodRule;
+import org.junit.rules.TestRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
 /**
- * {@link GuiceBerry} adapter for JUnit4 tests, implementing {@MethodRule}.
+ * {@link GuiceBerry} adapter for JUnit4 tests.
  *
  * <p>This is the preferred implementation to use, as it does not depend on the client code
  * supplying the right object for {@code Object target}.
+ *
+ * <p>@see If you are looking for a {@link TestRule}, see {@link GuiceBerryTestRule}.
  *
  * @author Luiz-Otavio "Z" Zorzella
  */
