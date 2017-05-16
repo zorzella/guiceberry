@@ -2,13 +2,22 @@
 
 <!-- h2>Not yet released</h2 -->
 
+* Fix an issue introduced by the "GuiceBerry to fail fast if there are missing
+  bindings" change that caused a change in the initialization order -- if there
+  was a TestWrapper used, it would be provisioned before the
+  GuiceBerryEnvMain.run method was run. This is particularly problematic if the
+  GuiceBerryEnvMain is used to change some global static state that is then read
+  by a singleton binding that is injected by the test wrapper, as that singleton
+  would be built before the GuiceBerryEnvMain runs (i.e. before it is
+  initialized).
+
 <h2>GuiceBerry 4.1.0</h2>
 
 * Create GuiceBerryTestRule -- a TestRule version of GuiceBerryRule
 
 * Upgrade to apache common-collections-3.2.2
 
-* GuiceBerryEnvMain to fail fast on missing bindings
+* GuiceBerry to fail fast if there are missing bindings
 
 * Misc fixes (typos, polish etc)
 

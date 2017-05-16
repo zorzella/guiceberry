@@ -15,15 +15,17 @@
  */
 package com.google.guiceberry;
 
+import com.google.common.collect.Lists;
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.ConfigurationException;
+import com.google.inject.CreationException;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provides;
-
+import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -205,7 +207,11 @@ public class GuiceBerryUniverseTest {
     }
   }
 
-  @Test public void testFailsInjectionBeforeRunningGuiceBerryEnvMain() {
+  /**
+   * This test makes sure that if the test has a missing binding, GuiceBerry
+   * will fail before it runs the {@link GuiceBerryEnvMain#run()} method.
+   */
+  @Test public void testFailsInjectionBeforeRunningGuiceBerryEnvMain_MissingTestBinding() {
     GuiceBerryEnvSelector guiceBerryEnvSelector = 
       DefaultEnvSelector.of(MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrows.class);
     TestDescription testDescription = new TestDescription(new ClassWithUnsatisfiedDependency(), "bogus test case");
@@ -219,9 +225,32 @@ public class GuiceBerryUniverseTest {
           + "test from having gotten here.");
     } catch (MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrows.GuiceBerryEnvMainWasExecutedException toThrow) {
       throw toThrow;
-    } catch (RuntimeException expected) {
-      Assert.assertEquals(ConfigurationException.class, expected.getCause().getClass());
+    } catch (RuntimeException maybeExpected) {
+      Assert.assertEquals(ConfigurationException.class, maybeExpected.getCause().getClass());
     }
+      
+    testCaseScaffolding.runAfterTest();
+  }
+
+  /**
+   * Like {@link #testFailsInjectionBeforeRunningGuiceBerryEnvMain_MissingTestBinding()}
+   * except for bindings that are missing in the test wrapper.
+   */
+  @Test public void testFailsInjectionBeforeRunningGuiceBerryEnvMain_MissingWrapperBinding() {
+    GuiceBerryEnvSelector guiceBerryEnvSelector = 
+      DefaultEnvSelector.of(MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrowsAndWithATestWrapperWithAMissingBinding.class);
+    TestDescription testDescription = new TestDescription(new MyTest(), "some test case");
+    GuiceBerryUniverse.TestCaseScaffolding testCaseScaffolding = 
+      new GuiceBerryUniverse.TestCaseScaffolding(testDescription, guiceBerryEnvSelector, universe);
+      
+    try {
+      testCaseScaffolding.runBeforeTest();
+      Assert.fail("The test has an unsatisfied injection, and the GuiceBerryEnvMain "
+          + "throws an Exception. Either of these reasons should have prevented the "
+          + "test from having gotten here.");
+    } catch (MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrows.GuiceBerryEnvMainWasExecutedException toThrow) {
+      throw toThrow;
+    } catch (CreationException expected) {}
       
     testCaseScaffolding.runAfterTest();
   }
@@ -261,5 +290,121 @@ public class GuiceBerryUniverseTest {
         }
       };
     }
+  }
+  
+  /**
+   * Like {@link MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrows}, but also with
+   * a {@link TestWrapper} that is missing a binding.
+   */
+  private static final class MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrowsAndWithATestWrapperWithAMissingBinding 
+      extends AbstractModule {
+
+    private static final class GuiceBerryEnvMainWasExecutedException extends RuntimeException {
+      public GuiceBerryEnvMainWasExecutedException() {
+        super("GuiceBerryEnvMain was executed");
+      }
+    }
+    
+    private final GuiceBerryModule gbm;
+    
+    @Override
+    protected void configure() {
+      install(gbm);
+    }
+    
+    @SuppressWarnings("unused")
+    public MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrowsAndWithATestWrapperWithAMissingBinding() {
+      this.gbm = new GuiceBerryModule(GuiceBerryUniverseTest.universe);
+    }
+    
+    @Provides
+    GuiceBerryEnvMain getMain() {
+      return new GuiceBerryEnvMain() {
+        public void run() {
+          throw new GuiceBerryEnvMainWasExecutedException();
+        }
+      };
+    }
+    
+    @Provides
+    TestWrapper buildTestWrapper(
+        @SuppressWarnings("unused") UnsatisfiedDependency unsatisfiedDependency) {
+      return new TestWrapper() {
+        public void toRunBeforeTest() {}
+      };
+    }
+  }
+
+  /**
+   * Makes sure that the {@link GuiceBerryEnvMain#run()} method is called before
+   * any provision happens (either in the test or the {@link TestWrapper}.
+   */
+  @Test public void testEnsureCorrectOrderOfBootstrap() {
+    GuiceBerryEnvSelector guiceBerryEnvSelector = 
+      DefaultEnvSelector.of(MyGuiceBerryEnvWithGuiceBerryEnvMainThatKeepsTabsOnTheOrder.class);
+    TestDescription testDescription = new TestDescription(new MyTestThatKeepsTabsOnTheOrder(), "some test case");
+    GuiceBerryUniverse.TestCaseScaffolding testCaseScaffolding = 
+      new GuiceBerryUniverse.TestCaseScaffolding(testDescription, guiceBerryEnvSelector, universe);
+      
+    testCaseScaffolding.runBeforeTest();
+      
+    testCaseScaffolding.runAfterTest();
+    
+    Assert.assertEquals("GuiceBerryEnvMain",
+        MyGuiceBerryEnvWithGuiceBerryEnvMainThatKeepsTabsOnTheOrder.eventsInOrder.get(0));
+  }
+
+  /**
+   * Like {@link MyGuiceBerryEnvWithGuiceBerryEnvMainThatThrows}, but also with
+   * a {@link TestWrapper} that is missing a binding.
+   */
+  private static final class MyGuiceBerryEnvWithGuiceBerryEnvMainThatKeepsTabsOnTheOrder
+      extends AbstractModule {
+
+    private static final List<String> eventsInOrder = Lists.newArrayList();
+    
+    private final GuiceBerryModule gbm;
+    
+    @Override
+    protected void configure() {
+      install(gbm);
+    }
+    
+    @SuppressWarnings("unused")
+    public MyGuiceBerryEnvWithGuiceBerryEnvMainThatKeepsTabsOnTheOrder() {
+      this.gbm = new GuiceBerryModule(GuiceBerryUniverseTest.universe);
+    }
+    
+    @Provides
+    GuiceBerryEnvMain getMain() {
+      return new GuiceBerryEnvMain() {
+        public void run() {
+          eventsInOrder.add("GuiceBerryEnvMain");
+        }
+      };
+    }
+    
+    @Provides
+    TestWrapper buildTestWrapper() {
+      eventsInOrder.add("buildTestWrapper");
+
+      return new TestWrapper() {
+        public void toRunBeforeTest() {}
+      };
+    }
+  }
+
+  private static final class MyClassThatKeepsTabsOnTheOrder {
+    @Inject
+    public MyClassThatKeepsTabsOnTheOrder() {
+      MyGuiceBerryEnvWithGuiceBerryEnvMainThatKeepsTabsOnTheOrder.eventsInOrder
+        .add("MyClassThatKeepsTabsOnTheOrder");
+    }
+  }
+  
+  private static final class MyTestThatKeepsTabsOnTheOrder {
+    @SuppressWarnings("unused")
+    @Inject
+    MyClassThatKeepsTabsOnTheOrder myClass;
   }
 }

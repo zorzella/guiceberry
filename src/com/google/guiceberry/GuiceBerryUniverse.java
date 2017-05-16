@@ -247,10 +247,10 @@ class GuiceBerryUniverse {
         // Get a members injector for the test class first so that we fail fast if there are missing
         // bindings instead of running the main
         getMembersInjectorForTest(gbeClass, injector);
+        callGbeMainIfBound(injector);
         // We don't actually use the test wrapper here, but we make sure we can
         // get an instance (i.e. we fail fast).
         buildTestWrapperInstance(injector);
-        callGbeMainIfBound(injector);
         result = injector;
       } catch (CreationException e) {
         if (e.getMessage().contains("No scope is bound to " + TestScoped.class.getName())) {
