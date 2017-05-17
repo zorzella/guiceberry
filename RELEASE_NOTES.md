@@ -2,6 +2,8 @@
 
 <!-- h2>Not yet released</h2 -->
 
+<h2>GuiceBerry 4.1.1</h2>
+
 * Fix an issue introduced by the "GuiceBerry to fail fast if there are missing
   bindings" change that caused a change in the initialization order -- if there
   was a TestWrapper used, it would be provisioned before the
