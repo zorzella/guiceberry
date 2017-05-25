@@ -389,6 +389,8 @@ class GuiceBerryUniverse {
             + ".setUp()"); 
         throw new RuntimeException(msg); 
       }
+      testDescription.setFinished(true);
+      // only remove a reference from this thread, children threads still have it
       universe.currentTestDescriptionThreadLocal.remove();
       injector.getInstance(TestScope.class).finishScope(testDescription);    
     }
