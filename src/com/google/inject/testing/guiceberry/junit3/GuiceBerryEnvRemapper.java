@@ -27,7 +27,7 @@ import junit.framework.TestCase;
  * 
  * <p>The primary purpose for this is to allow for running tests under
  * different "integration" modes, as can be seen in the tutorial example
- * {@link junit4.tutorial_0_basic.Example5CustomSelectorTest}.
+ * {@code junit4.tutorial_0_basic.Example5CustomSelectorTest}.
  * I.e., this allows one to run any given test against multiple
  * {@link com.google.inject.testing.guiceberry.GuiceBerryEnv}s.
  * 

@@ -15,7 +15,7 @@ have no compilation/test errors:
 
 $ ant clean test dist
 
-TODO: javadoc, since java 8, spews up tons of warnings that I don't know how to make ant disable.
+TODO: javadoc -- there's a couple of warnings that I can't seem to find out how to fix.
 
 3. Update RELEASE_NOTES.md. Use "gitk --all" to see that all changes since the
 last release are accounted for. Commit and push:

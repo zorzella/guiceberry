@@ -42,7 +42,7 @@ public class ManualTearDownGuiceBerry {
    * <p>A canonical test will call this method in the its setUp method, and will
    * pass {@code this} as the testCase argument. It will then store the return
    * value to run it at its tearDown. See
-   * {@link junit3.tutorial_0_basic.Example0HelloWorldTest#setUp()}.
+   * {@code junit3.tutorial_0_basic.Example0HelloWorldTest#setUp()}.
    */
   public static TearDown setUp(
       TestCase testCase, 

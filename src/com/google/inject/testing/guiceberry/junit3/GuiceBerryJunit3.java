@@ -90,8 +90,8 @@ public class GuiceBerryJunit3 {
    * <p>
    * Operations performed by this method include:
    * <ul>
-   *    <li> If the {@link TestCase} is the instance of 
-   *         {@link com.google.common.testing.junit3.TearDownTestCase},
+   *    <li> If the given {@code testCase} is an instance of a
+   *         {@link TearDownAccepter},
    *         the test case's {@code tearDown()} method is guaranteed to be executed
    *         at the end of the test. 
    *         Otherwise  calling {@link GuiceBerryJunit3#tearDown(TestCase)} is programmer's 

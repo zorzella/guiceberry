@@ -29,8 +29,8 @@ import com.google.common.testing.TearDownAccepter;
  *
  * <p>A simple usage of this class would look like this, in your GuiceBerry env:
  * 
- * <code>
- * @Provides
+ * <pre>
+ * {@literal @}Provides
  * TestWrapper getTestWrapper(final TearDownAccepter tearDownAccepter) {
  *   return new TestWrapper() {
  *     public void toRunBeforeTest() {
@@ -43,9 +43,9 @@ import com.google.common.testing.TearDownAccepter;
  *   }
  *   // here goes the code to be executed before each test
  * }
- * </code>
+ * </pre>
  * 
- * <p>See an example of this at {@link junit4.tutorial_0_basic.Example3TestWrapperTest}
+ * <p>See an example of this at {@code junit4.tutorial_0_basic.Example3TestWrapperTest}
  *
  * @author Luiz-Otavio "Z" Zorzella
  */

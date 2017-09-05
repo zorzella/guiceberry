@@ -41,7 +41,7 @@ public class AutoTearDownGuiceBerry {
    *
    * <p>A canonical test will call this method in the its setUp method, and will
    * pass {@code this} as the testCase argument. See
-   * {@link junit3_tdtc.tutorial_0_basic.Example0HelloWorldTest#setUp()}.
+   * {@code junit3_tdtc.tutorial_0_basic.Example0HelloWorldTest#setUp()}.
    *
    * <p>The parameter {@code T} is a {@link TearDownAccepter} or anything
    * equivalent to it. 
