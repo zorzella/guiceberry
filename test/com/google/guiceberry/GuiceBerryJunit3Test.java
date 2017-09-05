@@ -1094,7 +1094,7 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
     /**
      * Constructors should be no-args
      */
-    public GuiceBerryEnvWithIllegalConstructor(int a){}
+    public GuiceBerryEnvWithIllegalConstructor(@SuppressWarnings("unused") int a) {}
     
     public void configure(Binder binder) {}
   }

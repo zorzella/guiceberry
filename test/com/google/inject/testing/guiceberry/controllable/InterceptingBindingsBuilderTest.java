@@ -130,7 +130,7 @@ public class InterceptingBindingsBuilderTest extends TestCase {
       @SuppressWarnings({"unchecked"})
       public <T> T intercept(Key<T> key, Provider<? extends T> delegate) {
         assertEquals(ArrayList.class, delegate.get().getClass());
-        return (T) new LinkedList();
+        return (T) new LinkedList<Object>();
       }
     };
 
@@ -230,7 +230,7 @@ public class InterceptingBindingsBuilderTest extends TestCase {
 
     Set<Key<?>> interceptableKeys = injector.getInstance(
         Key.get(new TypeLiteral<Set<Key<?>>>() {}, Names.named("Interceptable")));
-    assertEquals(new HashSet<Key>(Arrays.asList(Key.get(List.class), Key.get(Collection.class))),
+    assertEquals(new HashSet<Key<?>>(Arrays.asList(Key.get(List.class), Key.get(Collection.class))),
         interceptableKeys);
   }
 }
