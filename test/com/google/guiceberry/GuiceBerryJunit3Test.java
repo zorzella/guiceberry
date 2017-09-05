@@ -101,8 +101,8 @@ public class GuiceBerryJunit3Test extends TearDownTestCase {
           "In order to use the deprecated GuiceBerryJunit3, your test class "
           + "must have a @GuiceBerryEnv annotation. Either add one, or, better "
           + "yet, upgrade your code to make use of the GuiceBerry 3.0 "
-          + "adapters. For more details, see http://guiceberry.googlecode.com, "
-          + "section 'Upgrading from 2.0 to 3.0'",
+          + "adapters. For more details, see "
+          + "https://docs.google.com/document/d/1IanQDC2-IEVtSViVirniEpdhTGZ8V6bTeo0DiBxjQts",
           expected.getMessage());
     }
   }

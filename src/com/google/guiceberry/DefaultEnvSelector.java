@@ -31,7 +31,7 @@ import com.google.inject.testing.guiceberry.junit3.GuiceBerryEnvRemapper;
 public class DefaultEnvSelector implements GuiceBerryEnvSelector {
 
   public static final String LINK_TO_UPGRADING_DOC =
-    "For more details, see http://guiceberry.googlecode.com, section 'Upgrading from 2.0 to 3.0'";
+    "For more details, see https://docs.google.com/document/d/1IanQDC2-IEVtSViVirniEpdhTGZ8V6bTeo0DiBxjQts";
 
   private static final String OVERRIDE_SYSTEM_PROPERY_NAME = "GuiceBerryEnvSelectorOverride";
   
