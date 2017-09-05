@@ -113,4 +113,10 @@ public class ThreadSafetyTest extends TestCase {
     super.setUp();
     GuiceBerryJunit3.setUp(this);
   }
+  
+  @Override
+  protected void tearDown() throws Exception {
+    GuiceBerryJunit3.tearDown(this);
+    super.tearDown();
+  }
 }
