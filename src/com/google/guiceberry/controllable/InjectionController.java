@@ -25,16 +25,16 @@ package com.google.guiceberry.controllable;
  * 
  * <pre>
  *   {@code @}Inject
- *   IcClient&lt;Foo&gt; fooIcClient;
+ *   InjectionController&lt;Foo&gt; fooInjectionController;
  *   
  *   public void testSpecialPath() {
  *     Foo someFoo = buildFooForThisTest();
- *     fooIcClient.setOverride(someFoo);
+ *     fooInjectionController.setOverride(someFoo);
  *   }
  * </pre>
  * 
  * <p>Note that, to control an annotated binding, simply annotate the injection
- * of IcClient with the appropriate {@link com.google.inject.BindingAnnotation}.
+ * of {@link InjectionController} with the appropriate {@link com.google.inject.BindingAnnotation}.
  * 
  * @author Luiz-Otavio Zorzella
  * @author Jesse Wilson
