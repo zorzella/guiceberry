@@ -26,7 +26,12 @@ import com.google.inject.ScopeAnnotation;
 
 /**
  * This defines a {@link Scope} that begins during test "set up" and ends during
- * test "tear down".
+ * test "tear down". Creates no more than one object per test thread and its
+ * children threads during a test run. When two tests share a thread pool
+ * exception will be thrown when the thread is reused as there is no way to
+ * determine a parent test when several tests are run in parallel. You may
+ * explicitly reset a thread's state by using
+ * {@link TestScope#setInternalStateForCurrentThread}.
  * 
  * @see TestScope implementation details
  * 

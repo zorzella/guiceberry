@@ -38,6 +38,8 @@ public final class TestDescription {
   private final Object testCase;
   private final String name;
   private final TestId testId;
+  /** Is set to true on the main test thread, read by children threads. */
+  private volatile boolean finished;
 
   /**
    * You won't have to create an instance of this class unless you are writing a
@@ -58,6 +60,7 @@ public final class TestDescription {
     this.testCase = Preconditions.checkNotNull(testCase);
     this.name = mangle(Preconditions.checkNotNull(name));
     this.testId = new TestId(name);
+    finished = false;
   }
   
   private static String mangle(String name) {
@@ -82,7 +85,17 @@ public final class TestDescription {
   TestId getTestId() {
     return testId;
   }
-  
+
+  /** Has this test finished yet? */
+  boolean isFinished() {
+    return finished;
+  }
+
+  /** Mark this test as finished. */
+  void setFinished(boolean finished) {
+    this.finished = finished;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (obj == this) {
