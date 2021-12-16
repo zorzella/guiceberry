@@ -8,9 +8,9 @@
 
 The tutorial for `GuiceBerry` 4 can be found at:
 
-* Doc: http://docs.google.com/View?id=dddf9mmq_29s3s79fcv
+* Doc: https://docs.google.com/document/d/1Cyism50KXTMXcvYNbqUXi3gaaNKaXDgjXjpx4rPNet8/edit?usp=sharing
 * Walk-through video: http://www.youtube.com/watch?v=yqre07YfPXQ
-* Slides: https://docs.google.com/present/view?id=dddf9mmq_30fgnf9jc2
+* Slides: https://docs.google.com/presentation/d/1098aqrmz45rtbeA_X71rfbFa4qqjXKs8LtLVBjqP1kc/edit?usp=sharing
 
 Releases:
 
