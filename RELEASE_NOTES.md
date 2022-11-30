@@ -2,6 +2,11 @@
 
 <!-- h2>Not yet released</h2 -->
 
+<h2>GuiceBerry 4.2.0</h2>
+
+* Make GuiceBerry compile with JDK 11 by moving the source and target versions
+  to 1.6 (from 1.5): https://github.com/zorzella/guiceberry/issues/40
+
 <h2>GuiceBerry 4.1.1</h2>
 
 * Fix an issue introduced by the "GuiceBerry to fail fast if there are missing
