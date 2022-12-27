@@ -19,6 +19,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.Sets;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.Binding;
@@ -95,21 +96,25 @@ final class InterceptingBindingsBuilder {
     });
   }
 
+  @CanIgnoreReturnValue
   public InterceptingBindingsBuilder install(Module... modules) {
     this.modules.addAll(Arrays.asList(modules));
     return this;
   }
 
+  @CanIgnoreReturnValue
   public InterceptingBindingsBuilder install(Collection<? extends Module> modules) {
     this.modules.addAll(modules);
     return this;
   }
 
+  @CanIgnoreReturnValue
   public InterceptingBindingsBuilder intercept(Key<?>... keys) {
     this.keysToIntercept.addAll(Arrays.asList(keys));
     return this;
   }
 
+  @CanIgnoreReturnValue
   public InterceptingBindingsBuilder intercept(Collection<Key<?>> keys) {
     checkArgument(!keys.contains(INJECTION_INTERCEPTOR_KEY),
         "Cannot intercept the interceptor!");
@@ -118,6 +123,7 @@ final class InterceptingBindingsBuilder {
     return this;
   }
 
+  @CanIgnoreReturnValue
   public InterceptingBindingsBuilder intercept(Class<?>... classes) {
     List<Key<?>> keysAsList = new ArrayList<Key<?>>(classes.length);
     for (Class<?> clas : classes) {
@@ -127,6 +133,7 @@ final class InterceptingBindingsBuilder {
     return intercept(keysAsList);
   }
 
+  @CanIgnoreReturnValue
   public InterceptingBindingsBuilder tolerateUnmatchedInterceptions() {
     this.tolerateUnmatchedInterceptions = true;
     return this;
